@@ -1,7 +1,7 @@
 # Flags Quiz — Learn mode design
 
 Date: 2026-10-06
-Status: draft, awaiting review
+Status: approved
 
 ## Goal
 
@@ -37,7 +37,7 @@ Out of scope:
 
 ### Flags
 
-A one-off script downloads every country's SVG from flagcdn into `public/flags/<iso2>.svg`.
+A throwaway script (run once, never committed) downloads every country's SVG from flagcdn into `public/flags/<iso2>.svg`.
 The files are committed, so the app works offline.
 Flags keep their real aspect ratios (Nepal is not a rectangle, Switzerland is square); the UI fits them into a fixed box with `object-fit: contain`.
 
@@ -49,7 +49,8 @@ Flags keep their real aspect ratios (Nepal is not a rectangle, Switzerland is sq
 { "iso2": "cd", "name": "República Democrática do Congo", "continent": "africa", "tier": 2, "aliases": ["RDC", "Congo-Kinshasa"] }
 ```
 
-- `name` is generated once from `Intl.DisplayNames('pt-BR', { type: 'region' })` and then corrected by hand where the output is wrong (for example "Congo - Kinshasa"). The committed file is the source of truth; the app never calls `Intl` at runtime.
+- The country list is the UN member states from the `mledoze/countries` dataset, whose `region` field gives the continent.
+- `name` is generated once from `Intl.DisplayNames('pt-BR', { type: 'region' })` by the same throwaway script, then corrected where the output is wrong: "Congo - Kinshasa" becomes "República Democrática do Congo" and "Mianmar (Birmânia)" becomes "Mianmar". `Intl` spells Burquina Faso and Malaui the Itamaraty way; those names stay, and "Burkina Faso" and "Malawi" become aliases. The committed file is the source of truth; the app never calls `Intl` at runtime.
 - `tier` exists only for African countries.
 - `aliases` lists extra accepted spellings for the "type the name" format.
 - Africa means the 54 UN member states. Western Sahara and Somaliland are excluded.
@@ -101,7 +102,7 @@ Rules per format:
 ## Round rules
 
 - A round starts with 3 lives and 0 correct answers.
-- Each question draws a format uniformly from the eligible formats, then a target country from the pool.
+- Each question draws a format uniformly from the formats that can target at least one unused country, then a target uniformly from the unused countries that format can target.
 - A country is not the target of more than one question in the same round.
 - A wrong answer costs 1 life. The app then shows the correct answer (flag and name, or the full correct pairing) and waits for "continuar". A correct answer gets brief feedback and the same "continuar".
 - 10 correct answers win the round and award the medal for that continent and difficulty.
@@ -130,7 +131,8 @@ src/
   engine/
     rng.ts         seedable random source
     pool.ts        countries for a continent and difficulty
-    formats/       one module per format: eligible(pool) and build(pool, rng) -> Question
+    question.ts    Question, Format and FormatContext types
+    formats.ts     the nine formats, each with canTarget(target, ctx) and build(target, ctx, rng)
     round.ts       round state: lives, correct count, used targets, next question, answer
     answer.ts      answer checking, including the name normalization for format 5
   progress.ts      medal read/write over localStorage
@@ -138,9 +140,6 @@ src/
     screens/       home, continent, difficulty, game, result
     questions/     one renderer per format
   main.ts          screen routing
-scripts/
-  fetch-flags.ts   one-off flag download
-  build-countries.ts  one-off generation of countries.json from Intl, before hand edits
 ```
 
 The engine has no DOM dependency. A `Question` is plain data that a format module builds and a renderer displays; the renderer reports the player's answer back to `round.ts`.
@@ -157,14 +156,14 @@ Vitest covers the engine with a fixed seed:
 
 The UI is checked by running the app in a browser and playing each format.
 
-## For review
+## Tiers and similar-flag groups
 
-The two lists below are my proposal, not settled. Review them before implementation.
+The lists below were reviewed and approved on 2026-10-06; `countries.json` and `similar-groups.json` encode them.
 
 ### Tiers
 
 - **Tier 1 (Fácil):** África do Sul, Egito, Marrocos, Nigéria, Quênia, Etiópia, Gana, Argélia, Tunísia, Moçambique, Angola, Uganda, Tanzânia, Somália, Zimbábue, Senegal, Camarões, Madagascar.
-- **Tier 2 (Médio adds):** Líbia, Sudão, Sudão do Sul, Costa do Marfim, Mali, Guiné, Ruanda, Botsuana, Namíbia, Zâmbia, Malawi, Lesoto, Essuatíni, Cabo Verde, Eritreia, Burkina Faso, República Democrática do Congo, Seicheles.
+- **Tier 2 (Médio adds):** Líbia, Sudão, Sudão do Sul, Costa do Marfim, Mali, Guiné, Ruanda, Botsuana, Namíbia, Zâmbia, Malaui, Lesoto, Essuatíni, Cabo Verde, Eritreia, Burquina Faso, República Democrática do Congo, Seicheles.
 - **Tier 3 (Difícil adds):** Benin, Burundi, Chade, Comores, Djibuti, Gabão, Gâmbia, Guiné-Bissau, Guiné Equatorial, Libéria, Mauritânia, Maurício, Níger, República Centro-Africana, República do Congo, São Tomé e Príncipe, Serra Leoa, Togo.
 
 ### Similar-flag groups
@@ -172,10 +171,10 @@ The two lists below are my proposal, not settled. Review them before implementat
 - Mali, Guiné, Senegal, Camarões — vertical green-yellow-red tricolors.
 - Costa do Marfim, Níger — orange-white-green.
 - Egito, Sudão — red-white-black horizontal.
-- Gana, Etiópia, Burkina Faso — pan-African horizontal bands.
+- Gana, Etiópia, Burquina Faso — pan-African horizontal bands.
 - Guiné-Bissau, Benin, Togo — vertical band plus horizontal yellow/green or stripes.
 - Tanzânia, República do Congo, Namíbia, República Democrática do Congo — diagonal bands.
-- Quênia, Sudão do Sul, Malawi — black-red-green with white fimbriation or rising sun.
+- Quênia, Sudão do Sul, Malaui — black-red-green with white fimbriation or rising sun.
 - Gabão, Serra Leoa — green-yellow/white-blue horizontal tricolors.
 - Djibuti, Eritreia — hoist triangle over two horizontal bands.
 - São Tomé e Príncipe, Guiné Equatorial — hoist triangle over green bands.
