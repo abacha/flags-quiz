@@ -6,6 +6,11 @@ const african = countries.filter((c) => c.continent === 'africa');
 const byIso = new Map(countries.map((c) => [c.iso2, c]));
 
 describe('countries', () => {
+  it('has the 193 UN member states', () => {
+    expect(countries).toHaveLength(193);
+    expect(byIso.has('va')).toBe(false);
+  });
+
   it('has the 54 African UN member states', () => {
     expect(african).toHaveLength(54);
   });
