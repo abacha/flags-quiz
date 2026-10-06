@@ -1,0 +1,21 @@
+# Bandeiras
+
+A study app for world flags. Learn mode drills one continent at a time in three difficulties, with nine question formats, 3 lives per round and 10 correct answers to earn a medal. Africa is the only continent with data so far.
+
+## Run
+
+    npm install
+    npm run dev       # dev server on port 5173, reachable from the LAN
+    npm run build     # static site in dist/
+    npm run preview   # serve dist/ on port 4173
+
+## Test
+
+    npm run typecheck
+    npm test
+
+## Data
+
+`src/data/countries.json` holds every UN member state with its Portuguese name, continent, Learn tier (Africa only) and accepted alternative spellings. `src/data/similar-groups.json` lists the groups of look-alike flags used by the sort-similar format. Flags are the SVGs in `public/flags/`, taken from flagcdn. Edit the JSON files directly to change names, tiers, aliases or groups.
+
+Medals live in the browser's `localStorage`, so they belong to one browser on one device.
