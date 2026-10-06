@@ -1,0 +1,1235 @@
+[
+  {
+    "iso2": "ad",
+    "name": "Andorra",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ae",
+    "name": "Emirados Árabes Unidos",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "af",
+    "name": "Afeganistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ag",
+    "name": "Antígua e Barbuda",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "al",
+    "name": "Albânia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "am",
+    "name": "Armênia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ao",
+    "name": "Angola",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "ar",
+    "name": "Argentina",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "at",
+    "name": "Áustria",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "au",
+    "name": "Austrália",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "az",
+    "name": "Azerbaijão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ba",
+    "name": "Bósnia e Herzegovina",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "bb",
+    "name": "Barbados",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "bd",
+    "name": "Bangladesh",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "be",
+    "name": "Bélgica",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "bf",
+    "name": "Burquina Faso",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": [
+      "Burkina Faso"
+    ]
+  },
+  {
+    "iso2": "bg",
+    "name": "Bulgária",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "bh",
+    "name": "Barein",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "bi",
+    "name": "Burundi",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "bj",
+    "name": "Benin",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "bn",
+    "name": "Brunei",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "bo",
+    "name": "Bolívia",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "br",
+    "name": "Brasil",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "bs",
+    "name": "Bahamas",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "bt",
+    "name": "Butão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "bw",
+    "name": "Botsuana",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "by",
+    "name": "Bielorrússia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "bz",
+    "name": "Belize",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "ca",
+    "name": "Canadá",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "cd",
+    "name": "República Democrática do Congo",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": [
+      "RDC",
+      "Congo-Kinshasa"
+    ]
+  },
+  {
+    "iso2": "cf",
+    "name": "República Centro-Africana",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": [
+      "RCA"
+    ]
+  },
+  {
+    "iso2": "cg",
+    "name": "República do Congo",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": [
+      "Congo",
+      "Congo-Brazzaville"
+    ]
+  },
+  {
+    "iso2": "ch",
+    "name": "Suíça",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ci",
+    "name": "Costa do Marfim",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "cl",
+    "name": "Chile",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "cm",
+    "name": "Camarões",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "cn",
+    "name": "China",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "co",
+    "name": "Colômbia",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "cr",
+    "name": "Costa Rica",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "cu",
+    "name": "Cuba",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "cv",
+    "name": "Cabo Verde",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "cy",
+    "name": "Chipre",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "cz",
+    "name": "Tchéquia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "de",
+    "name": "Alemanha",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "dj",
+    "name": "Djibuti",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "dk",
+    "name": "Dinamarca",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "dm",
+    "name": "Dominica",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "do",
+    "name": "República Dominicana",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "dz",
+    "name": "Argélia",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "ec",
+    "name": "Equador",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "ee",
+    "name": "Estônia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "eg",
+    "name": "Egito",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "er",
+    "name": "Eritreia",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "es",
+    "name": "Espanha",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "et",
+    "name": "Etiópia",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "fi",
+    "name": "Finlândia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "fj",
+    "name": "Fiji",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "fm",
+    "name": "Micronésia",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "fr",
+    "name": "França",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ga",
+    "name": "Gabão",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "gb",
+    "name": "Reino Unido",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "gd",
+    "name": "Granada",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "ge",
+    "name": "Geórgia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "gh",
+    "name": "Gana",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "gm",
+    "name": "Gâmbia",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "gn",
+    "name": "Guiné",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "gq",
+    "name": "Guiné Equatorial",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "gr",
+    "name": "Grécia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "gt",
+    "name": "Guatemala",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "gw",
+    "name": "Guiné-Bissau",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "gy",
+    "name": "Guiana",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "hn",
+    "name": "Honduras",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "hr",
+    "name": "Croácia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ht",
+    "name": "Haiti",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "hu",
+    "name": "Hungria",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "id",
+    "name": "Indonésia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ie",
+    "name": "Irlanda",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "il",
+    "name": "Israel",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "in",
+    "name": "Índia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "iq",
+    "name": "Iraque",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ir",
+    "name": "Irã",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "is",
+    "name": "Islândia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "it",
+    "name": "Itália",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "jm",
+    "name": "Jamaica",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "jo",
+    "name": "Jordânia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "jp",
+    "name": "Japão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ke",
+    "name": "Quênia",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "kg",
+    "name": "Quirguistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "kh",
+    "name": "Camboja",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ki",
+    "name": "Quiribati",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "km",
+    "name": "Comores",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "kn",
+    "name": "São Cristóvão e Névis",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "kp",
+    "name": "Coreia do Norte",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "kr",
+    "name": "Coreia do Sul",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "kw",
+    "name": "Kuwait",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "kz",
+    "name": "Cazaquistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "la",
+    "name": "Laos",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "lb",
+    "name": "Líbano",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "lc",
+    "name": "Santa Lúcia",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "li",
+    "name": "Liechtenstein",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "lk",
+    "name": "Sri Lanka",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "lr",
+    "name": "Libéria",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "ls",
+    "name": "Lesoto",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "lt",
+    "name": "Lituânia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "lu",
+    "name": "Luxemburgo",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "lv",
+    "name": "Letônia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ly",
+    "name": "Líbia",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "ma",
+    "name": "Marrocos",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "mc",
+    "name": "Mônaco",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "md",
+    "name": "Moldávia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "me",
+    "name": "Montenegro",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "mg",
+    "name": "Madagascar",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "mh",
+    "name": "Ilhas Marshall",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "mk",
+    "name": "Macedônia do Norte",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ml",
+    "name": "Mali",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "mm",
+    "name": "Mianmar",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "mn",
+    "name": "Mongólia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "mr",
+    "name": "Mauritânia",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "mt",
+    "name": "Malta",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "mu",
+    "name": "Maurício",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "mv",
+    "name": "Maldivas",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "mw",
+    "name": "Malaui",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": [
+      "Malawi"
+    ]
+  },
+  {
+    "iso2": "mx",
+    "name": "México",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "my",
+    "name": "Malásia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "mz",
+    "name": "Moçambique",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "na",
+    "name": "Namíbia",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "ne",
+    "name": "Níger",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "ng",
+    "name": "Nigéria",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "ni",
+    "name": "Nicarágua",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "nl",
+    "name": "Países Baixos",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "no",
+    "name": "Noruega",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "np",
+    "name": "Nepal",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "nr",
+    "name": "Nauru",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "nz",
+    "name": "Nova Zelândia",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "om",
+    "name": "Omã",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "pa",
+    "name": "Panamá",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "pe",
+    "name": "Peru",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "pg",
+    "name": "Papua-Nova Guiné",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "ph",
+    "name": "Filipinas",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "pk",
+    "name": "Paquistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "pl",
+    "name": "Polônia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "pt",
+    "name": "Portugal",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "pw",
+    "name": "Palau",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "py",
+    "name": "Paraguai",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "qa",
+    "name": "Catar",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "ro",
+    "name": "Romênia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "rs",
+    "name": "Sérvia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ru",
+    "name": "Rússia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "rw",
+    "name": "Ruanda",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "sa",
+    "name": "Arábia Saudita",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "sb",
+    "name": "Ilhas Salomão",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "sc",
+    "name": "Seicheles",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "sd",
+    "name": "Sudão",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "se",
+    "name": "Suécia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "sg",
+    "name": "Singapura",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "si",
+    "name": "Eslovênia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "sk",
+    "name": "Eslováquia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "sl",
+    "name": "Serra Leoa",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "sm",
+    "name": "San Marino",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "sn",
+    "name": "Senegal",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "so",
+    "name": "Somália",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "sr",
+    "name": "Suriname",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "ss",
+    "name": "Sudão do Sul",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "st",
+    "name": "São Tomé e Príncipe",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "sv",
+    "name": "El Salvador",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "sy",
+    "name": "Síria",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "sz",
+    "name": "Essuatíni",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": [
+      "Suazilândia",
+      "Eswatini"
+    ]
+  },
+  {
+    "iso2": "td",
+    "name": "Chade",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "tg",
+    "name": "Togo",
+    "continent": "africa",
+    "tier": 3,
+    "aliases": []
+  },
+  {
+    "iso2": "th",
+    "name": "Tailândia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "tj",
+    "name": "Tadjiquistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "tl",
+    "name": "Timor-Leste",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "tm",
+    "name": "Turcomenistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "tn",
+    "name": "Tunísia",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "to",
+    "name": "Tonga",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "tr",
+    "name": "Turquia",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "tt",
+    "name": "Trinidad e Tobago",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "tv",
+    "name": "Tuvalu",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "tz",
+    "name": "Tanzânia",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "ua",
+    "name": "Ucrânia",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "ug",
+    "name": "Uganda",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "us",
+    "name": "Estados Unidos",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "uy",
+    "name": "Uruguai",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "uz",
+    "name": "Uzbequistão",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "va",
+    "name": "Cidade do Vaticano",
+    "continent": "europe",
+    "aliases": []
+  },
+  {
+    "iso2": "vc",
+    "name": "São Vicente e Granadinas",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "ve",
+    "name": "Venezuela",
+    "continent": "americas",
+    "aliases": []
+  },
+  {
+    "iso2": "vn",
+    "name": "Vietnã",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "vu",
+    "name": "Vanuatu",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "ws",
+    "name": "Samoa",
+    "continent": "oceania",
+    "aliases": []
+  },
+  {
+    "iso2": "ye",
+    "name": "Iêmen",
+    "continent": "asia",
+    "aliases": []
+  },
+  {
+    "iso2": "za",
+    "name": "África do Sul",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  },
+  {
+    "iso2": "zm",
+    "name": "Zâmbia",
+    "continent": "africa",
+    "tier": 2,
+    "aliases": []
+  },
+  {
+    "iso2": "zw",
+    "name": "Zimbábue",
+    "continent": "africa",
+    "tier": 1,
+    "aliases": []
+  }
+]
