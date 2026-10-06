@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pickOne, sample, seededRng, shuffle } from './rng';
+import { pickOne, pickWeighted, sample, seededRng, shuffle } from './rng';
 
 describe('seededRng', () => {
   it('repeats the same sequence for the same seed', () => {
@@ -46,5 +46,24 @@ describe('sample', () => {
 
   it('throws when asked for more elements than exist', () => {
     expect(() => sample([1, 2], 3, seededRng(5))).toThrow('asked 3 of 2');
+  });
+});
+
+describe('pickWeighted', () => {
+  it('follows the weights', () => {
+    const rng = seededRng(21);
+    let heavy = 0;
+    for (let i = 0; i < 4000; i++) if (pickWeighted(['light', 'heavy'], (item) => (item === 'heavy' ? 3 : 1), rng) === 'heavy') heavy++;
+    expect(heavy / 4000).toBeGreaterThan(0.7);
+    expect(heavy / 4000).toBeLessThan(0.8);
+  });
+
+  it('never picks an item of weight zero', () => {
+    const rng = seededRng(22);
+    for (let i = 0; i < 500; i++) expect(pickWeighted(['a', 'b'], (item) => (item === 'a' ? 0 : 1), rng)).toBe('b');
+  });
+
+  it('throws when no item has weight', () => {
+    expect(() => pickWeighted(['a'], () => 0, seededRng(1))).toThrow('no positive weight');
   });
 });

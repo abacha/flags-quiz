@@ -29,3 +29,14 @@ export function sample<T>(items: readonly T[], count: number, rng: Rng): T[] {
   if (count > items.length) throw new Error(`sample: asked ${count} of ${items.length}`);
   return shuffle(items, rng).slice(0, count);
 }
+
+export function pickWeighted<T>(items: readonly T[], weightOf: (item: T) => number, rng: Rng): T {
+  const total = items.reduce((sum, item) => sum + weightOf(item), 0);
+  if (total <= 0) throw new Error('pickWeighted: no positive weight');
+  let point = rng() * total;
+  for (const item of items) {
+    point -= weightOf(item);
+    if (point < 0) return item;
+  }
+  return items.filter((item) => weightOf(item) > 0).at(-1)!;
+}

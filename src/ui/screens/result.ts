@@ -1,4 +1,4 @@
-import { CORRECT_TO_WIN } from '../../engine/round';
+import { LEVEL_RULES } from '../../engine/pool';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -11,7 +11,7 @@ export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extr
     : [];
   root.append(
     el('main', { className: 'screen' }, [
-      el('h1', {}, [won ? '🏅 Medalha conquistada!' : `Você fez ${correct} de ${CORRECT_TO_WIN}`]),
+      el('h1', {}, [won ? '🏅 Medalha conquistada!' : `Você fez ${correct} de ${LEVEL_RULES[difficulty].correctToWin}`]),
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       ...review,
       el('button', { className: 'primary', onclick: () => navigate({ name: 'game', continent, difficulty }) }, ['Jogar de novo']),

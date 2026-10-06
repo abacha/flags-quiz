@@ -1,18 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { countries, similarGroups } from '../data/countries';
 import type { Answer } from './answer';
-import { sortSimilar } from './formats';
+import { flagToNames, sortSimilar, typeName } from './formats';
 import { poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
-import { CORRECT_TO_WIN, Round, STARTING_LIVES } from './round';
+import { Round, STARTING_LIVES, type RoundSettings } from './round';
 
-const easy: FormatContext = {
-  pool: poolFor(countries, 'africa', 'easy'),
-  world: countries,
-  similarGroups,
-  similarDistractors: false,
-};
+const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups, similarDistractors: false };
+const settings = (correctToWin: number, recallWeight = 1): RoundSettings => ({ correctToWin, recallWeight });
 
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
@@ -54,43 +50,77 @@ function wrongAnswer(q: Question): Answer {
   }
 }
 
+const shown = (q: Question) => ('countries' in q ? q.countries.map((c) => c.iso2) : [q.target.iso2]);
+
 describe('Round', () => {
-  it('starts with 3 lives and no correct answers', () => {
-    const round = new Round(easy, seededRng(1));
-    expect([round.lives, round.correct, round.status]).toEqual([STARTING_LIVES, 0, 'playing']);
+  it('starts with 3 lives, no correct answers and the level goal', () => {
+    const round = new Round(easy, settings(12), seededRng(1));
+    expect([round.lives, round.correct, round.status, round.correctToWin]).toEqual([STARTING_LIVES, 0, 'playing', 12]);
   });
 
-  it('is won after 10 correct answers and then refuses new questions', () => {
-    const round = new Round(easy, seededRng(2));
-    for (let i = 0; i < CORRECT_TO_WIN; i++) round.answer(rightAnswer(round.nextQuestion()));
+  it('is won at the goal and then refuses new questions', () => {
+    const round = new Round(easy, settings(5), seededRng(2));
+    for (let i = 0; i < 5; i++) round.answer(rightAnswer(round.nextQuestion()));
     expect(round.status).toBe('won');
     expect(() => round.nextQuestion()).toThrow('Round is won');
   });
 
   it('is lost after 3 wrong answers and remembers what was missed', () => {
-    const round = new Round(easy, seededRng(3));
+    const round = new Round(easy, settings(12), seededRng(3));
     for (let i = 0; i < STARTING_LIVES; i++) round.answer(wrongAnswer(round.nextQuestion()));
     expect(round.status).toBe('lost');
     expect(round.missed.length).toBeGreaterThan(0);
   });
 
-  it('serves 12 questions on the easy pool without repeating a target', () => {
-    for (const seed of [4, 5, 6, 7, 8]) {
-      const round = new Round(easy, seededRng(seed));
-      const targets: string[] = [];
-      const plan = [false, false, ...Array(9).fill(true), false];
-      for (const right of plan) {
-        const question = round.nextQuestion();
-        targets.push(question.target.iso2);
-        round.answer(right ? rightAnswer(question) : wrongAnswer(question));
-      }
-      expect(new Set(targets).size).toBe(12);
-      expect(round.status).toBe('lost');
+  it('asks every country once before any repeats', () => {
+    const round = new Round(easy, settings(100), seededRng(4), [typeName, flagToNames]);
+    const targets = Array.from({ length: 18 }, () => {
+      const question = round.nextQuestion();
+      round.answer(rightAnswer(question));
+      return question.target.iso2;
+    });
+    expect(new Set(targets).size).toBe(18);
+    expect(() => round.answer(rightAnswer(round.nextQuestion()))).not.toThrow();
+  });
+
+  it('starts the next pass with the countries missed in the round', () => {
+    const round = new Round(easy, settings(100), seededRng(5), [typeName]);
+    const first = round.nextQuestion();
+    round.answer(wrongAnswer(first));
+    for (let i = 0; i < 17; i++) round.answer(rightAnswer(round.nextQuestion()));
+    expect(round.nextQuestion().target).toBe(first.target);
+  });
+
+  it('does not bring a similar group back through another member in the same pass', () => {
+    for (const seed of [6, 7, 8, 9, 10]) {
+      const round = new Round(easy, settings(100), seededRng(seed), [sortSimilar]);
+      const first = round.nextQuestion();
+      round.answer(rightAnswer(first));
+      const second = round.nextQuestion();
+      expect(shown(second).filter((code) => shown(first).includes(code))).toEqual([]);
     }
   });
 
+  it('plays a 25-answer round on an 18-country pool with every format', () => {
+    for (const seed of [11, 12, 13]) {
+      const round = new Round(easy, settings(25, 3), seededRng(seed));
+      while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+      expect(round.status).toBe('won');
+    }
+  });
+
+  it('draws recall formats more often with a higher recall weight', () => {
+    let recall = 0;
+    for (let seed = 1; seed <= 400; seed++) {
+      const round = new Round(easy, settings(12, 3), seededRng(seed), [typeName, flagToNames]);
+      if (round.nextQuestion().format === 'typeName') recall++;
+    }
+    expect(recall / 400).toBeGreaterThan(0.65);
+    expect(recall / 400).toBeLessThan(0.85);
+  });
+
   it('refuses a second answer to the same question', () => {
-    const round = new Round(easy, seededRng(9));
+    const round = new Round(easy, settings(12), seededRng(14));
     const question = round.nextQuestion();
     round.answer(wrongAnswer(question));
     expect(() => round.answer(wrongAnswer(question))).toThrow('No question to answer');
@@ -98,22 +128,13 @@ describe('Round', () => {
   });
 
   it('refuses a new question before the current one is answered', () => {
-    const round = new Round(easy, seededRng(10));
+    const round = new Round(easy, settings(12), seededRng(15));
     round.nextQuestion();
     expect(() => round.nextQuestion()).toThrow('not answered');
   });
 
-  it('only picks targets the drawn format can use', () => {
-    const round = new Round(easy, seededRng(11), [sortSimilar]);
-    for (let i = 0; i < 4; i++) {
-      const question = round.nextQuestion();
-      expect(sortSimilar.canTarget(question.target, easy)).toBe(true);
-      round.answer(rightAnswer(question));
-    }
-  });
-
   it('does not list the same missed country twice', () => {
-    const round = new Round(easy, seededRng(12));
+    const round = new Round(easy, settings(12), seededRng(16));
     for (let i = 0; i < STARTING_LIVES; i++) round.answer(wrongAnswer(round.nextQuestion()));
     const codes = round.missed.map((c) => c.iso2);
     expect(new Set(codes).size).toBe(codes.length);
