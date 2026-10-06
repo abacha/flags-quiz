@@ -100,6 +100,7 @@ describe('oddOneOut', () => {
       expect(question.options).toContain(question.intruder);
       expect(question.intruder.continent).not.toBe('africa');
       expect(question.options.filter((c) => c.continent !== 'africa')).toEqual([question.intruder]);
+      expect(question.options.filter((c) => c !== question.intruder).every((c) => easy.pool.includes(c))).toBe(true);
     }
   });
 });
