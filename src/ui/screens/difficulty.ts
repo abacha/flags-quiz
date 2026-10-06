@@ -1,5 +1,5 @@
 import { countries, type Continent } from '../../data/countries';
-import { poolFor } from '../../engine/pool';
+import { LEVEL_RULES, poolFor } from '../../engine/pool';
 import { hasMedal, loadMedals } from '../../progress';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTIES, DIFFICULTY_LABEL } from '../labels';
@@ -14,7 +14,7 @@ export function renderDifficulty(root: HTMLElement, navigate: Navigate, continen
         el('button', { className: 'big', onclick: () => navigate({ name: 'game', continent, difficulty }) }, [
           el('span', {}, [DIFFICULTY_LABEL[difficulty]]),
           el('span', { className: 'detail' }, [
-            `${poolFor(countries, continent, difficulty).length} países`,
+            `${poolFor(countries, continent, difficulty).length} países · ${LEVEL_RULES[difficulty].correctToWin} acertos`,
             hasMedal(medals, continent, difficulty) ? ' · 🏅' : '',
           ]),
         ]),

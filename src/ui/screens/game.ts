@@ -21,7 +21,8 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   );
   const hud = el('header', { className: 'hud' });
   const stage = el('section', { className: 'stage' });
-  root.append(el('main', { className: 'screen' }, [hud, stage]));
+  const exit = el('button', { className: 'link', onclick: () => navigate({ name: 'difficulty', continent }) }, ['Sair']);
+  root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
 
   const updateHud = () =>
     hud.replaceChildren(

@@ -10,6 +10,7 @@
   --wrong: #c62828;
   --selected: #f0b429;
   --radius: 12px;
+  --flag-edge: rgba(0, 0, 0, 0.28);
   color-scheme: light;
 }
 
@@ -25,6 +26,7 @@
     --right: #66bb6a;
     --wrong: #ef5350;
     --selected: #f0b429;
+    --flag-edge: rgba(255, 255, 255, 0.3);
     color-scheme: dark;
   }
 }
@@ -104,14 +106,18 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 
 .flag {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  box-shadow: 0 0 0 1px var(--flag-edge);
 }
 
 .figure {
   height: 200px;
   padding: 8px;
+  display: flex;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -126,7 +132,7 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
   margin: 0 auto;
 }
 
-.crop-frame .flag { height: auto; }
+.crop-frame .flag { width: 100%; max-height: none; box-shadow: none; }
 
 .flag-grid {
   display: grid;
@@ -144,7 +150,7 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
   background: var(--surface);
 }
 
-.flag-option .flag, .pair-flag .flag { height: 90px; }
+.flag-option .flag, .pair-flag .flag { max-height: 90px; }
 
 .name-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -204,7 +210,7 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 }
 
 .solution-card { margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.solution-card .flag { height: 80px; }
+.solution-card .flag { max-height: 80px; margin: 0; }
 .solution-card figcaption { font-size: 0.95rem; }
 
 @media (min-width: 560px) {
@@ -228,4 +234,4 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
   background: var(--surface);
 }
 
-.type-item .flag { height: 80px; }
+.type-item .flag { max-height: 80px; }

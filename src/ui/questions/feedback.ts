@@ -27,7 +27,7 @@ function solution(question: Question): HTMLElement {
 export function renderFeedback(question: Question, result: Grade, onContinue: () => void): HTMLElement {
   return el('section', { className: `feedback ${result.correct ? 'right' : 'wrong'}` }, [
     el('p', { className: 'verdict' }, [result.correct ? 'Certo!' : 'Errado']),
-    solution(question),
+    ...(result.correct ? [] : [solution(question)]),
     el('button', { className: 'primary', onclick: onContinue }, ['Continuar']),
   ]);
 }
