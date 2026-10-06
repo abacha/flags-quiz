@@ -10,6 +10,21 @@ const root = document.getElementById('app');
 if (!root) throw new Error('#app not found');
 const app = root;
 
+// A fast double-tap on a button (e.g. "Continuar") would otherwise land its second click
+// on whatever element the first click's DOM swap put under the pointer. `detail` counts
+// clicks in the same spot within the OS double-click interval; the app has no legitimate
+// double-click interaction, and keyboard-triggered clicks have `detail` 0.
+document.addEventListener(
+  'click',
+  (event) => {
+    if (event.detail > 1) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  },
+  { capture: true },
+);
+
 function navigate(screen: Screen): void {
   app.replaceChildren();
   switch (screen.name) {
