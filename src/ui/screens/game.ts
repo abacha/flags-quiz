@@ -3,8 +3,9 @@ import { LEVEL_RULES, poolFor, type Difficulty } from '../../engine/pool';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
 import { el } from '../dom';
-import type { Navigate } from '../navigation';
+import type { Navigate, Screen } from '../navigation';
 import { renderFeedback } from '../questions/feedback';
+import { pressShortcut } from '../questions/keys';
 import { renderQuestion } from '../questions/render';
 
 export function renderGame(root: HTMLElement, navigate: Navigate, continent: Continent, difficulty: Difficulty): void {
@@ -21,7 +22,19 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   );
   const hud = el('header', { className: 'hud' });
   const stage = el('section', { className: 'stage' });
-  const exit = el('button', { className: 'link', onclick: () => navigate({ name: 'difficulty', continent }) }, ['Sair']);
+
+  let currentQuestion: HTMLElement | null = null;
+  const onKey = (event: KeyboardEvent) => {
+    if (currentQuestion) pressShortcut(currentQuestion, event);
+  };
+  document.addEventListener('keydown', onKey);
+
+  const leave = (screen: Screen) => {
+    document.removeEventListener('keydown', onKey);
+    navigate(screen);
+  };
+
+  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'difficulty', continent }) }, ['Sair']);
   root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
 
   const updateHud = () =>
@@ -33,7 +46,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   const finish = () => {
     const won = round.status === 'won';
     if (won) awardMedal(localStorage, continent, difficulty);
-    navigate({ name: 'result', continent, difficulty, won, correct: round.correct, missed: round.missed });
+    leave({ name: 'result', continent, difficulty, won, correct: round.correct, missed: round.missed });
   };
 
   const ask = () => {
@@ -46,6 +59,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
       stage.append(feedback);
       feedback.querySelector('button')?.focus();
     });
+    currentQuestion = questionEl;
     stage.replaceChildren(questionEl);
     window.scrollTo({ top: 0 });
   };

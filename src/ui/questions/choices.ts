@@ -3,6 +3,7 @@ import { CROP_SCALE } from '../../engine/formats';
 import type { Crop } from '../../engine/question';
 import { el } from '../dom';
 import { flagImg } from '../flag';
+import { bindKeys } from './keys';
 import type { Submit } from './render';
 
 function markChosen(event: MouseEvent): void {
@@ -15,17 +16,21 @@ export function renderFlagChoices(prompt: string, options: Country[], submit: Su
     el(
       'div',
       { className: `flag-grid count-${options.length}` },
-      options.map((country) =>
-        el(
-          'button',
-          {
-            className: 'flag-option',
-            onclick: (event) => {
-              markChosen(event);
-              submit({ kind: 'choice', iso2: country.iso2 });
+      options.map((country, index) =>
+        bindKeys(
+          el(
+            'button',
+            {
+              className: 'flag-option',
+              onclick: (event) => {
+                markChosen(event);
+                submit({ kind: 'choice', iso2: country.iso2 });
+              },
             },
-          },
-          [flagImg(country)],
+            [flagImg(country)],
+          ),
+          index,
+          options.length,
         ),
       ),
     ),
@@ -39,17 +44,21 @@ export function renderNameChoices(prompt: string, figure: HTMLElement, options: 
     el(
       'div',
       { className: 'name-list' },
-      options.map((country) =>
-        el(
-          'button',
-          {
-            className: 'name-option',
-            onclick: (event) => {
-              markChosen(event);
-              submit({ kind: 'choice', iso2: country.iso2 });
+      options.map((country, index) =>
+        bindKeys(
+          el(
+            'button',
+            {
+              className: 'name-option',
+              onclick: (event) => {
+                markChosen(event);
+                submit({ kind: 'choice', iso2: country.iso2 });
+              },
             },
-          },
-          [country.name],
+            [country.name],
+          ),
+          index,
+          options.length,
         ),
       ),
     ),

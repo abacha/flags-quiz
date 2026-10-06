@@ -245,3 +245,19 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 }
 
 .type-item .flag { max-height: 80px; }
+
+[data-hint] { position: relative; }
+
+[data-hint]::after {
+  content: attr(data-hint);
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: none) {
+  [data-hint]::after { content: none; }
+}
