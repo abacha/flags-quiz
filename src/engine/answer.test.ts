@@ -52,6 +52,15 @@ describe('grade', () => {
       ['gw', 'Guine Bissau'],
       ['bf', 'Burkina Faso'],
       ['sz', 'Suazilândia'],
+      ['bw', 'Botswana'],
+      ['dj', 'Jibuti'],
+      ['dj', 'Djibouti'],
+      ['bj', 'Benim'],
+      ['zw', 'Zimbabwe'],
+      ['ls', 'Lesotho'],
+      ['sc', 'Seychelles'],
+      ['mu', 'ilhas mauricio'],
+      ['km', 'Ilhas Comores'],
     ])('accepts %s typed as "%s"', (code, text) => {
       expect(grade(question(code), { kind: 'text', text }).correct).toBe(true);
     });

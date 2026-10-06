@@ -123,7 +123,9 @@
     "name": "Benin",
     "continent": "africa",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Benim"
+    ]
   },
   {
     "iso2": "bn",
@@ -160,7 +162,9 @@
     "name": "Botsuana",
     "continent": "africa",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Botswana"
+    ]
   },
   {
     "iso2": "by",
@@ -289,7 +293,10 @@
     "name": "Djibuti",
     "continent": "africa",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Djibouti",
+      "Jibuti"
+    ]
   },
   {
     "iso2": "dk",
@@ -577,7 +584,9 @@
     "name": "Comores",
     "continent": "africa",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Ilhas Comores"
+    ]
   },
   {
     "iso2": "kn",
@@ -651,7 +660,9 @@
     "name": "Lesoto",
     "continent": "africa",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Lesotho"
+    ]
   },
   {
     "iso2": "lt",
@@ -759,7 +770,9 @@
     "name": "Maurício",
     "continent": "africa",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Ilhas Maurício"
+    ]
   },
   {
     "iso2": "mv",
@@ -960,7 +973,9 @@
     "name": "Seicheles",
     "continent": "africa",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Seychelles"
+    ]
   },
   {
     "iso2": "sd",
@@ -1224,6 +1239,8 @@
     "name": "Zimbábue",
     "continent": "africa",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Zimbabwe"
+    ]
   }
 ]

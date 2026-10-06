@@ -11,17 +11,17 @@ import {
   sortSimilar,
   trueFalse,
 } from './formats';
-import { poolFor } from './pool';
+import { poolFor, type Difficulty } from './pool';
 import type { Format, FormatContext, Question } from './question';
 import { seededRng } from './rng';
 
-const contextFor = (difficulty: 'easy' | 'medium' | 'hard'): FormatContext => ({
+const contextFor = (difficulty: Difficulty): FormatContext => ({
   pool: poolFor(countries, 'africa', difficulty),
   world: countries,
   similarGroups,
 });
 const easy = contextFor('easy');
-const hard = contextFor('hard');
+const general = contextFor('general');
 const iso = (list: Country[]) => list.map((c) => c.iso2);
 const SEEDS = Array.from({ length: 50 }, (_, i) => i + 1);
 
@@ -111,7 +111,7 @@ describe('sortSimilar', () => {
   it('targets only countries whose group has 2 or more members in the pool', () => {
     expect(sortSimilar.canTarget(byIso('sn'), easy)).toBe(true);
     expect(sortSimilar.canTarget(byIso('za'), easy)).toBe(false);
-    expect(sortSimilar.canTarget(byIso('ma'), hard)).toBe(false);
+    expect(sortSimilar.canTarget(byIso('ma'), general)).toBe(false);
   });
 
   it('uses only the group members inside the pool', () => {
@@ -121,7 +121,7 @@ describe('sortSimilar', () => {
   });
 
   it('uses the whole group when the pool has all of it', () => {
-    const question = sortSimilar.build(byIso('ml'), hard, seededRng(1));
+    const question = sortSimilar.build(byIso('ml'), general, seededRng(1));
     if (question.format !== 'sortSimilar') throw new Error('expected sortSimilar');
     expect(iso(question.countries).sort()).toEqual(['cm', 'gn', 'ml', 'sn']);
   });

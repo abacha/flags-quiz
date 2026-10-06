@@ -19,10 +19,11 @@ export const CONTINENT_FROM: Record<Continent, string> = {
   oceania: 'da Oceania',
 };
 
-export const DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard'];
+export const DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard', 'general'];
 
 export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   easy: 'Fácil',
   medium: 'Médio',
   hard: 'Difícil',
+  general: 'Geral',
 };
