@@ -1,6 +1,6 @@
 # Bandeiras
 
-A study app for world flags. Learn mode drills one continent at a time in three difficulties, with nine question formats, 3 lives per round and 10 correct answers to earn a medal. Africa is the only continent with data so far.
+A study app for world flags. Learn mode drills one continent at a time in four levels — Fácil, Médio and Difícil with 18 flags each and Geral with all of them — using eleven question formats, 3 lives per round and a goal of 12, 18, 25 or 30 correct answers to earn a medal. Choice questions can be answered with the keys 1–6, and two-option questions with ← and →. Africa is the only continent with data so far.
 
 ## Run
 
