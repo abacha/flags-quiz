@@ -2,7 +2,9 @@ import './style.css';
 import type { Screen } from './ui/navigation';
 import { renderContinent } from './ui/screens/continent';
 import { renderDifficulty } from './ui/screens/difficulty';
+import { renderGame } from './ui/screens/game';
 import { renderHome } from './ui/screens/home';
+import { renderResult } from './ui/screens/result';
 
 const root = document.getElementById('app');
 if (!root) throw new Error('#app not found');
@@ -18,8 +20,9 @@ function navigate(screen: Screen): void {
     case 'difficulty':
       return renderDifficulty(app, navigate, screen.continent);
     case 'game':
+      return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':
-      throw new Error(`Screen ${screen.name} not built yet`);
+      return renderResult(app, navigate, screen);
   }
 }
 
