@@ -5,6 +5,7 @@ import { cropFigure, flagFigure, renderFlagChoices, renderNameChoices } from './
 import { renderPairs } from './pairs';
 import { renderTrueFalse } from './trueFalse';
 import { renderTypeName } from './typeName';
+import { renderTypeSimilar } from './typeSimilar';
 
 export type Submit = (answer: Answer) => void;
 
@@ -20,7 +21,11 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
     case 'trueFalse':
       return renderTrueFalse(question.target, question.shown, submit);
     case 'typeName':
-      return renderTypeName(question.target, submit);
+      return renderTypeName('Escreva o nome do país desta bandeira', flagFigure(question.target), submit);
+    case 'cropType':
+      return renderTypeName('Escreva o nome do país deste pedaço de bandeira', cropFigure(question.target, question.crop), submit);
+    case 'typeSimilar':
+      return renderTypeSimilar(question.countries, submit);
     case 'matchPairs':
       return renderPairs('Ligue cada nome à sua bandeira', question.countries, submit);
     case 'sortSimilar':

@@ -13,6 +13,7 @@ function solution(question: Question): HTMLElement {
   switch (question.format) {
     case 'matchPairs':
     case 'sortSimilar':
+    case 'typeSimilar':
       return el('div', { className: 'solution-grid' }, question.countries.map((c) => solutionCard(c)));
     case 'oddOneOut':
       return el('div', { className: 'solution-grid' }, [

@@ -3,6 +3,7 @@ import { countries, similarGroups, type Country } from '../data/countries';
 import {
   ALL_FORMATS,
   crop,
+  cropType,
   flagToNames,
   flagToTwoNames,
   matchPairs,
@@ -10,8 +11,9 @@ import {
   oddOneOut,
   sortSimilar,
   trueFalse,
+  typeSimilar,
 } from './formats';
-import { poolFor, type Difficulty } from './pool';
+import { LEVEL_RULES, poolFor, type Difficulty } from './pool';
 import type { Format, FormatContext, Question } from './question';
 import { seededRng } from './rng';
 
@@ -19,17 +21,16 @@ const contextFor = (difficulty: Difficulty): FormatContext => ({
   pool: poolFor(countries, 'africa', difficulty),
   world: countries,
   similarGroups,
+  similarDistractors: LEVEL_RULES[difficulty].similarDistractors,
 });
 const easy = contextFor('easy');
 const general = contextFor('general');
+const byIso = (code: string) => countries.find((c) => c.iso2 === code)!;
 const iso = (list: Country[]) => list.map((c) => c.iso2);
 const SEEDS = Array.from({ length: 50 }, (_, i) => i + 1);
 
 function buildMany(format: Format, ctx: FormatContext): Question[] {
-  return SEEDS.map((seed) => {
-    const rng = seededRng(seed);
-    return format.build(ctx.pool[seed % ctx.pool.length], ctx, rng);
-  });
+  return SEEDS.map((seed) => format.build(ctx.pool[seed % ctx.pool.length], ctx, seededRng(seed)));
 }
 
 function expectOptionsAroundTarget(options: Country[], target: Country, pool: readonly Country[]) {
@@ -45,10 +46,12 @@ describe('option formats', () => {
     [flagToTwoNames, [2]],
     [crop, [4]],
   ] as const)('%o builds distinct options that contain the target once', (format, sizes) => {
-    for (const question of buildMany(format, easy)) {
-      if (!('options' in question)) throw new Error('expected options');
-      expect(sizes).toContain(question.options.length);
-      expectOptionsAroundTarget(question.options, question.target, easy.pool);
+    for (const ctx of [easy, general]) {
+      for (const question of buildMany(format, ctx)) {
+        if (!('options' in question)) throw new Error('expected options');
+        expect(sizes).toContain(question.options.length);
+        expectOptionsAroundTarget(question.options, question.target, ctx.pool);
+      }
     }
   });
 
@@ -56,12 +59,20 @@ describe('option formats', () => {
     const sizes = new Set(buildMany(nameToFlags, easy).map((q) => ('options' in q ? q.options.length : 0)));
     expect(sizes).toEqual(new Set([4, 6]));
   });
+
+  it('puts every similar flag of the target among the options when the level asks for it', () => {
+    for (const seed of SEEDS) {
+      const question = flagToNames.build(byIso('ml'), general, seededRng(seed));
+      if (question.format !== 'flagToNames') throw new Error('expected flagToNames');
+      expect(iso(question.options)).toEqual(expect.arrayContaining(['ml', 'gn', 'sn', 'cm']));
+    }
+  });
 });
 
-describe('crop', () => {
-  it('places the crop origin inside the flag', () => {
-    for (const question of buildMany(crop, easy)) {
-      if (question.format !== 'crop') throw new Error('expected crop');
+describe('crop formats', () => {
+  it.each([crop, cropType])('%o places the crop origin inside the flag', (format) => {
+    for (const question of buildMany(format, easy)) {
+      if (question.format !== 'crop' && question.format !== 'cropType') throw new Error('expected a crop');
       for (const value of [question.crop.originX, question.crop.originY]) {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(100);
@@ -77,6 +88,14 @@ describe('trueFalse', () => {
     expect(matches.length).toBeGreaterThan(0);
     expect(matches.length).toBeLessThan(questions.length);
     for (const q of questions) if (q.format === 'trueFalse') expect(easy.pool).toContain(q.shown);
+  });
+
+  it('shows a similar flag name on a mismatch when the level asks for it', () => {
+    for (const seed of SEEDS) {
+      const question = trueFalse.build(byIso('ml'), general, seededRng(seed));
+      if (question.format !== 'trueFalse') throw new Error('expected trueFalse');
+      expect(['ml', 'gn', 'sn', 'cm']).toContain(question.shown.iso2);
+    }
   });
 });
 
@@ -105,32 +124,44 @@ describe('oddOneOut', () => {
   });
 });
 
-describe('sortSimilar', () => {
-  const byIso = (code: string) => countries.find((c) => c.iso2 === code)!;
-
+describe.each([sortSimilar, typeSimilar])('%o', (format) => {
   it('targets only countries whose group has 2 or more members in the pool', () => {
-    expect(sortSimilar.canTarget(byIso('sn'), easy)).toBe(true);
-    expect(sortSimilar.canTarget(byIso('za'), easy)).toBe(false);
-    expect(sortSimilar.canTarget(byIso('ma'), general)).toBe(false);
+    expect(format.canTarget(byIso('sn'), easy)).toBe(true);
+    expect(format.canTarget(byIso('za'), easy)).toBe(false);
+    expect(format.canTarget(byIso('ma'), general)).toBe(false);
   });
 
   it('uses only the group members inside the pool', () => {
-    const question = sortSimilar.build(byIso('sn'), easy, seededRng(1));
-    if (question.format !== 'sortSimilar') throw new Error('expected sortSimilar');
+    const question = format.build(byIso('sn'), easy, seededRng(1));
+    if (question.format !== 'sortSimilar' && question.format !== 'typeSimilar') throw new Error('expected a group format');
     expect(iso(question.countries).sort()).toEqual(['cm', 'sn']);
   });
 
   it('uses the whole group when the pool has all of it', () => {
-    const question = sortSimilar.build(byIso('ml'), general, seededRng(1));
-    if (question.format !== 'sortSimilar') throw new Error('expected sortSimilar');
+    const question = format.build(byIso('ml'), general, seededRng(1));
+    if (question.format !== 'sortSimilar' && question.format !== 'typeSimilar') throw new Error('expected a group format');
     expect(iso(question.countries).sort()).toEqual(['cm', 'gn', 'ml', 'sn']);
   });
 });
 
 describe('ALL_FORMATS', () => {
-  it('lists the nine formats once each', () => {
-    expect(ALL_FORMATS.map((f) => f.id).sort()).toEqual(
-      ['crop', 'flagToNames', 'flagToTwoNames', 'matchPairs', 'nameToFlags', 'oddOneOut', 'sortSimilar', 'trueFalse', 'typeName'],
-    );
+  it('lists the eleven formats once each', () => {
+    expect(ALL_FORMATS.map((f) => f.id).sort()).toEqual([
+      'crop',
+      'cropType',
+      'flagToNames',
+      'flagToTwoNames',
+      'matchPairs',
+      'nameToFlags',
+      'oddOneOut',
+      'sortSimilar',
+      'trueFalse',
+      'typeName',
+      'typeSimilar',
+    ]);
+  });
+
+  it('marks the three typing formats as recall', () => {
+    expect(ALL_FORMATS.filter((f) => f.recall).map((f) => f.id).sort()).toEqual(['cropType', 'typeName', 'typeSimilar']);
   });
 });

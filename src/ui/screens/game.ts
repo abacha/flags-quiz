@@ -1,5 +1,5 @@
 import { countries, similarGroups, type Continent } from '../../data/countries';
-import { poolFor, type Difficulty } from '../../engine/pool';
+import { LEVEL_RULES, poolFor, type Difficulty } from '../../engine/pool';
 import { CORRECT_TO_WIN, Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
 import { el } from '../dom';
@@ -9,7 +9,12 @@ import { renderQuestion } from '../questions/render';
 
 export function renderGame(root: HTMLElement, navigate: Navigate, continent: Continent, difficulty: Difficulty): void {
   const round = new Round(
-    { pool: poolFor(countries, continent, difficulty), world: countries, similarGroups },
+    {
+      pool: poolFor(countries, continent, difficulty),
+      world: countries,
+      similarGroups,
+      similarDistractors: LEVEL_RULES[difficulty].similarDistractors,
+    },
     Math.random,
   );
   const hud = el('header', { className: 'hud' });

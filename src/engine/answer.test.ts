@@ -101,4 +101,32 @@ describe('grade', () => {
       });
     });
   });
+
+  describe('cropType', () => {
+    const question: Question = { format: 'cropType', target: c('cd'), crop: { originX: 10, originY: 90 } };
+
+    it('accepts the name or an alias', () => {
+      expect(grade(question, { kind: 'text', text: 'rdc' }).correct).toBe(true);
+    });
+
+    it('marks the target missed on a wrong name', () => {
+      expect(grade(question, { kind: 'text', text: 'Congo' })).toEqual({ correct: false, missed: [c('cd')] });
+    });
+  });
+
+  describe('typeSimilar', () => {
+    const question: Question = { format: 'typeSimilar', target: c('ga'), countries: [c('ga'), c('sl')] };
+
+    it('is right when every field names its flag', () => {
+      expect(grade(question, { kind: 'texts', texts: { ga: 'gabao', sl: 'Serra Leoa' } }).correct).toBe(true);
+    });
+
+    it('marks only the wrongly named flags as missed', () => {
+      expect(grade(question, { kind: 'texts', texts: { ga: 'Gabão', sl: 'Guiné' } })).toEqual({ correct: false, missed: [c('sl')] });
+    });
+
+    it('treats a missing field as wrong', () => {
+      expect(grade(question, { kind: 'texts', texts: { ga: 'Gabão' } })).toEqual({ correct: false, missed: [c('sl')] });
+    });
+  });
 });

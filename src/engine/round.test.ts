@@ -7,14 +7,22 @@ import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
 import { CORRECT_TO_WIN, Round, STARTING_LIVES } from './round';
 
-const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups };
+const easy: FormatContext = {
+  pool: poolFor(countries, 'africa', 'easy'),
+  world: countries,
+  similarGroups,
+  similarDistractors: false,
+};
 
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
     case 'trueFalse':
       return { kind: 'yesNo', yes: q.shown === q.target };
     case 'typeName':
+    case 'cropType':
       return { kind: 'text', text: q.target.name };
+    case 'typeSimilar':
+      return { kind: 'texts', texts: Object.fromEntries(q.countries.map((c) => [c.iso2, c.name])) };
     case 'oddOneOut':
       return { kind: 'choice', iso2: q.intruder.iso2 };
     case 'matchPairs':
@@ -30,7 +38,10 @@ function wrongAnswer(q: Question): Answer {
     case 'trueFalse':
       return { kind: 'yesNo', yes: q.shown !== q.target };
     case 'typeName':
+    case 'cropType':
       return { kind: 'text', text: 'nenhum país' };
+    case 'typeSimilar':
+      return { kind: 'texts', texts: {} };
     case 'oddOneOut':
       return { kind: 'choice', iso2: q.target.iso2 };
     case 'matchPairs':

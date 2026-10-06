@@ -1,9 +1,7 @@
-import type { Country } from '../../data/countries';
 import { el } from '../dom';
-import { flagFigure } from './choices';
 import type { Submit } from './render';
 
-export function renderTypeName(target: Country, submit: Submit): HTMLElement {
+export function renderTypeName(prompt: string, figure: HTMLElement, submit: Submit): HTMLElement {
   const input = el('input', {
     type: 'text',
     required: true,
@@ -18,5 +16,5 @@ export function renderTypeName(target: Country, submit: Submit): HTMLElement {
     submit({ kind: 'text', text: input.value });
   };
   queueMicrotask(() => input.focus());
-  return el('div', { className: 'question' }, [el('h2', {}, ['Escreva o nome do país desta bandeira']), flagFigure(target), form]);
+  return el('div', { className: 'question' }, [el('h2', {}, [prompt]), figure, form]);
 }

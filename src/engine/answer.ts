@@ -5,7 +5,8 @@ export type Answer =
   | { kind: 'choice'; iso2: string }
   | { kind: 'yesNo'; yes: boolean }
   | { kind: 'text'; text: string }
-  | { kind: 'links'; links: Record<string, string> };
+  | { kind: 'links'; links: Record<string, string> }
+  | { kind: 'texts'; texts: Record<string, string> };
 
 export interface Grade {
   correct: boolean;
@@ -32,6 +33,7 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'trueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
+    case 'cropType':
       return targetGrade(acceptsTypedName(question.target, expectKind(answer, 'text').text), question.target);
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;
@@ -42,6 +44,11 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'sortSimilar': {
       const { links } = expectKind(answer, 'links');
       const missed = question.countries.filter((c) => links[c.iso2] !== c.iso2);
+      return { correct: missed.length === 0, missed };
+    }
+    case 'typeSimilar': {
+      const { texts } = expectKind(answer, 'texts');
+      const missed = question.countries.filter((c) => !acceptsTypedName(c, texts[c.iso2] ?? ''));
       return { correct: missed.length === 0, missed };
     }
   }

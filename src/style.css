@@ -211,3 +211,21 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
   .flag-grid.count-6 { grid-template-columns: repeat(3, 1fr); }
   .figure { height: 260px; }
 }
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.type-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.type-item .flag { height: 80px; }
