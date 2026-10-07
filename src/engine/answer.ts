@@ -58,7 +58,7 @@ function targetGrade(correct: boolean, target: Country): Grade {
   return { correct, missed: correct ? [] : [target] };
 }
 
-function acceptsTypedName(country: Country, text: string): boolean {
+export function acceptsTypedName(country: Country, text: string): boolean {
   return [country.name, ...country.aliases].map(normalizeName).includes(normalizeName(text));
 }
 
