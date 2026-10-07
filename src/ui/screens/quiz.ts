@@ -62,24 +62,11 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       }
       show(quiz.answer(input.value) ? null : 'Errado, tente de novo');
     };
-    const skip = el('button', { className: 'big', type: 'button', onclick: () => (quiz.skip(), show(null)) }, ['Pular']);
-    skip.dataset.rapidTaps = '';
-    const reopen = el('button', { className: 'big', type: 'button', onclick: () => (quiz.openSkipped(), show(null)) }, [
-      `Puladas (${quiz.skippedCount})`,
-    ]);
-    reopen.dataset.rapidTaps = '';
-    // Both buttons always take a grid cell, so "Pular" never shifts when the second
-    // one appears; when there is nothing skipped yet it is only hidden, not removed.
-    if (quiz.skippedCount === 0) {
-      reopen.disabled = true;
-      reopen.style.visibility = 'hidden';
-    }
     stage.replaceChildren(
       el('div', { className: 'question' }, [
         flagFigure(quiz.current),
         ...(message ? [el('p', { className: 'quiz-message' }, [message])] : []),
         form,
-        el('div', { className: 'quiz-actions' }, [skip, reopen]),
       ]),
     );
     input.focus();

@@ -15,12 +15,10 @@ const app = root;
 // on whatever element the first click's DOM swap put under the pointer. `detail` counts
 // clicks in the same spot within the OS double-click interval; the app has no legitimate
 // double-click interaction, and keyboard-triggered clicks have `detail` 0.
-// An element with `data-rapid-taps` opts out: each of its repeated clicks acts on the state
-// current when the click lands (e.g. Quiz's "Pular", where each tap must skip one flag).
 document.addEventListener(
   'click',
   (event) => {
-    if (event.detail > 1 && !(event.target instanceof Element && event.target.closest('[data-rapid-taps]'))) {
+    if (event.detail > 1) {
       event.stopPropagation();
       event.preventDefault();
     }
