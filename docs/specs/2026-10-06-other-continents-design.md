@@ -1,7 +1,7 @@
 # Flags Quiz — Other continents design
 
 Date: 2026-10-06
-Status: approved by the operator's request to queue it overnight; the decisions below were made by the agent and are listed for the operator's review
+Status: implemented; the agent's decisions listed below await the operator's review
 
 ## Goal
 
