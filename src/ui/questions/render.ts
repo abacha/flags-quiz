@@ -15,15 +15,15 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
       return renderFlagChoices(`Qual é a bandeira de ${question.target.name}?`, question.options, submit);
     case 'flagToNames':
     case 'flagToTwoNames':
-      return renderNameChoices('De qual país é esta bandeira?', flagFigure(question.target), question.options, submit);
+      return renderNameChoices('De onde é esta bandeira?', flagFigure(question.target), question.options, submit);
     case 'crop':
-      return renderNameChoices('De qual país é este pedaço de bandeira?', cropFigure(question.target, question.crop), question.options, submit);
+      return renderNameChoices('De onde é este pedaço de bandeira?', cropFigure(question.target, question.crop), question.options, submit);
     case 'trueFalse':
       return renderTrueFalse(question.target, question.shown, submit);
     case 'typeName':
-      return renderTypeName('Escreva o nome do país desta bandeira', flagFigure(question.target), submit);
+      return renderTypeName('Escreva o nome desta bandeira', flagFigure(question.target), submit);
     case 'cropType':
-      return renderTypeName('Escreva o nome do país deste pedaço de bandeira', cropFigure(question.target, question.crop), submit);
+      return renderTypeName('Escreva o nome deste pedaço de bandeira', cropFigure(question.target, question.crop), submit);
     case 'typeSimilar':
       return renderTypeSimilar(question.countries, submit);
     case 'matchPairs':

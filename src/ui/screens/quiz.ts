@@ -51,7 +51,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       autocomplete: 'off',
       autocapitalize: 'off',
       spellcheck: false,
-      placeholder: 'Nome do país',
+      placeholder: 'Nome',
     });
     const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
     form.onsubmit = (event) => {

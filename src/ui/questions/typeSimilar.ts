@@ -12,7 +12,7 @@ export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLEle
       autocomplete: 'off',
       autocapitalize: 'off',
       spellcheck: false,
-      placeholder: 'Nome do país',
+      placeholder: 'Nome',
     }),
   }));
   const form = el('form', { className: 'type-form' }, [
