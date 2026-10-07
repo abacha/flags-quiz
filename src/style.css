@@ -267,6 +267,8 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 }
 
 .quiz-message { margin: 0; color: var(--wrong); font-weight: 600; }
+/* kept in flow (not display: none) so hiding it never resizes the dock and desyncs the grid's scroll position */
+.quiz-message[hidden] { display: block; visibility: hidden; }
 
 .quiz-screen { height: 100dvh; padding-bottom: 16px; }
 

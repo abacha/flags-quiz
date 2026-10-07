@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import { poolFor } from '../../engine/pool';
@@ -139,5 +140,19 @@ describe('renderQuiz', () => {
     [...root.querySelectorAll('button')].find((b) => b.textContent === 'Encerrar')!.click();
     expect(screens).toHaveLength(1);
     expect(screens[0]).toMatchObject({ name: 'quizResult', score: 1, finished: false, unanswered: oceania.length - 1 });
+  });
+
+  it('keeps the hidden message in flow so showing it cannot resize the dock and desync the grid scroll', () => {
+    // the dock is a flex column; an element leaving `display: none` adds both its own box and a flex `gap` to
+    // the dock's height, shrinking the grid from below and invalidating any scroll position set while it was hidden
+    const style = document.createElement('style');
+    style.textContent = readFileSync('src/style.css', 'utf8');
+    document.head.append(style);
+    const rule = [...document.styleSheets[0]!.cssRules].find(
+      (r): r is CSSStyleRule => 'selectorText' in r && (r as CSSStyleRule).selectorText === '.quiz-message[hidden]',
+    );
+    expect(rule).toBeDefined();
+    expect(rule!.style.display).not.toBe('none');
+    expect(rule!.style.visibility).toBe('hidden');
   });
 });
