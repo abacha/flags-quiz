@@ -4,6 +4,8 @@ import { renderContinent } from './ui/screens/continent';
 import { renderDifficulty } from './ui/screens/difficulty';
 import { renderGame } from './ui/screens/game';
 import { renderHome } from './ui/screens/home';
+import { renderQuiz } from './ui/screens/quiz';
+import { renderQuizResult } from './ui/screens/quizResult';
 import { renderResult } from './ui/screens/result';
 
 const root = document.getElementById('app');
@@ -31,13 +33,17 @@ function navigate(screen: Screen): void {
     case 'home':
       return renderHome(app, navigate);
     case 'continent':
-      return renderContinent(app, navigate);
+      return renderContinent(app, navigate, screen.mode);
     case 'difficulty':
-      return renderDifficulty(app, navigate, screen.continent);
+      return renderDifficulty(app, navigate, screen.mode, screen.continent);
     case 'game':
       return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':
       return renderResult(app, navigate, screen);
+    case 'quiz':
+      return renderQuiz(app, navigate, screen.continent, screen.difficulty);
+    case 'quizResult':
+      return renderQuizResult(app, navigate, screen);
   }
 }
 

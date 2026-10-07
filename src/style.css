@@ -265,3 +265,13 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 @media (hover: none) {
   [data-hint]::after { content: none; }
 }
+
+.quiz-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.quiz-message { margin: 0; color: var(--wrong); font-weight: 600; }
+
+.record { margin: 0; color: var(--accent); font-weight: 700; }

@@ -2,9 +2,9 @@ import { countries } from '../../data/countries';
 import { poolFor } from '../../engine/pool';
 import { el } from '../dom';
 import { CONTINENT_LABEL, CONTINENTS } from '../labels';
-import type { Navigate } from '../navigation';
+import type { Mode, Navigate } from '../navigation';
 
-export function renderContinent(root: HTMLElement, navigate: Navigate): void {
+export function renderContinent(root: HTMLElement, navigate: Navigate, mode: Mode): void {
   root.append(
     el('main', { className: 'screen menu' }, [
       el('h1', {}, ['Escolha o continente']),
@@ -14,7 +14,7 @@ export function renderContinent(root: HTMLElement, navigate: Navigate): void {
           {
             className: 'big',
             disabled: poolFor(countries, continent, 'easy').length === 0,
-            onclick: () => navigate({ name: 'difficulty', continent }),
+            onclick: () => navigate({ name: 'difficulty', mode, continent }),
           },
           [CONTINENT_LABEL[continent]],
         ),
