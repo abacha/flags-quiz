@@ -15,7 +15,7 @@
 ## Global Constraints
 
 - Code, identifiers, comments and commit messages in English; every string the player sees in Brazilian Portuguese.
-- Tiers per continent exactly as listed in Task 1; Africa's tiers, names and aliases unchanged.
+- Tiers per continent exactly as listed in Task 1; Africa's tiers and names unchanged; Africa's only alias change is "Congo" added to República Democrática do Congo (it already belongs to República do Congo — both accept it).
 - Goal = ceil(numerator × poolSize / denominator) with easy 2/3, medium 1/1, hard 25/18, general 30/54; Africa stays 12/18/25/30. Lives 3; recall weights and similar distractors per level unchanged.
 - 6 options only when the pool has at least 6 countries; otherwise 4.
 - No linter exists in this repo. The gates are `npm run typecheck` and `npm test` (plus `npm run build` where a step says so); run them before every commit.
@@ -60,10 +60,10 @@ Replace the test `gives a tier only to African countries` with:
     expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThanOrEqual(1);
   });
 
-  it('accepts no typed name for two different countries', () => {
+  it('accepts no typed name for two different countries, except "Congo"', () => {
     const owners = new Map<string, string>();
     for (const country of countries) {
-      for (const name of [country.name, ...country.aliases].map(normalizeName)) {
+      for (const name of [country.name, ...country.aliases].map(normalizeName).filter((n) => n !== 'congo')) {
         expect(owners.get(name) ?? country.iso2).toBe(country.iso2);
         owners.set(name, country.iso2);
       }
@@ -110,6 +110,7 @@ const TIERS = {
   3: 'ag bb bs bz dm gd gy kn lc sr vc am az ge bh bn bt kw kg mv om tj tl tm uz ye ad ba by ee li lt lv mc md me mk si sk sm mh nr pw tv',
 };
 const ALIASES = {
+  cd: ['Congo'],
   nl: ['Holanda'],
   cz: ['República Tcheca', 'Chéquia'],
   us: ['EUA', 'Estados Unidos da América'],
@@ -141,7 +142,10 @@ const GROUPS = [
 const tierOf = Object.fromEntries(Object.entries(TIERS).flatMap(([tier, codes]) => codes.split(' ').map((iso2) => [iso2, Number(tier)])));
 const countries = JSON.parse(await readFile('src/data/countries.json', 'utf8'));
 for (const country of countries) {
-  if (country.continent === 'africa') continue;
+  if (country.continent === 'africa') {
+    if (ALIASES[country.iso2]) country.aliases = [...country.aliases, ...ALIASES[country.iso2]];
+    continue;
+  }
   if (!tierOf[country.iso2]) throw new Error(`no tier for ${country.iso2}`);
   const { aliases, ...rest } = country;
   Object.assign(country, { ...rest, tier: tierOf[country.iso2], aliases: [...aliases, ...(ALIASES[country.iso2] ?? [])] });
@@ -153,7 +157,7 @@ await writeFile('src/data/similar-groups.json', JSON.stringify([...groups, ...GR
 console.log('tiered', countries.filter((c) => c.tier).length);
 ```
 
-Expected output: `tiered 193`. Then `git diff --stat src/data` shows only the two JSON files; spot-check that African entries are byte-identical (`git diff src/data/countries.json | grep -c '"africa"'` prints 0).
+Expected output: `tiered 193`. Then `git diff --stat src/data` shows only the two JSON files; spot-check that the only African change is the new "Congo" alias on `cd`.
 
 - [ ] **Step 4: Run the gates**
 

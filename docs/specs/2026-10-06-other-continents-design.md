@@ -36,6 +36,8 @@ Groups stay inside one continent, 2 to 4 flags each.
 
 ### Extra aliases
 
+"Congo" is accepted for both República do Congo and República Democrática do Congo: players use it for either, and it is the one typed name shared by two countries.
+
 Holanda (Países Baixos); República Tcheca, Chéquia (Tchéquia); EUA, Estados Unidos da América (Estados Unidos); Grã-Bretanha (Reino Unido); Macedônia (Macedônia do Norte); Bósnia (Bósnia e Herzegovina); Belarus (Bielorrússia); Moldova (Moldávia); Birmânia (Mianmar); Bahrein, Bahrain (Barein); Vietname (Vietnã); Emirados Árabes, EAU (Emirados Árabes Unidos); Tajiquistão (Tadjiquistão); Turquemenistão (Turcomenistão); Quirguízia (Quirguistão); Kiribati (Quiribati); Estados Federados da Micronésia (Micronésia); São Cristóvão e Nevis (São Cristóvão e Névis); Qatar (Catar); Kuait (Kuwait).
 
 ## Goals scale with the pool
