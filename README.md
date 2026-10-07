@@ -1,12 +1,15 @@
 # Bandeiras
 
 A study app for world flags.
-Learn mode drills one continent at a time in four levels: Fácil, Médio and Difícil split each continent into three tiers, and Geral holds all of them.
-The app uses eleven question formats and 3 lives per round to earn a medal.
-Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
-Every continent is available: Africa, the Americas, Asia, Europe and Oceania, each split into the same four levels, with goals scaled to the size of each level.
+Pick Mundo or a continent, then one of four levels: Fácil, Médio and Difícil split each continent into three tiers, Geral holds all of them, and Mundo joins each level across every continent.
+Each level shows its flag count, the Aprender medal and goal, and the Quiz best score and time, with one button for each mode.
 
-Quiz mode shows one flag at a time on the same levels: type its name or skip it, come back to skipped flags whenever you like, and race the timer. The best score and, for a quiz finished with no errors, the best time are kept per level.
+Aprender uses eleven question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
+Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
+
+Quiz shows one flag at a time on the same levels: type its name or skip it, come back to skipped flags whenever you like, and race the timer. The best score and, for a quiz finished with no errors, the best time are kept per level.
+
+The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.
 
 ## Run
 
@@ -22,6 +25,6 @@ Quiz mode shows one flag at a time on the same levels: type its name or skip it,
 
 ## Data
 
-`src/data/countries.json` holds every UN member state with its Portuguese name, continent, Learn tier (Africa only) and accepted alternative spellings. `src/data/similar-groups.json` lists the groups of look-alike flags used by the sort-similar format. Flags are the SVGs in `public/flags/`, taken from flagcdn. Edit the JSON files directly to change names, tiers, aliases or groups.
+`src/data/countries.json` holds every flag with its Portuguese name, continent, status (`un`, `nonMember`, `ukNation` or `territory`), tier and accepted alternative spellings. `src/data/similar-groups.json` lists the groups of look-alike flags used by the sort-similar format. Flags are the SVGs in `public/flags/`, taken from flagcdn; the US states, the flags of the EU, the UN and Antarctica, and the flags identical to another one (um, bv, sj, mf, hm) are left out. Edit the JSON files directly to change names, statuses, tiers, aliases or groups.
 
-Medals live in the browser's `localStorage`, so they belong to one browser on one device.
+Medals and Quiz records live in the browser's `localStorage`, so they belong to one browser on one device.

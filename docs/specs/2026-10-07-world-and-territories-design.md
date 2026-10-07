@@ -1,7 +1,7 @@
 # Flags Quiz — World, territories and continent-first navigation design
 
 Date: 2026-10-07
-Status: approved
+Status: implemented
 
 ## Goal
 
@@ -31,7 +31,7 @@ Every flagcdn code that is not a UN member joins, except:
 - União Europeia, Organização das Nações Unidas and Antártida (no continent);
 - flags that render identical to another flag in the game: Ilhas Menores Distantes dos Estados Unidos (= Estados Unidos), Ilha Bouvet and Svalbard e Jan Mayen (= Noruega), São Martinho (França) (= França). Any further flag found identical when rendered side by side is excluded the same way.
 
-That leaves 56 new flags (including the Vatican back), for 249 in total.
+That leaves 55 new flags (including the Vatican back), for 248 in total: Ilha Heard e Ilhas McDonald renders identical to Austrália and is excluded.
 
 ### Badge
 
@@ -63,14 +63,14 @@ Required: Porto Rico with Cuba; Palestina joins Jordânia, Emirados Árabes Unid
 
 ## Mundo
 
-- Mundo has the same four levels: each level is the union of that level across the five continents; Geral is all 249 flags.
+- Mundo has the same four levels: each level is the union of that level across the five continents; Geral is all 248 flags.
 - Goals use the same factors over the union's size.
 - Learn and Quiz both work; records and medals are kept under the continent key `world`.
 - The odd-one-out format in Mundo picks three flags from one continent and an intruder from another, and names the three's continent in the prompt.
 
 ## Testing
 
-- Data: 249 flags, every one with a status, continent and tier; the excluded codes are absent; tiers partition each continent with sizes differing by at most one; every look-alike group stays in one continent; every level of every continent and of Mundo holds a look-alike group.
+- Data: 248 flags, every one with a status, continent and tier; the excluded codes are absent; tiers partition each continent with sizes differing by at most one; every look-alike group stays in one continent; every level of every continent and of Mundo holds a look-alike group.
 - Pools: Mundo's pool per level is the union of the continents' pools.
 - Badge: the badge text per status; the badge is absent from options.
 - Navigation and every continent plus Mundo are checked in the browser.
