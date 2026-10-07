@@ -608,7 +608,8 @@
     "tier": 2,
     "aliases": [
       "Malvinas",
-      "Falklands"
+      "Falklands",
+      "Ilhas Falkland"
     ]
   },
   {
@@ -917,7 +918,10 @@
     "continent": "africa",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Chagos",
+      "Ilhas Chagos"
+    ]
   },
   {
     "iso2": "iq",
@@ -1266,7 +1270,9 @@
     "continent": "asia",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Macao"
+    ]
   },
   {
     "iso2": "mp",
@@ -1542,7 +1548,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Pitcairn"
+    ]
   },
   {
     "iso2": "pr",
@@ -1812,7 +1820,10 @@
     "continent": "americas",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Turks e Caicos",
+      "Ilhas Turks e Caicos"
+    ]
   },
   {
     "iso2": "td",

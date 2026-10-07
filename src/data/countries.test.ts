@@ -94,8 +94,12 @@ describe('countries', () => {
   });
 
   it('accepts the spellings the spec names', () => {
-    for (const typed of ['Malvinas', 'Falklands']) expect(acceptsTypedName(byIso.get('fk')!, typed)).toBe(true);
+    for (const typed of ['Malvinas', 'Falklands', 'Ilhas Falkland']) expect(acceptsTypedName(byIso.get('fk')!, typed)).toBe(true);
     for (const typed of ['Faroé', 'Feroe']) expect(acceptsTypedName(byIso.get('fo')!, typed)).toBe(true);
+    expect(acceptsTypedName(byIso.get('pn')!, 'Pitcairn')).toBe(true);
+    for (const typed of ['Turks e Caicos', 'Ilhas Turks e Caicos']) expect(acceptsTypedName(byIso.get('tc')!, typed)).toBe(true);
+    expect(acceptsTypedName(byIso.get('mo')!, 'Macao')).toBe(true);
+    for (const typed of ['Chagos', 'Ilhas Chagos']) expect(acceptsTypedName(byIso.get('io')!, typed)).toBe(true);
   });
 });
 
