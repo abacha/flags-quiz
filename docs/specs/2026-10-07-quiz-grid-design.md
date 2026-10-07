@@ -1,7 +1,7 @@
 # Flags Quiz — Quiz grid design
 
 Date: 2026-10-07
-Status: approved in chat by the operator ("ok pra todos")
+Status: implemented
 
 ## Goal
 

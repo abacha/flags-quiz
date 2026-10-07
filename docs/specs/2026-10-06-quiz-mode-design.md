@@ -3,6 +3,8 @@
 Date: 2026-10-06
 Status: approved
 
+The one-flag view and skipping were replaced by the grid in `docs/specs/2026-10-07-quiz-grid-design.md`.
+
 ## Goal
 
 Quiz mode tests recall under time: one flag at a time, the player types its name or skips it, and the app keeps the best score and the best time per level.
