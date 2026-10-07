@@ -1,7 +1,10 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { normalizeName } from '../engine/answer';
+import { poolFor, type Difficulty } from '../engine/pool';
 import { countries, similarGroups } from './countries';
+
+const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'general'];
 
 const african = countries.filter((c) => c.continent === 'africa');
 const byIso = new Map(countries.map((c) => [c.iso2, c]));
@@ -72,4 +75,17 @@ describe('similarGroups', () => {
     const covered = new Set(similarGroups.map((group) => byIso.get(group[0])?.continent));
     expect(covered).toEqual(new Set(['africa', 'americas', 'asia', 'europe', 'oceania']));
   });
+
+  it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)(
+    'gives every %s level a look-alike group with all of its members inside the pool',
+    (continent) => {
+      for (const difficulty of DIFFICULTIES) {
+        const pool = new Set(poolFor(countries, continent, difficulty).map((c) => c.iso2));
+        const hasGroupInPool = similarGroups.some(
+          (group) => group.filter((iso2) => pool.has(iso2)).length >= 2,
+        );
+        expect(hasGroupInPool).toBe(true);
+      }
+    },
+  );
 });

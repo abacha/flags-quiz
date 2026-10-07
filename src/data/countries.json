@@ -1114,7 +1114,7 @@
     "iso2": "sb",
     "name": "Ilhas Salomão",
     "continent": "oceania",
-    "tier": 2,
+    "tier": 1,
     "aliases": []
   },
   {
@@ -1394,7 +1394,7 @@
     "iso2": "ws",
     "name": "Samoa",
     "continent": "oceania",
-    "tier": 1,
+    "tier": 2,
     "aliases": []
   },
   {
