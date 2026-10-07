@@ -1,5 +1,5 @@
-import { countries, type Continent } from '../../data/countries';
-import { poolFor, type Difficulty } from '../../engine/pool';
+import { countries } from '../../data/countries';
+import { poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Quiz } from '../../engine/quiz';
 import { saveQuizOutcome } from '../../quizRecords';
 import { el } from '../dom';
@@ -7,7 +7,7 @@ import type { Navigate } from '../navigation';
 import { flagFigure } from '../questions/choices';
 import { formatTime } from '../time';
 
-export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Continent, difficulty: Difficulty): void {
+export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const quiz = new Quiz(poolFor(countries, continent, difficulty), Math.random);
   const startedAt = performance.now();
   const elapsed = () => performance.now() - startedAt;

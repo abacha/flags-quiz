@@ -1,5 +1,5 @@
-import { countries, similarGroups, type Continent } from '../../data/countries';
-import { LEVEL_RULES, goalFor, poolFor, type Difficulty } from '../../engine/pool';
+import { countries, similarGroups } from '../../data/countries';
+import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
 import { el } from '../dom';
@@ -8,7 +8,7 @@ import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
 import { renderQuestion } from '../questions/render';
 
-export function renderGame(root: HTMLElement, navigate: Navigate, continent: Continent, difficulty: Difficulty): void {
+export function renderGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const rules = LEVEL_RULES[difficulty];
   const pool = poolFor(countries, continent, difficulty);
   const round = new Round(
@@ -30,7 +30,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     navigate(screen);
   };
 
-  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'difficulty', mode: 'learn', continent }) }, ['Sair']);
+  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'continent', continent }) }, ['Sair']);
   root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
 
   const updateHud = () =>

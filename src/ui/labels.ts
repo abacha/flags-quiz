@@ -1,9 +1,10 @@
 import type { Continent } from '../data/countries';
-import type { Difficulty } from '../engine/pool';
+import type { ContinentKey, Difficulty } from '../engine/pool';
 
-export const CONTINENTS: readonly Continent[] = ['africa', 'americas', 'asia', 'europe', 'oceania'];
+export const CONTINENT_KEYS: readonly ContinentKey[] = ['world', 'africa', 'americas', 'asia', 'europe', 'oceania'];
 
-export const CONTINENT_LABEL: Record<Continent, string> = {
+export const CONTINENT_LABEL: Record<ContinentKey, string> = {
+  world: 'Mundo',
   africa: 'África',
   americas: 'Américas',
   asia: 'Ásia',

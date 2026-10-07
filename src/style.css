@@ -275,3 +275,23 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 .quiz-message { margin: 0; color: var(--wrong); font-weight: 600; }
 
 .record { margin: 0; color: var(--accent); font-weight: 700; }
+
+.level {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.level h2 { margin: 0; }
+.level .detail { margin: 0; }
+
+.level-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}

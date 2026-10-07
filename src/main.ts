@@ -1,7 +1,6 @@
 import './style.css';
 import type { Screen } from './ui/navigation';
 import { renderContinent } from './ui/screens/continent';
-import { renderDifficulty } from './ui/screens/difficulty';
 import { renderGame } from './ui/screens/game';
 import { renderHome } from './ui/screens/home';
 import { renderQuiz } from './ui/screens/quiz';
@@ -35,9 +34,7 @@ function navigate(screen: Screen): void {
     case 'home':
       return renderHome(app, navigate);
     case 'continent':
-      return renderContinent(app, navigate, screen.mode);
-    case 'difficulty':
-      return renderDifficulty(app, navigate, screen.mode, screen.continent);
+      return renderContinent(app, navigate, screen.continent);
     case 'game':
       return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':

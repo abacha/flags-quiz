@@ -18,7 +18,7 @@ export function renderQuizResult(root: HTMLElement, navigate: Navigate, screen: 
         ? [el('h2', {}, ['Bandeiras que você errou']), el('div', { className: 'solution-grid' }, missed.map((c) => solutionCard(c)))]
         : []),
       el('button', { className: 'primary', onclick: () => navigate({ name: 'quiz', continent, difficulty }) }, ['Jogar de novo']),
-      el('button', { className: 'link', onclick: () => navigate({ name: 'difficulty', mode: 'quiz', continent }) }, ['Voltar']),
+      el('button', { className: 'link', onclick: () => navigate({ name: 'continent', continent }) }, ['Voltar']),
     ]),
   );
 }
