@@ -125,6 +125,8 @@ describe('similarGroups', () => {
     expect(grouped(['ps', 'jo', 'ae', 'kw'])).toBe(true);
     expect(grouped(['ky', 'vg', 'ms', 'tc'])).toBe(true);
     expect(grouped(['gb-eng', 'gg', 'je'])).toBe(true);
+    expect(grouped(['eg', 'sd', 'eh'])).toBe(true);
+    expect(grouped(['ba', 'xk'])).toBe(true);
   });
 
   it.each([...CONTINENTS, 'world'] as const)('gives every %s level a look-alike group with at least two members inside the pool', (continent) => {
