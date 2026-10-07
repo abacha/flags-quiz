@@ -3,36 +3,45 @@
     "iso2": "ad",
     "name": "Andorra",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "ae",
     "name": "Emirados Árabes Unidos",
     "continent": "asia",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "Emirados Árabes",
+      "EAU"
+    ]
   },
   {
     "iso2": "af",
     "name": "Afeganistão",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ag",
     "name": "Antígua e Barbuda",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "al",
     "name": "Albânia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "am",
     "name": "Armênia",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -46,48 +55,58 @@
     "iso2": "ar",
     "name": "Argentina",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "at",
     "name": "Áustria",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "au",
     "name": "Austrália",
     "continent": "oceania",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "az",
     "name": "Azerbaijão",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "ba",
     "name": "Bósnia e Herzegovina",
     "continent": "europe",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Bósnia"
+    ]
   },
   {
     "iso2": "bb",
     "name": "Barbados",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "bd",
     "name": "Bangladesh",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "be",
     "name": "Bélgica",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -103,13 +122,18 @@
     "iso2": "bg",
     "name": "Bulgária",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "bh",
     "name": "Barein",
     "continent": "asia",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Bahrein",
+      "Bahrain"
+    ]
   },
   {
     "iso2": "bi",
@@ -131,30 +155,35 @@
     "iso2": "bn",
     "name": "Brunei",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "bo",
     "name": "Bolívia",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "br",
     "name": "Brasil",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "bs",
     "name": "Bahamas",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "bt",
     "name": "Butão",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -170,18 +199,23 @@
     "iso2": "by",
     "name": "Bielorrússia",
     "continent": "europe",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Belarus"
+    ]
   },
   {
     "iso2": "bz",
     "name": "Belize",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "ca",
     "name": "Canadá",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -191,7 +225,8 @@
     "tier": 2,
     "aliases": [
       "RDC",
-      "Congo-Kinshasa"
+      "Congo-Kinshasa",
+      "Congo"
     ]
   },
   {
@@ -217,6 +252,7 @@
     "iso2": "ch",
     "name": "Suíça",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -230,6 +266,7 @@
     "iso2": "cl",
     "name": "Chile",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -243,24 +280,28 @@
     "iso2": "cn",
     "name": "China",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "co",
     "name": "Colômbia",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "cr",
     "name": "Costa Rica",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "cu",
     "name": "Cuba",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -274,18 +315,24 @@
     "iso2": "cy",
     "name": "Chipre",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "cz",
     "name": "Tchéquia",
     "continent": "europe",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "República Tcheca",
+      "Chéquia"
+    ]
   },
   {
     "iso2": "de",
     "name": "Alemanha",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -302,18 +349,21 @@
     "iso2": "dk",
     "name": "Dinamarca",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "dm",
     "name": "Dominica",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "do",
     "name": "República Dominicana",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -327,12 +377,14 @@
     "iso2": "ec",
     "name": "Equador",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ee",
     "name": "Estônia",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -353,6 +405,7 @@
     "iso2": "es",
     "name": "Espanha",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -366,24 +419,30 @@
     "iso2": "fi",
     "name": "Finlândia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "fj",
     "name": "Fiji",
     "continent": "oceania",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "fm",
     "name": "Micronésia",
     "continent": "oceania",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "Estados Federados da Micronésia"
+    ]
   },
   {
     "iso2": "fr",
     "name": "França",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -397,18 +456,23 @@
     "iso2": "gb",
     "name": "Reino Unido",
     "continent": "europe",
-    "aliases": []
+    "tier": 1,
+    "aliases": [
+      "Grã-Bretanha"
+    ]
   },
   {
     "iso2": "gd",
     "name": "Granada",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "ge",
     "name": "Geórgia",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -443,12 +507,14 @@
     "iso2": "gr",
     "name": "Grécia",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "gt",
     "name": "Guatemala",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -462,96 +528,112 @@
     "iso2": "gy",
     "name": "Guiana",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "hn",
     "name": "Honduras",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "hr",
     "name": "Croácia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ht",
     "name": "Haiti",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "hu",
     "name": "Hungria",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "id",
     "name": "Indonésia",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "ie",
     "name": "Irlanda",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "il",
     "name": "Israel",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "in",
     "name": "Índia",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "iq",
     "name": "Iraque",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ir",
     "name": "Irã",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "is",
     "name": "Islândia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "it",
     "name": "Itália",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "jm",
     "name": "Jamaica",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "jo",
     "name": "Jordânia",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "jp",
     "name": "Japão",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -565,19 +647,26 @@
     "iso2": "kg",
     "name": "Quirguistão",
     "continent": "asia",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Quirguízia"
+    ]
   },
   {
     "iso2": "kh",
     "name": "Camboja",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ki",
     "name": "Quiribati",
     "continent": "oceania",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "Kiribati"
+    ]
   },
   {
     "iso2": "km",
@@ -592,60 +681,74 @@
     "iso2": "kn",
     "name": "São Cristóvão e Névis",
     "continent": "americas",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "São Cristóvão e Nevis"
+    ]
   },
   {
     "iso2": "kp",
     "name": "Coreia do Norte",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "kr",
     "name": "Coreia do Sul",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "kw",
     "name": "Kuwait",
     "continent": "asia",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Kuait"
+    ]
   },
   {
     "iso2": "kz",
     "name": "Cazaquistão",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "la",
     "name": "Laos",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "lb",
     "name": "Líbano",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "lc",
     "name": "Santa Lúcia",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "li",
     "name": "Liechtenstein",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "lk",
     "name": "Sri Lanka",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -668,18 +771,21 @@
     "iso2": "lt",
     "name": "Lituânia",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "lu",
     "name": "Luxemburgo",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "lv",
     "name": "Letônia",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -700,18 +806,23 @@
     "iso2": "mc",
     "name": "Mônaco",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "md",
     "name": "Moldávia",
     "continent": "europe",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Moldova"
+    ]
   },
   {
     "iso2": "me",
     "name": "Montenegro",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -725,13 +836,17 @@
     "iso2": "mh",
     "name": "Ilhas Marshall",
     "continent": "oceania",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "mk",
     "name": "Macedônia do Norte",
     "continent": "europe",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Macedônia"
+    ]
   },
   {
     "iso2": "ml",
@@ -744,12 +859,16 @@
     "iso2": "mm",
     "name": "Mianmar",
     "continent": "asia",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "Birmânia"
+    ]
   },
   {
     "iso2": "mn",
     "name": "Mongólia",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
@@ -763,6 +882,7 @@
     "iso2": "mt",
     "name": "Malta",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -778,6 +898,7 @@
     "iso2": "mv",
     "name": "Maldivas",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -793,12 +914,14 @@
     "iso2": "mx",
     "name": "México",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "my",
     "name": "Malásia",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -833,120 +956,144 @@
     "iso2": "ni",
     "name": "Nicarágua",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "nl",
     "name": "Países Baixos",
     "continent": "europe",
-    "aliases": []
+    "tier": 1,
+    "aliases": [
+      "Holanda"
+    ]
   },
   {
     "iso2": "no",
     "name": "Noruega",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "np",
     "name": "Nepal",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "nr",
     "name": "Nauru",
     "continent": "oceania",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "nz",
     "name": "Nova Zelândia",
     "continent": "oceania",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "om",
     "name": "Omã",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "pa",
     "name": "Panamá",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "pe",
     "name": "Peru",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "pg",
     "name": "Papua-Nova Guiné",
     "continent": "oceania",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "ph",
     "name": "Filipinas",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "pk",
     "name": "Paquistão",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "pl",
     "name": "Polônia",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "pt",
     "name": "Portugal",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "pw",
     "name": "Palau",
     "continent": "oceania",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "py",
     "name": "Paraguai",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "qa",
     "name": "Catar",
     "continent": "asia",
-    "aliases": []
+    "tier": 2,
+    "aliases": [
+      "Qatar"
+    ]
   },
   {
     "iso2": "ro",
     "name": "Romênia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "rs",
     "name": "Sérvia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ru",
     "name": "Rússia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -960,12 +1107,14 @@
     "iso2": "sa",
     "name": "Arábia Saudita",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "sb",
     "name": "Ilhas Salomão",
     "continent": "oceania",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -988,24 +1137,28 @@
     "iso2": "se",
     "name": "Suécia",
     "continent": "europe",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "sg",
     "name": "Singapura",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "si",
     "name": "Eslovênia",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "sk",
     "name": "Eslováquia",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -1019,6 +1172,7 @@
     "iso2": "sm",
     "name": "San Marino",
     "continent": "europe",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -1039,6 +1193,7 @@
     "iso2": "sr",
     "name": "Suriname",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -1059,12 +1214,14 @@
     "iso2": "sv",
     "name": "El Salvador",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "sy",
     "name": "Síria",
     "continent": "asia",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -1095,25 +1252,33 @@
     "iso2": "th",
     "name": "Tailândia",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "tj",
     "name": "Tadjiquistão",
     "continent": "asia",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Tajiquistão"
+    ]
   },
   {
     "iso2": "tl",
     "name": "Timor-Leste",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "tm",
     "name": "Turcomenistão",
     "continent": "asia",
-    "aliases": []
+    "tier": 3,
+    "aliases": [
+      "Turquemenistão"
+    ]
   },
   {
     "iso2": "tn",
@@ -1126,24 +1291,28 @@
     "iso2": "to",
     "name": "Tonga",
     "continent": "oceania",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "tr",
     "name": "Turquia",
     "continent": "asia",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "tt",
     "name": "Trinidad e Tobago",
     "continent": "americas",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "tv",
     "name": "Tuvalu",
     "continent": "oceania",
+    "tier": 3,
     "aliases": []
   },
   {
@@ -1157,6 +1326,7 @@
     "iso2": "ua",
     "name": "Ucrânia",
     "continent": "europe",
+    "tier": 2,
     "aliases": []
   },
   {
@@ -1170,54 +1340,68 @@
     "iso2": "us",
     "name": "Estados Unidos",
     "continent": "americas",
-    "aliases": []
+    "tier": 1,
+    "aliases": [
+      "EUA",
+      "Estados Unidos da América"
+    ]
   },
   {
     "iso2": "uy",
     "name": "Uruguai",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "uz",
     "name": "Uzbequistão",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "vc",
     "name": "São Vicente e Granadinas",
     "continent": "americas",
+    "tier": 3,
     "aliases": []
   },
   {
     "iso2": "ve",
     "name": "Venezuela",
     "continent": "americas",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "vn",
     "name": "Vietnã",
     "continent": "asia",
-    "aliases": []
+    "tier": 1,
+    "aliases": [
+      "Vietname"
+    ]
   },
   {
     "iso2": "vu",
     "name": "Vanuatu",
     "continent": "oceania",
+    "tier": 2,
     "aliases": []
   },
   {
     "iso2": "ws",
     "name": "Samoa",
     "continent": "oceania",
+    "tier": 1,
     "aliases": []
   },
   {
     "iso2": "ye",
     "name": "Iêmen",
     "continent": "asia",
+    "tier": 3,
     "aliases": []
   },
   {

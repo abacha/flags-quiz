@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { normalizeName } from '../engine/answer';
 import { countries, similarGroups } from './countries';
 
 const african = countries.filter((c) => c.continent === 'africa');
@@ -21,8 +22,21 @@ describe('countries', () => {
     }
   });
 
-  it('gives a tier only to African countries', () => {
-    expect(countries.filter((c) => c.continent !== 'africa' && c.tier !== undefined)).toEqual([]);
+  it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('gives every %s country a tier, in near-equal tiers', (continent) => {
+    const members = countries.filter((c) => c.continent === continent);
+    expect(members.every((c) => c.tier !== undefined)).toBe(true);
+    const sizes = [1, 2, 3].map((tier) => members.filter((c) => c.tier === tier).length);
+    expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThanOrEqual(1);
+  });
+
+  it('accepts no typed name for two different countries, except "Congo"', () => {
+    const owners = new Map<string, string>();
+    for (const country of countries) {
+      for (const name of [country.name, ...country.aliases].map(normalizeName).filter((n) => n !== 'congo')) {
+        expect(owners.get(name) ?? country.iso2).toBe(country.iso2);
+        owners.set(name, country.iso2);
+      }
+    }
   });
 
   it('has unique codes and unique names', () => {
@@ -44,11 +58,18 @@ describe('countries', () => {
 });
 
 describe('similarGroups', () => {
-  it('groups 2 to 4 existing African countries', () => {
+  it('groups 2 to 4 existing countries of one continent', () => {
     for (const group of similarGroups) {
       expect(group.length).toBeGreaterThanOrEqual(2);
       expect(group.length).toBeLessThanOrEqual(4);
-      for (const iso2 of group) expect(byIso.get(iso2)?.continent).toBe('africa');
+      const continents = new Set(group.map((iso2) => byIso.get(iso2)?.continent));
+      expect(continents.size).toBe(1);
+      expect(continents.has(undefined)).toBe(false);
     }
+  });
+
+  it('covers every continent', () => {
+    const covered = new Set(similarGroups.map((group) => byIso.get(group[0])?.continent));
+    expect(covered).toEqual(new Set(['africa', 'americas', 'asia', 'europe', 'oceania']));
   });
 });
