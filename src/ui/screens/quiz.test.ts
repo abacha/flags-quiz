@@ -44,6 +44,19 @@ describe('renderQuiz', () => {
     vi.useRealTimers();
   });
 
+  it('moves to the next flag on Pular, clearing the field and the error, without scoring', () => {
+    type('nenhum lugar');
+    input().value = 'meio digitado';
+    [...root.querySelectorAll<HTMLButtonElement>('.quiz-dock button')].find((b) => b.textContent === 'Pular')!.click();
+    expect(currentCell()).toBe(cells()[1]);
+    expect(bigFlag()).toBe(cellCountry(cells()[1]));
+    expect(input().value).toBe('');
+    expect(message().hidden).toBe(true);
+    expect(hud()).toContain('-1 pts');
+    expect(hud()).toContain(`0/${oceania.length}`);
+    expect(document.activeElement).toBe(input());
+  });
+
   it('lays out every flag of the level as lazy thumbnails, the first one current, the field focused', () => {
     expect(cells()).toHaveLength(oceania.length);
     expect(new Set(cells().map((cell) => cellCountry(cell).iso2))).toEqual(new Set(oceania.map((c) => c.iso2)));

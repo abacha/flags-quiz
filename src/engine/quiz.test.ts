@@ -48,6 +48,28 @@ describe('Quiz', () => {
     expect(quiz.status).toBe('finished');
   });
 
+  it('skips to the next unanswered flag in grid order, wrapping, without changing any state', () => {
+    const quiz = new Quiz(three, seededRng(4));
+    const [first, second, third] = quiz.flags;
+    quiz.skip();
+    expect(quiz.current).toBe(second);
+    expect(quiz.answer(second.name)).toBe(true);
+    expect(quiz.current).toBe(third);
+    quiz.skip();
+    expect(quiz.current).toBe(first);
+    expect([quiz.errors, quiz.answeredCount, quiz.status]).toEqual([0, 1, 'playing']);
+  });
+
+  it('keeps the last unanswered flag current when skipping it', () => {
+    const quiz = new Quiz(three, seededRng(4));
+    const [first, second, third] = quiz.flags;
+    quiz.answer(first.name);
+    quiz.answer(second.name);
+    quiz.skip();
+    expect(quiz.current).toBe(third);
+    expect(quiz.status).toBe('playing');
+  });
+
   it('makes a selected flag current without changing any state', () => {
     const quiz = new Quiz(three, seededRng(4));
     const [, second, third] = quiz.flags;

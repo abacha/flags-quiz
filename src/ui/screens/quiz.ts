@@ -47,7 +47,8 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     spellcheck: false,
     placeholder: 'Nome',
   });
-  const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
+  const skip = el('button', { className: 'secondary', type: 'button' }, ['Pular']);
+  const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder']), skip]);
 
   const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
 
@@ -86,6 +87,15 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       return cell;
     }),
   );
+
+  skip.onclick = () => {
+    quiz.skip();
+    input.value = '';
+    message.hidden = true;
+    paint();
+    cells.get(quiz.current)!.cell.scrollIntoView({ block: 'nearest' });
+    input.focus();
+  };
 
   form.onsubmit = (event) => {
     event.preventDefault();

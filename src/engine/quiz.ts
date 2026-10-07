@@ -68,11 +68,16 @@ export class Quiz {
     const flag = this.current;
     if (acceptsTypedName(flag, text)) {
       this.answered.add(flag.iso2);
-      this.moveToNextUnanswered(this.flags.indexOf(flag));
+      this.currentIndex = this.nextUnansweredAfter(this.flags.indexOf(flag));
       return true;
     }
     this.errorCounts.set(flag.iso2, (this.errorCounts.get(flag.iso2) ?? 0) + 1);
     return false;
+  }
+
+  skip(): void {
+    const from = this.flags.indexOf(this.current);
+    this.currentIndex = this.nextUnansweredAfter(from) ?? from;
   }
 
   end(): void {
@@ -81,15 +86,12 @@ export class Quiz {
     this.currentIndex = null;
   }
 
-  private moveToNextUnanswered(from: number): void {
+  private nextUnansweredAfter(from: number): number | null {
     for (let step = 1; step < this.flags.length; step++) {
       const index = (from + step) % this.flags.length;
-      if (!this.answered.has(this.flags[index].iso2)) {
-        this.currentIndex = index;
-        return;
-      }
+      if (!this.answered.has(this.flags[index].iso2)) return index;
     }
-    this.currentIndex = null;
+    return null;
   }
 
   private flag(iso2: string): Country {
