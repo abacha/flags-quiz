@@ -21,7 +21,7 @@ export interface NewRecords {
   time: boolean;
 }
 
-const STORAGE_KEY = 'flags-quiz:quiz-records';
+const STORAGE_KEY = 'flags-quiz:quiz-records-v2';
 
 export function loadQuizRecords(store: RecordStore): QuizRecords {
   const raw = store.getItem(STORAGE_KEY);

@@ -57,7 +57,13 @@ describe('quiz records', () => {
     saveQuizOutcome(store, 'africa', 'general', outcome(40, 400000, true, 14));
     expect(quizRecord(loadQuizRecords(store), 'africa', 'easy').bestScore).toBe(18);
     expect(quizRecord(loadQuizRecords(store), 'africa', 'general')).toEqual({ bestScore: 40 });
-    expect([...store.data.keys()]).toEqual(['flags-quiz:quiz-records']);
+    expect([...store.data.keys()]).toEqual(['flags-quiz:quiz-records-v2']);
+  });
+
+  it('ignores a record saved under the old pre-Mundo key', () => {
+    const store = memoryStore();
+    store.data.set('flags-quiz:quiz-records', JSON.stringify({ africa: { easy: { bestScore: 999, bestTimeMs: 1000 } } }));
+    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy')).toEqual({});
   });
 
   it('keeps Mundo records under world, apart from the continents', () => {
