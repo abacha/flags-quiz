@@ -176,8 +176,8 @@ describe('ALL_FORMATS', () => {
 });
 
 describe('small pools', () => {
-  const tiny: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'hard') };
-  const fiveCountries: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'easy') };
+  const tiny: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'general').slice(0, 4) };
+  const fiveCountries: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'general').slice(0, 5) };
   const sixCountries: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'general').slice(0, 6) };
 
   it('never asks for 6 options on a 4-country pool', () => {

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
 import { goalFor, poolFor } from './pool';
 
+const LEVELS = ['easy', 'medium', 'hard', 'general'] as const;
+
 describe('poolFor', () => {
   it.each([
     ['easy', 1],
@@ -9,39 +11,29 @@ describe('poolFor', () => {
     ['hard', 3],
   ] as const)('gives only tier %s countries on %s', (difficulty, tier) => {
     const pool = poolFor(countries, 'africa', difficulty);
-    expect(pool).toHaveLength(18);
+    expect(pool).toHaveLength(20);
     expect(pool.every((c) => c.tier === tier)).toBe(true);
   });
 
-  it('gives all 54 on general', () => {
-    expect(poolFor(countries, 'africa', 'general')).toHaveLength(54);
-  });
-
   it.each([
-    ['americas', [12, 12, 11, 35]],
-    ['asia', [16, 15, 15, 46]],
-    ['europe', [15, 15, 14, 44]],
-    ['oceania', [5, 5, 4, 14]],
+    ['africa', [20, 20, 20, 60]],
+    ['americas', [19, 18, 18, 55]],
+    ['asia', [17, 17, 16, 50]],
+    ['europe', [19, 19, 18, 56]],
+    ['oceania', [9, 9, 9, 27]],
   ] as const)('sizes the %s pools', (continent, sizes) => {
-    expect((['easy', 'medium', 'hard', 'general'] as const).map((d) => poolFor(countries, continent, d).length)).toEqual(sizes);
+    expect(LEVELS.map((d) => poolFor(countries, continent, d).length)).toEqual(sizes);
   });
 });
 
 describe('goalFor', () => {
-  it('keeps the Africa goals', () => {
-    expect((['easy', 'medium', 'hard', 'general'] as const).map((d) => goalFor(d, poolFor(countries, 'africa', d).length))).toEqual([
-      12, 18, 25, 30,
-    ]);
-  });
-
   it.each([
-    ['americas', [8, 12, 16, 20]],
-    ['asia', [11, 15, 21, 26]],
-    ['europe', [10, 15, 20, 25]],
-    ['oceania', [4, 5, 6, 8]],
+    ['africa', [14, 20, 28, 34]],
+    ['americas', [13, 18, 25, 31]],
+    ['asia', [12, 17, 23, 28]],
+    ['europe', [13, 19, 25, 32]],
+    ['oceania', [6, 9, 13, 15]],
   ] as const)('scales the %s goals with the pool', (continent, goals) => {
-    expect((['easy', 'medium', 'hard', 'general'] as const).map((d) => goalFor(d, poolFor(countries, continent, d).length))).toEqual(
-      goals,
-    );
+    expect(LEVELS.map((d) => goalFor(d, poolFor(countries, continent, d).length))).toEqual(goals);
   });
 });

@@ -3,12 +3,14 @@ import similarGroupsJson from './similar-groups.json';
 
 export type Continent = 'africa' | 'americas' | 'asia' | 'europe' | 'oceania';
 export type Tier = 1 | 2 | 3;
+export type Status = 'un' | 'nonMember' | 'ukNation' | 'territory';
 
 export interface Country {
   iso2: string;
   name: string;
   continent: Continent;
-  tier?: Tier;
+  status: Status;
+  tier: Tier;
   aliases: string[];
 }
 

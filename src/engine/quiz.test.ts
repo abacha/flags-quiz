@@ -17,7 +17,7 @@ describe('Quiz', () => {
     }
     expect(quiz.status).toBe('finished');
     expect(new Set(asked)).toEqual(new Set(easy.map((c) => c.iso2)));
-    expect([quiz.answeredCount, quiz.score, quiz.errors, quiz.unanswered]).toEqual([18, 18, 0, 0]);
+    expect([quiz.answeredCount, quiz.score, quiz.errors, quiz.unanswered]).toEqual([20, 20, 0, 0]);
   });
 
   it('keeps the flag and counts an error on a wrong answer', () => {

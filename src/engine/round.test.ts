@@ -75,12 +75,12 @@ describe('Round', () => {
 
   it('asks every country once before any repeats', () => {
     const round = new Round(easy, settings(100), seededRng(4), [typeName, flagToNames]);
-    const targets = Array.from({ length: 18 }, () => {
+    const targets = Array.from({ length: easy.pool.length }, () => {
       const question = round.nextQuestion();
       round.answer(rightAnswer(question));
       return question.target.iso2;
     });
-    expect(new Set(targets).size).toBe(18);
+    expect(new Set(targets).size).toBe(easy.pool.length);
     expect(() => round.answer(rightAnswer(round.nextQuestion()))).not.toThrow();
   });
 
@@ -88,7 +88,7 @@ describe('Round', () => {
     const round = new Round(easy, settings(100), seededRng(5), [typeName]);
     const first = round.nextQuestion();
     round.answer(wrongAnswer(first));
-    for (let i = 0; i < 17; i++) round.answer(rightAnswer(round.nextQuestion()));
+    for (let i = 0; i < easy.pool.length - 1; i++) round.answer(rightAnswer(round.nextQuestion()));
     expect(round.nextQuestion().target).toBe(first.target);
   });
 
@@ -143,7 +143,7 @@ describe('Round', () => {
     expect(roundsWithLeak / seeds.length).toBeLessThan(0.5);
   });
 
-  it('plays a 25-answer round on an 18-country pool with every format', () => {
+  it('plays a 25-answer round on the Africa Difícil pool with every format', () => {
     for (const seed of [11, 12, 13]) {
       const round = new Round(hard, settings(25, 3), seededRng(seed));
       while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
