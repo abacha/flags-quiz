@@ -21,6 +21,12 @@ export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLEle
   ]);
   form.onsubmit = (event) => {
     event.preventDefault();
+    const blanks = fields.filter(({ input }) => input.value.trim() === '');
+    if (blanks.length > 0) {
+      blanks.forEach(({ input }) => (input.value = ''));
+      blanks[0].input.focus();
+      return;
+    }
     submit({ kind: 'texts', texts: Object.fromEntries(fields.map(({ country, input }) => [country.iso2, input.value])) });
   };
   queueMicrotask(() => fields[0].input.focus());

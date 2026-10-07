@@ -56,6 +56,10 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
     form.onsubmit = (event) => {
       event.preventDefault();
+      if (input.value.trim() === '') {
+        input.value = '';
+        return;
+      }
       show(quiz.answer(input.value) ? null : 'Errado, tente de novo');
     };
     const skip = el('button', { className: 'big', type: 'button', onclick: () => (quiz.skip(), show(null)) }, ['Pular']);

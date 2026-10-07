@@ -13,6 +13,10 @@ export function renderTypeName(prompt: string, figure: HTMLElement, submit: Subm
   const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
   form.onsubmit = (event) => {
     event.preventDefault();
+    if (input.value.trim() === '') {
+      input.value = '';
+      return;
+    }
     submit({ kind: 'text', text: input.value });
   };
   queueMicrotask(() => input.focus());
