@@ -31,6 +31,8 @@ function randomCrop(rng: Rng): Crop {
   return { originX: rng() * 100, originY: rng() * 100 };
 }
 
+const optionCount = (ctx: FormatContext, rng: Rng) => pickOne([4, 6].filter((count) => count <= ctx.pool.length), rng);
+
 const always = () => true;
 const hasSimilarGroup = (target: Country, ctx: FormatContext) => similarGroupsInPool(target, ctx).length > 0;
 const similarGroup = (target: Country, ctx: FormatContext, rng: Rng) => shuffle(pickOne(similarGroupsInPool(target, ctx), rng), rng);
@@ -42,7 +44,7 @@ export const nameToFlags: Format = {
   build: (target, ctx, rng) => ({
     format: 'nameToFlags',
     target,
-    options: optionsWith(target, ctx, pickOne([4, 6], rng), rng),
+    options: optionsWith(target, ctx, optionCount(ctx, rng), rng),
   }),
 };
 
@@ -53,7 +55,7 @@ export const flagToNames: Format = {
   build: (target, ctx, rng) => ({
     format: 'flagToNames',
     target,
-    options: optionsWith(target, ctx, pickOne([4, 6], rng), rng),
+    options: optionsWith(target, ctx, optionCount(ctx, rng), rng),
   }),
 };
 

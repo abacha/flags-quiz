@@ -110,7 +110,7 @@ describe('grade', () => {
     });
 
     it('marks the target missed on a wrong name', () => {
-      expect(grade(question, { kind: 'text', text: 'Congo' })).toEqual({ correct: false, missed: [c('cd')] });
+      expect(grade(question, { kind: 'text', text: 'Gabão' })).toEqual({ correct: false, missed: [c('cd')] });
     });
   });
 

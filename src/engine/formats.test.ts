@@ -174,3 +174,24 @@ describe('ALL_FORMATS', () => {
     expect(ALL_FORMATS.filter((f) => f.recall).map((f) => f.id).sort()).toEqual(['cropType', 'typeName', 'typeSimilar']);
   });
 });
+
+describe('small pools', () => {
+  const tiny: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'hard') };
+
+  it('never asks for 6 options on a 4-country pool', () => {
+    for (const format of [nameToFlags, flagToNames]) {
+      for (const question of buildMany(format, tiny)) {
+        if (!('options' in question)) throw new Error('expected options');
+        expect(question.options).toHaveLength(4);
+      }
+    }
+  });
+
+  it('builds every format for every target it accepts', () => {
+    for (const format of ALL_FORMATS) {
+      for (const target of tiny.pool) {
+        if (format.canTarget(target, tiny)) expect(() => format.build(target, tiny, seededRng(1))).not.toThrow();
+      }
+    }
+  });
+});

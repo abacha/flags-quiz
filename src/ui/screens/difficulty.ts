@@ -1,5 +1,5 @@
 import { countries, type Continent } from '../../data/countries';
-import { LEVEL_RULES, poolFor, type Difficulty } from '../../engine/pool';
+import { goalFor, poolFor, type Difficulty } from '../../engine/pool';
 import { hasMedal, loadMedals } from '../../progress';
 import { loadQuizRecords, quizRecord } from '../../quizRecords';
 import { el } from '../dom';
@@ -9,7 +9,8 @@ import { formatTime } from '../time';
 
 function learnDetail(continent: Continent, difficulty: Difficulty): string {
   const medal = hasMedal(loadMedals(localStorage), continent, difficulty) ? ' · 🏅' : '';
-  return `${poolFor(countries, continent, difficulty).length} países · ${LEVEL_RULES[difficulty].correctToWin} acertos${medal}`;
+  const pool = poolFor(countries, continent, difficulty);
+  return `${pool.length} países · ${goalFor(difficulty, pool.length)} acertos${medal}`;
 }
 
 function quizDetail(continent: Continent, difficulty: Difficulty): string {

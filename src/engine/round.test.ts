@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { countries, similarGroups } from '../data/countries';
 import type { Answer } from './answer';
 import { flagToNames, matchPairs, sortSimilar, typeName } from './formats';
-import { poolFor } from './pool';
+import { LEVEL_RULES, goalFor, poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
 import { Round, STARTING_LIVES, type RoundSettings } from './round';
@@ -180,5 +180,15 @@ describe('Round', () => {
     for (let i = 0; i < STARTING_LIVES; i++) round.answer(wrongAnswer(round.nextQuestion()));
     const codes = round.missed.map((c) => c.iso2);
     expect(new Set(codes).size).toBe(codes.length);
+  });
+
+  it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('plays every level of %s to its goal', (continent) => {
+    for (const difficulty of ['easy', 'medium', 'hard', 'general'] as const) {
+      const pool = poolFor(countries, continent, difficulty);
+      const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: LEVEL_RULES[difficulty].similarDistractors };
+      const round = new Round(ctx, settings(goalFor(difficulty, pool.length), LEVEL_RULES[difficulty].recallWeight), seededRng(31));
+      while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+      expect(round.status).toBe('won');
+    }
   });
 });
