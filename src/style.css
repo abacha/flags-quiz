@@ -295,3 +295,14 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
   gap: 10px;
   margin-top: 8px;
 }
+
+.badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}

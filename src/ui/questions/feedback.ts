@@ -1,12 +1,13 @@
 import type { Country } from '../../data/countries';
 import type { Grade } from '../../engine/answer';
 import type { Question } from '../../engine/question';
+import { statusBadge } from '../badge';
 import { el } from '../dom';
 import { flagImg } from '../flag';
 import { CONTINENT_FROM } from '../labels';
 
 export function solutionCard(country: Country, caption = country.name): HTMLElement {
-  return el('figure', { className: 'solution-card' }, [flagImg(country), el('figcaption', {}, [caption])]);
+  return el('figure', { className: 'solution-card' }, [flagImg(country), el('figcaption', {}, [caption, ' ', statusBadge(country)])]);
 }
 
 function solution(question: Question): HTMLElement {

@@ -1,4 +1,4 @@
-import type { Continent } from '../data/countries';
+import type { Continent, Status } from '../data/countries';
 import type { ContinentKey, Difficulty } from '../engine/pool';
 
 export const CONTINENT_KEYS: readonly ContinentKey[] = ['world', 'africa', 'americas', 'asia', 'europe', 'oceania'];
@@ -27,4 +27,11 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   medium: 'Médio',
   hard: 'Difícil',
   general: 'Geral',
+};
+
+export const STATUS_BADGE: Record<Status, string> = {
+  un: 'ONU',
+  nonMember: 'Não-membro',
+  ukNation: 'Nação do Reino Unido',
+  territory: 'Território',
 };
