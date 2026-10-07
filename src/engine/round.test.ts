@@ -8,6 +8,7 @@ import { seededRng } from './rng';
 import { Round, STARTING_LIVES, type RoundSettings } from './round';
 
 const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups, similarDistractors: false };
+const hard: FormatContext = { pool: poolFor(countries, 'africa', 'hard'), world: countries, similarGroups, similarDistractors: true };
 const settings = (correctToWin: number, recallWeight = 1): RoundSettings => ({ correctToWin, recallWeight });
 
 function rightAnswer(q: Question): Answer {
@@ -144,7 +145,7 @@ describe('Round', () => {
 
   it('plays a 25-answer round on an 18-country pool with every format', () => {
     for (const seed of [11, 12, 13]) {
-      const round = new Round(easy, settings(25, 3), seededRng(seed));
+      const round = new Round(hard, settings(25, 3), seededRng(seed));
       while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
       expect(round.status).toBe('won');
     }
