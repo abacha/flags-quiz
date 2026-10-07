@@ -16,8 +16,8 @@
 
 - Code, identifiers, comments and commit messages in English; every string the player sees in Brazilian Portuguese.
 - Execute on `main`, without a worktree; one implementer at a time.
-- Player-facing strings stay exactly as today: "Encerrar", "Responder", "Nome do país" (placeholder), "Errado, tente de novo", "N pts", "N/M". "Pular" and "Puladas (N)" disappear.
-- Scoring, timer, records and the result screen are unchanged: score = right answers − errors, the timer runs from the first flag to the end, best score on any higher score, best time only for a finished quiz with zero errors, storage key `flags-quiz:quiz-records` with Mundo under `world`. `src/quizRecords.ts`, `src/ui/screens/quizResult.ts` and `src/ui/navigation.ts` are not modified.
+- Player-facing strings stay exactly as today: "Encerrar", "Responder", "Nome" (placeholder), "Errado, tente de novo", "N pts", "N/M". "Pular" and "Puladas (N)" disappear.
+- Scoring, timer, records and the result screen are unchanged: score = right answers − errors, the timer runs from the first flag to the end, best score on any higher score, best time only for a finished quiz with zero errors, storage key `flags-quiz:quiz-records-v2` with Mundo under `world`. `src/quizRecords.ts`, `src/ui/screens/quizResult.ts` and `src/ui/navigation.ts` are not modified.
 - Name matching stays `acceptsTypedName` from `src/engine/answer.ts` (same normalization and aliases). A blank answer is still ignored without counting an error.
 - A flag's name is never in the DOM before that flag is answered: not as text, `alt`, `title` or `aria-label`.
 - No linter exists in this repo. The gates are `npm run typecheck` and `npm test` (plus `npm run build` where a step says so); run them before every commit.
@@ -665,7 +665,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     autocomplete: 'off',
     autocapitalize: 'off',
     spellcheck: false,
-    placeholder: 'Nome do país',
+    placeholder: 'Nome',
   });
   const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
 
