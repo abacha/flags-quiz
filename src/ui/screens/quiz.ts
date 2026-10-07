@@ -68,12 +68,18 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       `Puladas (${quiz.skippedCount})`,
     ]);
     reopen.dataset.rapidTaps = '';
+    // Both buttons always take a grid cell, so "Pular" never shifts when the second
+    // one appears; when there is nothing skipped yet it is only hidden, not removed.
+    if (quiz.skippedCount === 0) {
+      reopen.disabled = true;
+      reopen.style.visibility = 'hidden';
+    }
     stage.replaceChildren(
       el('div', { className: 'question' }, [
         flagFigure(quiz.current),
         ...(message ? [el('p', { className: 'quiz-message' }, [message])] : []),
         form,
-        el('div', { className: 'quiz-actions' }, quiz.skippedCount > 0 ? [skip, reopen] : [skip]),
+        el('div', { className: 'quiz-actions' }, [skip, reopen]),
       ]),
     );
     input.focus();
