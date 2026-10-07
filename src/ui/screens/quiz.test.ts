@@ -143,7 +143,7 @@ describe('renderQuiz', () => {
       difficulty: 'easy',
       score: oceania.length,
       finished: true,
-      unanswered: 0,
+      unanswered: [],
       missed: [],
     });
   });
@@ -152,7 +152,8 @@ describe('renderQuiz', () => {
     type(bigFlag().name);
     [...root.querySelectorAll('button')].find((b) => b.textContent === 'Encerrar')!.click();
     expect(screens).toHaveLength(1);
-    expect(screens[0]).toMatchObject({ name: 'quizResult', score: 1, finished: false, unanswered: oceania.length - 1 });
+    expect(screens[0]).toMatchObject({ name: 'quizResult', score: 1, finished: false });
+    expect((screens[0] as Extract<Screen, { name: 'quizResult' }>).unanswered).toHaveLength(oceania.length - 1);
   });
 
   it('keeps the hidden message in flow so showing it cannot resize the dock and desync the grid scroll', () => {

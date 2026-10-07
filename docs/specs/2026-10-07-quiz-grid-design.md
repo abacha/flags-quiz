@@ -36,6 +36,10 @@ Success means a player sees the whole level as a grid, answers the highlighted f
 - **Pular** (added at the operator's request on 2026-10-07): the current flag moves to the next unanswered flag after it in grid order, wrapping; no error is counted, the field clears and the error message hides. On the last unanswered flag it stays put.
 - The quiz ends when every flag is answered, or on "Encerrar".
 
+## Result screen addition
+
+When the quiz was ended early, the result screen lists the flags left unanswered as "Bandeiras sem resposta (N)", each with its name and badge, in the same cards as the wrong flags (added at the operator's request on 2026-10-07). A flag missed and never answered appears in both lists.
+
 ## Unchanged
 
 Score (right − errors), the timer, best score and best time per continent and level (including Mundo), the result screen with the badge on revealed names, and storage keys.

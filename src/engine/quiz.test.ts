@@ -27,7 +27,8 @@ describe('Quiz', () => {
     }
     expect(asked).toEqual(quiz.flags);
     expect(quiz.status).toBe('finished');
-    expect([quiz.answeredCount, quiz.score, quiz.errors, quiz.unanswered]).toEqual([20, 20, 0, 0]);
+    expect([quiz.answeredCount, quiz.score, quiz.errors]).toEqual([20, 20, 0]);
+    expect(quiz.unanswered).toEqual([]);
   });
 
   it('keeps the flag current, counts an error and marks it missed on a wrong answer', () => {
@@ -140,13 +141,14 @@ describe('Quiz', () => {
     expect(() => quiz.select(first.iso2)).toThrow('Quiz is finished');
   });
 
-  it('ends early and counts the flags left unanswered', () => {
+  it('ends early and lists the flags left unanswered in grid order', () => {
     const quiz = new Quiz(three, seededRng(11));
     quiz.answer(quiz.current.name);
     quiz.select(quiz.flags[2].iso2);
     quiz.end();
     expect(quiz.status).toBe('ended');
-    expect([quiz.answeredCount, quiz.unanswered, quiz.score]).toEqual([1, 2, 1]);
+    expect([quiz.answeredCount, quiz.score]).toEqual([1, 1]);
+    expect(quiz.unanswered).toEqual([quiz.flags[1], quiz.flags[2]]);
     expect(() => quiz.current).toThrow('Quiz is ended');
     expect(() => quiz.end()).toThrow('Quiz is ended');
     expect(() => quiz.select(quiz.flags[1].iso2)).toThrow('Quiz is ended');

@@ -15,7 +15,7 @@ export type Screen =
       score: number;
       timeMs: number;
       finished: boolean;
-      unanswered: number;
+      unanswered: Country[];
       missed: Country[];
       newRecords: NewRecords;
     };

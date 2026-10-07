@@ -43,8 +43,8 @@ export class Quiz {
     return this.answered.size - this.errors;
   }
 
-  get unanswered(): number {
-    return this.total - this.answered.size;
+  get unanswered(): Country[] {
+    return this.flags.filter((c) => !this.answered.has(c.iso2));
   }
 
   get missed(): Country[] {
