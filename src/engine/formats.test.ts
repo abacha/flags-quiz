@@ -107,6 +107,15 @@ describe('matchPairs', () => {
       expectOptionsAroundTarget(question.countries, question.target, easy.pool);
     }
   });
+
+  it('does not always bring back the whole similar group as companions', () => {
+    const allGroupPresent = SEEDS.map((seed) => {
+      const question = matchPairs.build(byIso('ml'), general, seededRng(seed));
+      if (question.format !== 'matchPairs') throw new Error('expected matchPairs');
+      return ['gn', 'sn', 'cm'].every((code) => iso(question.countries).includes(code));
+    });
+    expect(allGroupPresent.some((present) => !present)).toBe(true);
+  });
 });
 
 describe('oddOneOut', () => {

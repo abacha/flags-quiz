@@ -93,7 +93,11 @@ export const matchPairs: Format = {
   id: 'matchPairs',
   recall: false,
   canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'matchPairs', target, countries: optionsWith(target, ctx, 4, rng) }),
+  build: (target, ctx, rng) => ({
+    format: 'matchPairs',
+    target,
+    countries: shuffle([target, ...sample(othersInPool(target, ctx), 3, rng)], rng),
+  }),
 };
 
 export const oddOneOut: Format = {

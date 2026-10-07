@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { countries, similarGroups } from '../data/countries';
 import type { Answer } from './answer';
-import { flagToNames, sortSimilar, typeName } from './formats';
+import { flagToNames, matchPairs, sortSimilar, typeName } from './formats';
 import { poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
@@ -99,6 +99,47 @@ describe('Round', () => {
       const second = round.nextQuestion();
       expect(shown(second).filter((code) => shown(first).includes(code))).toEqual([]);
     }
+  });
+
+  it('cuts how often match-pairs companions let a similar group return through sort-similar', () => {
+    // Two sort-similar questions can never legitimately share a country: each one spends every
+    // country it shows (spentBy), so a group can be targeted by sort-similar at most once per pass.
+    // A match-pairs question does not spend its companions, so a companion from the target's
+    // similar group can stay unspent and later become a sort-similar target, re-showing the group.
+    // The old optionsWith-based build put mates first, so this happened on most seeds; plain random
+    // sampling only leaks a mate by chance, so it should affect a minority of rounds instead.
+    const general: FormatContext = {
+      pool: poolFor(countries, 'africa', 'general'),
+      world: countries,
+      similarGroups,
+      similarDistractors: true,
+    };
+    const groupOf = (code: string) => similarGroups.find((g) => g.includes(code)) ?? [code];
+    let roundsWithLeak = 0;
+    const seeds = Array.from({ length: 200 }, (_, i) => i + 1);
+    for (const seed of seeds) {
+      const round = new Round(general, settings(54), seededRng(seed), [matchPairs, sortSimilar]);
+      const seenSortSimilar = new Set<string>();
+      const leakedByMatchPairs = new Set<string>();
+      let leaked = false;
+      for (let i = 0; i < 30; i++) {
+        const question = round.nextQuestion();
+        if (question.format === 'sortSimilar') {
+          const codes = shown(question);
+          expect(codes.some((code) => seenSortSimilar.has(code))).toBe(false);
+          if (codes.some((code) => leakedByMatchPairs.has(code))) leaked = true;
+          for (const code of codes) seenSortSimilar.add(code);
+        } else if (question.format === 'matchPairs') {
+          const group = groupOf(question.target.iso2);
+          for (const country of question.countries) {
+            if (country.iso2 !== question.target.iso2 && group.includes(country.iso2)) leakedByMatchPairs.add(country.iso2);
+          }
+        }
+        round.answer(rightAnswer(question));
+      }
+      if (leaked) roundsWithLeak++;
+    }
+    expect(roundsWithLeak / seeds.length).toBeLessThan(0.5);
   });
 
   it('plays a 25-answer round on an 18-country pool with every format', () => {
