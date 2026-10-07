@@ -106,6 +106,8 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 .question { display: flex; flex-direction: column; gap: 12px; }
 .question[inert] { opacity: 0.6; }
 
+.stage { display: flex; flex-direction: column; gap: 16px; }
+
 .flag {
   display: block;
   width: auto;
@@ -138,7 +140,7 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 
 .flag-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -177,13 +179,13 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 
 .pair-flags {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .pair-label { color: var(--text); font-weight: 600; font-size: 0.95rem; min-height: 1.3em; }
 
-.yes-no { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.yes-no { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
 
 .type-form { display: flex; flex-direction: column; gap: 10px; }
 
@@ -224,13 +226,13 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 .solution-card figcaption { font-size: 0.95rem; }
 
 @media (min-width: 560px) {
-  .flag-grid.count-6 { grid-template-columns: repeat(3, 1fr); }
+  .flag-grid.count-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .figure { height: 260px; }
 }
 
 .type-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -245,6 +247,8 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 }
 
 .type-item .flag { max-height: 80px; }
+
+.type-item input { width: 100%; min-width: 0; }
 
 [data-hint] { position: relative; }
 
