@@ -1,10 +1,10 @@
-import { countries } from '../../data/countries';
+import { countries, type Country } from '../../data/countries';
 import { poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Quiz } from '../../engine/quiz';
 import { saveQuizOutcome } from '../../quizRecords';
 import { el } from '../dom';
+import { flagImg } from '../flag';
 import type { Navigate } from '../navigation';
-import { flagFigure } from '../questions/choices';
 import { formatTime } from '../time';
 
 export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
@@ -17,7 +17,6 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     timer.textContent = formatTime(elapsed());
   }, 1000);
   const hud = el('header', { className: 'hud' });
-  const stage = el('section', { className: 'stage' });
   const finish = () => {
     window.clearInterval(interval);
     if (quiz.status === 'playing') quiz.end();
@@ -37,40 +36,75 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     });
   };
   const exit = el('button', { className: 'link', onclick: finish }, ['Encerrar']);
-  root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
 
-  const updateHud = () =>
+  const figure = el('div', { className: 'figure' });
+  const message = el('p', { className: 'quiz-message', hidden: true }, ['Errado, tente de novo']);
+  const input = el('input', {
+    type: 'text',
+    required: true,
+    autocomplete: 'off',
+    autocapitalize: 'off',
+    spellcheck: false,
+    placeholder: 'Nome',
+  });
+  const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
+
+  const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
+
+  const paint = () => {
     hud.replaceChildren(timer, el('span', {}, [`${quiz.score} pts`]), el('span', {}, [`${quiz.answeredCount}/${quiz.total}`]));
+    for (const [country, { cell, name }] of cells) {
+      const state = quiz.stateOf(country.iso2);
+      cell.className = `quiz-cell ${state}`;
+      cell.classList.toggle('current', country === quiz.current);
+      cell.disabled = state === 'answered';
+      name.textContent = state === 'answered' ? country.name : '';
+    }
+    figure.replaceChildren(flagImg(quiz.current));
+  };
 
-  const show = (message: string | null) => {
-    updateHud();
-    if (quiz.status !== 'playing') return finish();
-    const input = el('input', {
-      type: 'text',
-      required: true,
-      autocomplete: 'off',
-      autocapitalize: 'off',
-      spellcheck: false,
-      placeholder: 'Nome',
-    });
-    const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
-    form.onsubmit = (event) => {
-      event.preventDefault();
-      if (input.value.trim() === '') {
-        input.value = '';
-        return;
-      }
-      show(quiz.answer(input.value) ? null : 'Errado, tente de novo');
-    };
-    stage.replaceChildren(
-      el('div', { className: 'question' }, [
-        flagFigure(quiz.current),
-        ...(message ? [el('p', { className: 'quiz-message' }, [message])] : []),
-        form,
-      ]),
-    );
+  const pick = (country: Country) => {
+    if (country !== quiz.current) {
+      quiz.select(country.iso2);
+      input.value = '';
+      message.hidden = true;
+      paint();
+    }
     input.focus();
   };
 
-  show(null);
+  const grid = el(
+    'div',
+    { className: 'quiz-grid' },
+    quiz.flags.map((country) => {
+      const name = el('span', { className: 'quiz-name' });
+      const cell = el('button', { className: 'quiz-cell', type: 'button', onclick: () => pick(country) }, [
+        el('span', { className: 'quiz-thumb' }, [flagImg(country, 'flag', 'lazy')]),
+        name,
+      ]);
+      cells.set(country, { cell, name });
+      return cell;
+    }),
+  );
+
+  form.onsubmit = (event) => {
+    event.preventDefault();
+    if (input.value.trim() === '') {
+      input.value = '';
+      return;
+    }
+    const right = quiz.answer(input.value);
+    input.value = '';
+    if (quiz.status !== 'playing') return finish();
+    message.hidden = right;
+    paint();
+    if (right) cells.get(quiz.current)!.cell.scrollIntoView({ block: 'nearest' });
+    input.focus();
+  };
+
+  root.append(
+    el('main', { className: 'screen quiz-screen' }, [exit, hud, grid, el('div', { className: 'quiz-dock' }, [figure, message, form])]),
+  );
+  paint();
+  input.focus();
 }
