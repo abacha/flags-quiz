@@ -2,7 +2,7 @@ import type { Country } from '../data/countries';
 import type { Crop, Format, FormatContext } from './question';
 import { pickOne, sample, shuffle, type Rng } from './rng';
 
-export const CROP_SCALE = Math.SQRT2;
+export const CROP_SCALE = 2;
 
 function othersInPool(target: Country, ctx: FormatContext): Country[] {
   return ctx.pool.filter((c) => c.iso2 !== target.iso2);
