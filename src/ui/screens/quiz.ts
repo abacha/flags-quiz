@@ -59,9 +59,11 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       show(quiz.answer(input.value) ? null : 'Errado, tente de novo');
     };
     const skip = el('button', { className: 'big', type: 'button', onclick: () => (quiz.skip(), show(null)) }, ['Pular']);
+    skip.dataset.rapidTaps = '';
     const reopen = el('button', { className: 'big', type: 'button', onclick: () => (quiz.openSkipped(), show(null)) }, [
       `Puladas (${quiz.skippedCount})`,
     ]);
+    reopen.dataset.rapidTaps = '';
     stage.replaceChildren(
       el('div', { className: 'question' }, [
         flagFigure(quiz.current),
