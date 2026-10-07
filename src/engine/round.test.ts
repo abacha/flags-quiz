@@ -182,7 +182,7 @@ describe('Round', () => {
     expect(new Set(codes).size).toBe(codes.length);
   });
 
-  it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('plays every level of %s to its goal', (continent) => {
+  it.each(['africa', 'americas', 'asia', 'europe', 'oceania', 'world'] as const)('plays every level of %s to its goal', (continent) => {
     for (const difficulty of ['easy', 'medium', 'hard', 'general'] as const) {
       const pool = poolFor(countries, continent, difficulty);
       const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: LEVEL_RULES[difficulty].similarDistractors };

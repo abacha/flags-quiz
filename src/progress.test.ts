@@ -30,4 +30,12 @@ describe('medals', () => {
     awardMedal(store, 'africa', 'medium');
     expect([...store.data.keys()]).toEqual(['flags-quiz:medals']);
   });
+
+  it('keeps a Mundo medal beside the medals saved before Mundo existed', () => {
+    const store = memoryStore();
+    store.data.set('flags-quiz:medals', '{"africa":{"easy":true}}');
+    awardMedal(store, 'world', 'general');
+    expect(loadMedals(store)).toEqual({ africa: { easy: true }, world: { general: true } });
+    expect(hasMedal(loadMedals(store), 'africa', 'easy')).toBe(true);
+  });
 });

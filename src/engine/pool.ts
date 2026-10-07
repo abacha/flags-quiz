@@ -1,5 +1,7 @@
 import type { Continent, Country, Tier } from '../data/countries';
 
+export type ContinentKey = Continent | 'world';
+
 export type Difficulty = 'easy' | 'medium' | 'hard' | 'general';
 
 export interface LevelRules {
@@ -21,7 +23,7 @@ export function goalFor(difficulty: Difficulty, poolSize: number): number {
   return Math.ceil((numerator * poolSize) / denominator);
 }
 
-export function poolFor(all: readonly Country[], continent: Continent, difficulty: Difficulty): Country[] {
+export function poolFor(all: readonly Country[], continent: ContinentKey, difficulty: Difficulty): Country[] {
   const { tiers } = LEVEL_RULES[difficulty];
-  return all.filter((c) => c.continent === continent && c.tier !== undefined && tiers.includes(c.tier));
+  return all.filter((c) => (continent === 'world' || c.continent === continent) && tiers.includes(c.tier));
 }

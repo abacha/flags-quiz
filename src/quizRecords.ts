@@ -1,5 +1,4 @@
-import type { Continent } from './data/countries';
-import type { Difficulty } from './engine/pool';
+import type { ContinentKey, Difficulty } from './engine/pool';
 
 export type RecordStore = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -8,7 +7,7 @@ export interface QuizRecord {
   bestTimeMs?: number;
 }
 
-export type QuizRecords = Partial<Record<Continent, Partial<Record<Difficulty, QuizRecord>>>>;
+export type QuizRecords = Partial<Record<ContinentKey, Partial<Record<Difficulty, QuizRecord>>>>;
 
 export interface QuizOutcome {
   score: number;
@@ -29,11 +28,11 @@ export function loadQuizRecords(store: RecordStore): QuizRecords {
   return raw === null ? {} : (JSON.parse(raw) as QuizRecords);
 }
 
-export function quizRecord(records: QuizRecords, continent: Continent, difficulty: Difficulty): QuizRecord {
+export function quizRecord(records: QuizRecords, continent: ContinentKey, difficulty: Difficulty): QuizRecord {
   return records[continent]?.[difficulty] ?? {};
 }
 
-export function saveQuizOutcome(store: RecordStore, continent: Continent, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
+export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
   const records = loadQuizRecords(store);
   const previous = quizRecord(records, continent, difficulty);
   const timeMs = Math.floor(outcome.timeMs / 1000) * 1000;

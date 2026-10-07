@@ -131,6 +131,24 @@ describe('oddOneOut', () => {
       expect(question.options.filter((c) => c !== question.intruder).every((c) => easy.pool.includes(c))).toBe(true);
     }
   });
+
+  it('in Mundo, mixes three flags of one continent with an intruder from another', () => {
+    const world: FormatContext = { ...general, pool: poolFor(countries, 'world', 'general') };
+    for (const question of buildMany(oddOneOut, world)) {
+      if (question.format !== 'oddOneOut') throw new Error('expected oddOneOut');
+      const three = question.options.filter((c) => c !== question.intruder);
+      expect(three).toHaveLength(3);
+      expect(new Set(three.map((c) => c.continent))).toEqual(new Set([question.target.continent]));
+      expect(question.intruder.continent).not.toBe(question.target.continent);
+      expect(three.every((c) => world.pool.includes(c))).toBe(true);
+    }
+  });
+
+  it('targets only flags with two continent mates in the pool', () => {
+    const mixed: FormatContext = { ...easy, pool: ['ao', 'br', 'ar', 'cl'].map(byIso) };
+    expect(oddOneOut.canTarget(byIso('ao'), mixed)).toBe(false);
+    expect(oddOneOut.canTarget(byIso('br'), mixed)).toBe(true);
+  });
 });
 
 describe.each([sortSimilar, typeSimilar])('%o', (format) => {

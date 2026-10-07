@@ -123,7 +123,7 @@ describe('similarGroups', () => {
     expect(grouped(['gb-eng', 'gg', 'je'])).toBe(true);
   });
 
-  it.each(CONTINENTS)('gives every %s level a look-alike group with at least two members inside the pool', (continent) => {
+  it.each([...CONTINENTS, 'world'] as const)('gives every %s level a look-alike group with at least two members inside the pool', (continent) => {
     for (const difficulty of DIFFICULTIES) {
       const pool = new Set(poolFor(countries, continent, difficulty).map((c) => c.iso2));
       expect(similarGroups.some((group) => group.filter((iso2) => pool.has(iso2)).length >= 2)).toBe(true);

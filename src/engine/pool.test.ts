@@ -37,3 +37,18 @@ describe('goalFor', () => {
     expect(LEVELS.map((d) => goalFor(d, poolFor(countries, continent, d).length))).toEqual(goals);
   });
 });
+
+describe('Mundo', () => {
+  const CONTINENTS = ['africa', 'americas', 'asia', 'europe', 'oceania'] as const;
+
+  it.each(LEVELS)('builds the %s pool as the union of the continents', (difficulty) => {
+    const union = CONTINENTS.flatMap((continent) => poolFor(countries, continent, difficulty)).map((c) => c.iso2);
+    expect(poolFor(countries, 'world', difficulty).map((c) => c.iso2).sort()).toEqual(union.sort());
+  });
+
+  it('sizes the pools and scales the goals', () => {
+    const sizes = LEVELS.map((d) => poolFor(countries, 'world', d).length);
+    expect(sizes).toEqual([84, 83, 81, 248]);
+    expect(LEVELS.map((d, i) => goalFor(d, sizes[i]))).toEqual([56, 83, 113, 138]);
+  });
+});

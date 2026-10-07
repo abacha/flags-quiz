@@ -8,6 +8,10 @@ function othersInPool(target: Country, ctx: FormatContext): Country[] {
   return ctx.pool.filter((c) => c.iso2 !== target.iso2);
 }
 
+function continentMatesInPool(target: Country, ctx: FormatContext): Country[] {
+  return othersInPool(target, ctx).filter((c) => c.continent === target.continent);
+}
+
 function similarGroupsInPool(target: Country, ctx: FormatContext): Country[][] {
   const inPool = new Map(ctx.pool.map((c) => [c.iso2, c]));
   return ctx.similarGroups
@@ -105,10 +109,10 @@ export const matchPairs: Format = {
 export const oddOneOut: Format = {
   id: 'oddOneOut',
   recall: false,
-  canTarget: always,
+  canTarget: (target, ctx) => continentMatesInPool(target, ctx).length >= 2,
   build: (target, ctx, rng) => {
     const intruder = pickOne(ctx.world.filter((c) => c.continent !== target.continent), rng);
-    const others = sample(othersInPool(target, ctx), 2, rng);
+    const others = sample(continentMatesInPool(target, ctx), 2, rng);
     return { format: 'oddOneOut', target, intruder, options: shuffle([target, ...others, intruder], rng) };
   },
 };
