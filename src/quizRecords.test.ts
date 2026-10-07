@@ -37,6 +37,14 @@ describe('quiz records', () => {
     expect(quizRecord(loadQuizRecords(store), 'africa', 'easy').bestTimeMs).toBe(90000);
   });
 
+  it('compares times in whole seconds, ignoring the milliseconds past them', () => {
+    const store = memoryStore();
+    saveQuizOutcome(store, 'africa', 'easy', outcome(18, 95000));
+    expect(saveQuizOutcome(store, 'africa', 'easy', outcome(18, 95700)).time).toBe(false);
+    expect(saveQuizOutcome(store, 'africa', 'easy', outcome(18, 94900)).time).toBe(true);
+    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy').bestTimeMs).toBe(94000);
+  });
+
   it('lets an early end with a negative score set the first best score', () => {
     const store = memoryStore();
     expect(saveQuizOutcome(store, 'africa', 'hard', outcome(-2, 15000, false, 2))).toEqual({ score: true, time: false });

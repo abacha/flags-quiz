@@ -36,12 +36,12 @@ export function quizRecord(records: QuizRecords, continent: Continent, difficult
 export function saveQuizOutcome(store: RecordStore, continent: Continent, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
   const records = loadQuizRecords(store);
   const previous = quizRecord(records, continent, difficulty);
+  const timeMs = Math.floor(outcome.timeMs / 1000) * 1000;
   const score = previous.bestScore === undefined || outcome.score > previous.bestScore;
-  const time =
-    outcome.finished && outcome.errors === 0 && (previous.bestTimeMs === undefined || outcome.timeMs < previous.bestTimeMs);
+  const time = outcome.finished && outcome.errors === 0 && (previous.bestTimeMs === undefined || timeMs < previous.bestTimeMs);
   const next: QuizRecord = { ...previous };
   if (score) next.bestScore = outcome.score;
-  if (time) next.bestTimeMs = outcome.timeMs;
+  if (time) next.bestTimeMs = timeMs;
   records[continent] = { ...records[continent], [difficulty]: next };
   store.setItem(STORAGE_KEY, JSON.stringify(records));
   return { score, time };
