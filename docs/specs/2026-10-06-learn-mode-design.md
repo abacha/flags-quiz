@@ -24,7 +24,7 @@ In scope:
 Out of scope:
 
 - Quiz mode, specified in docs/specs/2026-10-06-quiz-mode-design.md.
-- Other continents (the continent screen shows them as disabled).
+- Other continents (the continent screen shows them as disabled). They followed later, specified in docs/specs/2026-10-06-other-continents-design.md.
 - Backend, accounts, cross-device sync.
 - Hosting beyond running locally on forge.
 
@@ -52,7 +52,7 @@ Flags keep their real aspect ratios (Nepal is not a rectangle, Switzerland is sq
 
 - The country list is the UN member states from the `mledoze/countries` dataset, whose `region` field gives the continent.
 - `name` is generated once from `Intl.DisplayNames('pt-BR', { type: 'region' })` by the same throwaway script, then corrected where the output is wrong: "Congo - Kinshasa" becomes "República Democrática do Congo" and "Mianmar (Birmânia)" becomes "Mianmar". `Intl` spells Burquina Faso and Malaui the Itamaraty way; those names stay, and "Burkina Faso" and "Malawi" become aliases. Other accepted spellings: Botswana, Djibouti, Jibuti, Benim, Zimbabwe, Lesotho, Seychelles, Ilhas Maurício, Ilhas Comores. The committed file is the source of truth; the app never calls `Intl` at runtime.
-- `tier` exists only for African countries.
+- `tier` existed only for African countries at first; docs/specs/2026-10-06-other-continents-design.md later gave every continent its own tiers.
 - `aliases` lists extra accepted spellings for the "type the name" format.
 - Africa means the 54 UN member states. Western Sahara and Somaliland are excluded.
 
@@ -135,7 +135,7 @@ A medal is never removed by losing a later round.
 ## Screens
 
 1. **Home.** Learn and Quiz buttons.
-2. **Continent.** Africa active; the other continents disabled.
+2. **Continent.** Africa active; the other continents disabled at first, then enabled per docs/specs/2026-10-06-other-continents-design.md.
 3. **Level.** Fácil, Médio, Difícil, Geral, each showing its country count, its goal and its medal when earned.
 4. **Game.** Lives as hearts and the correct-answer count against the level's goal (for example "3/12") at the top, a "Sair" link that abandons the round without a medal, the question below, then the feedback panel after answering.
 5. **Result.** On a win: the medal, "jogar de novo" and "voltar". On a loss: the number of correct answers against the goal and the list of flags missed in the round, each with its name.
