@@ -23,7 +23,7 @@ In scope:
 
 Out of scope:
 
-- Quiz mode (the home screen shows it as disabled, "em breve").
+- Quiz mode, specified in docs/specs/2026-10-06-quiz-mode-design.md.
 - Other continents (the continent screen shows them as disabled).
 - Backend, accounts, cross-device sync.
 - Hosting beyond running locally on forge.
@@ -134,7 +134,7 @@ A medal is never removed by losing a later round.
 
 ## Screens
 
-1. **Home.** Learn button; Quiz button disabled with "em breve".
+1. **Home.** Learn and Quiz buttons.
 2. **Continent.** Africa active; the other continents disabled.
 3. **Level.** Fácil, Médio, Difícil, Geral, each showing its country count, its goal and its medal when earned.
 4. **Game.** Lives as hearts and the correct-answer count against the level's goal (for example "3/12") at the top, a "Sair" link that abandons the round without a medal, the question below, then the feedback panel after answering.
