@@ -177,6 +177,8 @@ describe('ALL_FORMATS', () => {
 
 describe('small pools', () => {
   const tiny: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'hard') };
+  const fiveCountries: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'easy') };
+  const sixCountries: FormatContext = { ...contextFor('hard'), pool: poolFor(countries, 'oceania', 'general').slice(0, 6) };
 
   it('never asks for 6 options on a 4-country pool', () => {
     for (const format of [nameToFlags, flagToNames]) {
@@ -184,6 +186,22 @@ describe('small pools', () => {
         if (!('options' in question)) throw new Error('expected options');
         expect(question.options).toHaveLength(4);
       }
+    }
+  });
+
+  it('never asks for 6 options on a 5-country pool', () => {
+    for (const format of [nameToFlags, flagToNames]) {
+      for (const question of buildMany(format, fiveCountries)) {
+        if (!('options' in question)) throw new Error('expected options');
+        expect(question.options).toHaveLength(4);
+      }
+    }
+  });
+
+  it('draws 6 options on a 6-country pool', () => {
+    for (const format of [nameToFlags, flagToNames]) {
+      const sizes = new Set(buildMany(format, sixCountries).map((q) => ('options' in q ? q.options.length : 0)));
+      expect(sizes.has(6)).toBe(true);
     }
   });
 
