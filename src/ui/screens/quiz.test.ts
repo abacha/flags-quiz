@@ -24,7 +24,8 @@ describe('renderQuiz', () => {
   const bigFlag = () => countryIn(root.querySelector<HTMLImageElement>('.quiz-dock .figure img')!);
   const input = () => root.querySelector<HTMLInputElement>('.quiz-dock input')!;
   const message = () => root.querySelector<HTMLParagraphElement>('.quiz-message')!;
-  const hud = () => root.querySelector('.hud')!.textContent;
+  const hud = () => root.querySelector('.topbar-counters')!.textContent;
+  const fill = () => root.querySelector<HTMLElement>('.topbar-fill')!.style.width;
   const type = (text: string) => {
     input().value = text;
     root.querySelector<HTMLFormElement>('.quiz-dock form')!.requestSubmit();
@@ -148,9 +149,16 @@ describe('renderQuiz', () => {
     });
   });
 
-  it('ends early on Encerrar', () => {
+  it('shows the level in the top bar and fills its bar with the answered flags', () => {
+    expect(root.querySelector('.topbar-label')!.textContent).toBe('Oceania · Fácil');
+    expect(fill()).toBe('0%');
     type(bigFlag().name);
-    [...root.querySelectorAll('button')].find((b) => b.textContent === 'Encerrar')!.click();
+    expect(fill()).toBe(`${(1 / oceania.length) * 100}%`);
+  });
+
+  it('ends the quiz and opens its result on ✕', () => {
+    type(bigFlag().name);
+    root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
     expect(screens).toHaveLength(1);
     expect(screens[0]).toMatchObject({ name: 'quizResult', score: 1, finished: false });
     expect((screens[0] as Extract<Screen, { name: 'quizResult' }>).unanswered).toHaveLength(oceania.length - 1);

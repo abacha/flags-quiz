@@ -4,8 +4,10 @@ import { Quiz } from '../../engine/quiz';
 import { saveQuizOutcome } from '../../quizRecords';
 import { el } from '../dom';
 import { flagImg } from '../flag';
+import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate } from '../navigation';
 import { formatTime } from '../time';
+import { topBar } from '../topbar';
 
 export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const quiz = new Quiz(poolFor(countries, continent, difficulty), Math.random);
@@ -16,7 +18,6 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
   const interval = window.setInterval(() => {
     timer.textContent = formatTime(elapsed());
   }, 1000);
-  const hud = el('header', { className: 'hud' });
   const finish = () => {
     window.clearInterval(interval);
     if (quiz.status === 'playing') quiz.end();
@@ -35,7 +36,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       newRecords,
     });
   };
-  const exit = el('button', { className: 'link', onclick: finish }, ['Encerrar']);
+  const bar = topBar(`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, finish);
 
   const figure = el('div', { className: 'figure' });
   const message = el('p', { className: 'quiz-message', hidden: true }, ['Errado, tente de novo']);
@@ -53,7 +54,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
   const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
 
   const paint = () => {
-    hud.replaceChildren(timer, el('span', {}, [`${quiz.score} pts`]), el('span', {}, [`${quiz.answeredCount}/${quiz.total}`]));
+    bar.update([timer, el('span', {}, [`${quiz.score} pts`]), el('span', {}, [`${quiz.answeredCount}/${quiz.total}`])], quiz.answeredCount / quiz.total);
     for (const [country, { cell, name }] of cells) {
       const state = quiz.stateOf(country.iso2);
       cell.className = `quiz-cell ${state}`;
@@ -113,7 +114,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
   };
 
   root.append(
-    el('main', { className: 'screen quiz-screen' }, [exit, hud, grid, el('div', { className: 'quiz-dock' }, [figure, message, form])]),
+    el('main', { className: 'screen quiz-screen' }, [bar.element, grid, el('div', { className: 'quiz-dock' }, [figure, message, form])]),
   );
   paint();
   input.focus();

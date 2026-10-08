@@ -76,7 +76,7 @@ h2 { font-size: 1.15rem; font-weight: 800; margin: 0 0 12px; }
 
 .detail { color: var(--muted); font-size: 0.95rem; }
 
-.primary, .outline, .secondary, .link, .big, .tab, .tag, .pill, .badge, .see-all {
+.primary, .outline, .secondary, .link, .big, .tab, .tag, .pill, .badge, .see-all, .topbar-label, .topbar-counters {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -371,13 +371,6 @@ input::placeholder { text-overflow: ellipsis; }
   [data-hint]::after { content: none; }
 }
 
-.hud {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2rem;
-  font-variant-numeric: tabular-nums;
-}
-
 .quiz-message { margin: 0; color: var(--wrong); font-weight: 700; }
 /* kept in flow (not display: none) so hiding it never resizes the dock and desyncs the grid's scroll position */
 .quiz-message[hidden] { display: block; visibility: hidden; }
@@ -539,3 +532,32 @@ input::placeholder { text-overflow: ellipsis; }
   font-size: 0.9rem;
   font-weight: 800;
 }
+
+.topbar { display: flex; flex-direction: column; gap: 8px; }
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.topbar-close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 800;
+}
+
+.topbar-label { flex: 1 1 auto; min-width: 0; }
+.topbar-counters { flex: none; display: flex; gap: 10px; }
+.topbar-bar { height: 8px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
+.topbar-fill { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.2s; }
+.heart { color: var(--wrong); }
+.heart.lost { color: var(--tag-bg); }

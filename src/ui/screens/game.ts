@@ -3,10 +3,12 @@ import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } fro
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
 import { el } from '../dom';
+import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
 import { renderQuestion } from '../questions/render';
+import { topBar } from '../topbar';
 
 export function renderGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const rules = LEVEL_RULES[difficulty];
@@ -16,7 +18,6 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     { correctToWin: goalFor(difficulty, pool.length), recallWeight: rules.recallWeight },
     Math.random,
   );
-  const hud = el('header', { className: 'hud' });
   const stage = el('section', { className: 'stage' });
 
   let currentQuestion: HTMLElement | null = null;
@@ -30,13 +31,20 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     navigate(screen);
   };
 
-  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'hub', continent }) }, ['Sair']);
-  root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
+  const bar = topBar(`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, () => leave({ name: 'hub', continent }));
+  root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
   const updateHud = () =>
-    hud.replaceChildren(
-      el('span', {}, ['❤️'.repeat(round.lives) + '🖤'.repeat(STARTING_LIVES - round.lives)]),
-      el('span', {}, [`${round.correct}/${round.correctToWin}`]),
+    bar.update(
+      [
+        el(
+          'span',
+          { className: 'lives' },
+          Array.from({ length: STARTING_LIVES }, (_, life) => el('span', { className: life < round.lives ? 'heart' : 'heart lost' }, ['♥'])),
+        ),
+        el('span', {}, [`${round.correct}/${round.correctToWin}`]),
+      ],
+      round.correct / round.correctToWin,
     );
 
   const finish = () => {

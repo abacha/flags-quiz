@@ -18,7 +18,7 @@ beforeAll(() => {
 });
 
 describe('style.css', () => {
-  it.each(['.primary', '.outline', '.secondary', '.link', '.big', '.tab', '.tag', '.pill', '.badge', '.see-all'])(
+  it.each(['.primary', '.outline', '.secondary', '.link', '.big', '.tab', '.tag', '.pill', '.badge', '.see-all', '.topbar-label', '.topbar-counters'])(
     'keeps %s on one line, truncating with an ellipsis',
     (selector) => {
       expect(declared(selector, 'white-space')).toContain('nowrap');
