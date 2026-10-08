@@ -464,6 +464,10 @@ input::placeholder { text-overflow: ellipsis; }
   .quiz-dock .figure { height: 160px; }
 }
 
+@media (max-height: 520px) {
+  .quiz-dock .figure { height: 64px; }
+}
+
 .record { margin: 0; color: var(--success); font-weight: 600; }
 
 .screen.wide { max-width: 1200px; }
