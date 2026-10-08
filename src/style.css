@@ -573,7 +573,7 @@ input::placeholder { text-overflow: ellipsis; }
 .topbar-bar { height: 8px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
 .topbar-fill { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.2s; }
 .heart { color: var(--wrong); }
-.heart.lost { color: var(--tag-bg); }
+.heart.lost { color: var(--muted); }
 
 .result h1 { margin: 16px 0 0; font-size: 1.5rem; text-align: center; }
 .result > .detail { margin: 0; text-align: center; }
