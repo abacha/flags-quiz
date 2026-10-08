@@ -7,7 +7,10 @@ import { flagImg } from '../flag';
 import { CONTINENT_FROM } from '../labels';
 
 export function solutionCard(country: Country, caption = country.name): HTMLElement {
-  return el('figure', { className: 'solution-card' }, [flagImg(country), el('figcaption', {}, [caption, ' ', statusBadge(country)])]);
+  return el('figure', { className: 'solution-card' }, [
+    el('span', { className: 'flag-box' }, [flagImg(country)]),
+    el('figcaption', {}, [el('span', { className: 'solution-name' }, [caption]), ' ', statusBadge(country)]),
+  ]);
 }
 
 function solution(question: Question): HTMLElement {
