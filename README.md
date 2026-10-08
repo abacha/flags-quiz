@@ -22,8 +22,13 @@ The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nat
 
     npm install
     npm run dev       # dev server on port 5173, reachable from the LAN
-    npm run build     # static site in dist/
-    npm run preview   # serve dist/ on port 4173
+    npm run build     # static site in dist/, served under /flags-quiz/
+    npm run preview   # serve dist/ at http://localhost:4173/flags-quiz/
+
+## Install and deploy
+
+The app is a PWA: it installs to a phone's home screen and works offline, with every flag cached by the service worker.
+Every push to `main` runs the tests, builds and publishes to GitHub Pages at https://abacha.github.io/flags-quiz/ through `.github/workflows/deploy.yml`.
 
 ## Test
 

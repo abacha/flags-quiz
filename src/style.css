@@ -52,6 +52,7 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   line-height: 1.4;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 button {
@@ -376,7 +377,7 @@ input::placeholder { text-overflow: ellipsis; }
 /* kept in flow (not display: none) so hiding it never resizes the dock and desyncs the grid's scroll position */
 .quiz-message[hidden] { display: block; visibility: hidden; }
 
-.quiz-screen { height: 100dvh; padding-bottom: 16px; }
+.quiz-screen { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding-bottom: 16px; }
 
 .quiz-grid {
   flex: 1 1 auto;
