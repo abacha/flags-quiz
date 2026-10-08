@@ -48,4 +48,11 @@ describe('renderFlagTable', () => {
     expect(dialog.open).toBe(false);
     root.remove();
   });
+
+  it('puts Voltar in the header, above the flags', () => {
+    const root = render('world');
+    const back = [...root.querySelectorAll('button')].find((b) => b.textContent === 'Voltar')!;
+    expect(back.closest('.table-head')).not.toBeNull();
+    expect(back.compareDocumentPosition(root.querySelector('.solution-grid')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
 });

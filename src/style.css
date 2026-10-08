@@ -315,7 +315,8 @@ input::placeholder { text-overflow: ellipsis; }
 }
 
 .solution-card { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-.flag-box { display: flex; aspect-ratio: 4 / 3; }
+.flag-box { display: flex; aspect-ratio: 4 / 3; overflow: hidden; }
+.flag-box .flag { width: 100%; height: 100%; object-fit: contain; margin: 0; }
 .solution-card figcaption { font-size: 0.95rem; font-weight: 700; line-height: 1.25; }
 
 .solution-name {
@@ -466,7 +467,19 @@ input::placeholder { text-overflow: ellipsis; }
 
 .screen.wide { max-width: 1200px; }
 
-.flag-table-item { padding: 0; border: none; background: none; text-align: left; }
+.table-head { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.table-head h1 { margin: 0; white-space: nowrap; }
+.table-head .detail { white-space: nowrap; }
+.table-head .link { margin-left: auto; }
+
+.flag-table-item {
+  padding: 8px;
+  border: 2px solid var(--accent-soft);
+  border-radius: var(--radius-button);
+  background: var(--surface);
+  text-align: left;
+  box-shadow: 0 4px 0 var(--accent-soft);
+}
 
 .flag-dialog {
   max-width: min(90vw, 900px);

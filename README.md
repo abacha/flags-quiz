@@ -1,17 +1,20 @@
 # Bandeiras
 
 A study app for world flags.
-Pick Mundo or a continent, then one of four levels: Fácil, Médio and Difícil split each continent into three tiers, Geral holds all of them, and Mundo joins each level across every continent.
-Each level shows its flag count, the Aprender medal and goal, and the Quiz best score and time, with one button for each mode.
+The app opens on a hub with one tab per continent and Mundo, and remembers the last one chosen.
+Fácil, Médio and Difícil split each continent into three tiers, Geral holds all of them, and Mundo joins each level across every continent.
+The header counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, and each tab counts its own out of 4.
+Each level card shows its flag count and first flags, a medal tag with the Aprender goal, a Quiz tag with the best time or score, and one button for each mode.
 
 Aprender uses eleven question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
 Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
 
 Quiz shows every flag of the level at once as a grid on the same levels: type the name of the highlighted flag, tap any other flag to switch to it or "Pular" to move to the next one, and race the timer. Answered flags show a check and their name, and a red mark flags one you got wrong. The best score and, for a quiz finished with no errors, the best time are kept per level.
 
-Progresso, from the home screen, counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, with a bar per continent and Mundo and the best time of each completed level.
+Every game has a thin top bar: ✕ goes back to the hub (in Quiz it ends the quiz and shows its result), beside the level, its counters and a progress bar.
+Results show the numbers as blocks, the new records, and the next level, another try or the way back to the hub, above the flags to review.
 
-The "Bandeiras" button beside each continent on the home screen lists all of its flags with their names and badges, in alphabetical order, for review.
+The link under the level cards lists every flag of the continent with its name and badge, in alphabetical order, for review; tap one to see it large.
 
 The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.
 

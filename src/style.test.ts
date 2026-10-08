@@ -39,4 +39,11 @@ describe('style.css', () => {
     expect(declared('.quiz-name', 'line-clamp')).toContain('2');
     expect(declared('.solution-card .badge', 'display')).toContain('block');
   });
+
+  it('contains the flag image inside the fixed 4:3 box regardless of its own aspect ratio', () => {
+    expect(declared('.flag-box', 'overflow')).toContain('hidden');
+    expect(declared('.flag-box .flag', 'object-fit')).toContain('contain');
+    expect(declared('.flag-box .flag', 'width')).toContain('100%');
+    expect(declared('.flag-box .flag', 'height')).toContain('100%');
+  });
 });

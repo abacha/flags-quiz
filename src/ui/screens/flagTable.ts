@@ -16,14 +16,16 @@ export function renderFlagTable(root: HTMLElement, navigate: Navigate, continent
   };
   root.append(
     el('main', { className: 'screen wide' }, [
-      el('h1', {}, [CONTINENT_LABEL[continent]]),
-      el('p', { className: 'detail' }, [`${flags.length} bandeiras`]),
+      el('header', { className: 'table-head' }, [
+        el('h1', {}, [CONTINENT_LABEL[continent]]),
+        el('span', { className: 'detail' }, [`${flags.length} bandeiras`]),
+        el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
+      ]),
       el(
         'div',
         { className: 'solution-grid' },
         flags.map((c) => el('button', { className: 'flag-table-item', type: 'button', onclick: () => show(c) }, [solutionCard(c)])),
       ),
-      el('button', { className: 'link', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
       dialog,
     ]),
   );
