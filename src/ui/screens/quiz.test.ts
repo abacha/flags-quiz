@@ -143,6 +143,7 @@ describe('renderQuiz', () => {
       continent: 'oceania',
       difficulty: 'easy',
       score: oceania.length,
+      errors: 0,
       finished: true,
       unanswered: [],
       missed: [],
@@ -157,10 +158,11 @@ describe('renderQuiz', () => {
   });
 
   it('ends the quiz and opens its result on ✕', () => {
+    type('nenhum país');
     type(bigFlag().name);
     root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
     expect(screens).toHaveLength(1);
-    expect(screens[0]).toMatchObject({ name: 'quizResult', score: 1, finished: false });
+    expect(screens[0]).toMatchObject({ name: 'quizResult', score: 0, errors: 1, finished: false });
     expect((screens[0] as Extract<Screen, { name: 'quizResult' }>).unanswered).toHaveLength(oceania.length - 1);
   });
 

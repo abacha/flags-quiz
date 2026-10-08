@@ -14,6 +14,7 @@ export type Screen =
       difficulty: Difficulty;
       score: number;
       timeMs: number;
+      errors: number;
       finished: boolean;
       unanswered: Country[];
       missed: Country[];

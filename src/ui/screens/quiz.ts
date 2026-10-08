@@ -30,6 +30,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
       difficulty,
       score: quiz.score,
       timeMs,
+      errors: quiz.errors,
       finished,
       unanswered: quiz.unanswered,
       missed: quiz.missed,
