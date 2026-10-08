@@ -7,7 +7,10 @@ export function renderHome(root: HTMLElement, navigate: Navigate): void {
     el('main', { className: 'screen menu' }, [
       el('h1', {}, ['Bandeiras do mundo']),
       ...CONTINENT_KEYS.map((continent) =>
-        el('button', { className: 'big', onclick: () => navigate({ name: 'continent', continent }) }, [CONTINENT_LABEL[continent]]),
+        el('div', { className: 'home-row' }, [
+          el('button', { className: 'big', onclick: () => navigate({ name: 'continent', continent }) }, [CONTINENT_LABEL[continent]]),
+          el('button', { className: 'secondary', onclick: () => navigate({ name: 'flagTable', continent }) }, ['Bandeiras']),
+        ]),
       ),
       el('button', { className: 'big', onclick: () => navigate({ name: 'progress' }) }, ['Progresso']),
     ]),

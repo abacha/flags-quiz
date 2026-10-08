@@ -1,6 +1,7 @@
 import './style.css';
 import type { Screen } from './ui/navigation';
 import { renderContinent } from './ui/screens/continent';
+import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
 import { renderHome } from './ui/screens/home';
 import { renderProgress } from './ui/screens/progress';
@@ -32,6 +33,8 @@ function navigate(screen: Screen): void {
   switch (screen.name) {
     case 'home':
       return renderHome(app, navigate);
+    case 'flagTable':
+      return renderFlagTable(app, navigate, screen.continent);
     case 'progress':
       return renderProgress(app, navigate);
     case 'continent':

@@ -11,6 +11,8 @@ Quiz shows every flag of the level at once as a grid on the same levels: type th
 
 Progresso, from the home screen, counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, with a bar per continent and Mundo and the best time of each completed level.
 
+The "Bandeiras" button beside each continent on the home screen lists all of its flags with their names and badges, in alphabetical order, for review.
+
 The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.
 
 ## Run
