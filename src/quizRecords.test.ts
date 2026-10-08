@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadQuizRecords, quizRecord, saveQuizOutcome, type RecordStore } from './quizRecords';
+import { isCompleted, loadQuizRecords, quizRecord, saveQuizOutcome, type RecordStore } from './quizRecords';
 
 function memoryStore(): RecordStore & { data: Map<string, string> } {
   const data = new Map<string, string>();
@@ -16,7 +16,7 @@ describe('quiz records', () => {
   it('keeps the first finished flawless quiz as both records', () => {
     const store = memoryStore();
     expect(saveQuizOutcome(store, 'africa', 'easy', outcome(18, 95000))).toEqual({ score: true, time: true });
-    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy')).toEqual({ bestScore: 18, bestTimeMs: 95000 });
+    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy')).toEqual({ bestScore: 18, bestTimeMs: 95000, completed: true });
   });
 
   it('updates the score only when strictly higher', () => {
@@ -56,7 +56,7 @@ describe('quiz records', () => {
     saveQuizOutcome(store, 'africa', 'easy', outcome(18, 95000));
     saveQuizOutcome(store, 'africa', 'general', outcome(40, 400000, true, 14));
     expect(quizRecord(loadQuizRecords(store), 'africa', 'easy').bestScore).toBe(18);
-    expect(quizRecord(loadQuizRecords(store), 'africa', 'general')).toEqual({ bestScore: 40 });
+    expect(quizRecord(loadQuizRecords(store), 'africa', 'general')).toEqual({ bestScore: 40, completed: true });
     expect([...store.data.keys()]).toEqual(['flags-quiz:quiz-records-v2']);
   });
 
@@ -70,7 +70,25 @@ describe('quiz records', () => {
     const store = memoryStore();
     saveQuizOutcome(store, 'africa', 'easy', outcome(18, 95000));
     saveQuizOutcome(store, 'world', 'easy', outcome(70, 400000));
-    expect(quizRecord(loadQuizRecords(store), 'world', 'easy')).toEqual({ bestScore: 70, bestTimeMs: 400000 });
-    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy')).toEqual({ bestScore: 18, bestTimeMs: 95000 });
+    expect(quizRecord(loadQuizRecords(store), 'world', 'easy')).toEqual({ bestScore: 70, bestTimeMs: 400000, completed: true });
+    expect(quizRecord(loadQuizRecords(store), 'africa', 'easy')).toEqual({ bestScore: 18, bestTimeMs: 95000, completed: true });
+  });
+
+  it('marks the level completed once a quiz is finished, errors included, and keeps the mark', () => {
+    const store = memoryStore();
+    saveQuizOutcome(store, 'asia', 'hard', outcome(20, 300000, true, 7));
+    saveQuizOutcome(store, 'asia', 'hard', outcome(3, 20000, false, 0));
+    expect(isCompleted(quizRecord(loadQuizRecords(store), 'asia', 'hard'))).toBe(true);
+  });
+
+  it('does not mark a level completed when the quiz is ended early', () => {
+    const store = memoryStore();
+    saveQuizOutcome(store, 'asia', 'hard', outcome(25, 300000, false, 0));
+    expect(isCompleted(quizRecord(loadQuizRecords(store), 'asia', 'hard'))).toBe(false);
+  });
+
+  it('counts a best time saved before the completed mark existed as a completed level', () => {
+    expect(isCompleted({ bestScore: 18, bestTimeMs: 95000 })).toBe(true);
+    expect(isCompleted({ bestScore: 18 })).toBe(false);
   });
 });

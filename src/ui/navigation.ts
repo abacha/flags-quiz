@@ -4,6 +4,7 @@ import type { NewRecords } from '../quizRecords';
 
 export type Screen =
   | { name: 'home' }
+  | { name: 'progress' }
   | { name: 'continent'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; correct: number; missed: Country[] }

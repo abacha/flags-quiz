@@ -5,6 +5,7 @@ export type RecordStore = Pick<Storage, 'getItem' | 'setItem'>;
 export interface QuizRecord {
   bestScore?: number;
   bestTimeMs?: number;
+  completed?: true;
 }
 
 export type QuizRecords = Partial<Record<ContinentKey, Partial<Record<Difficulty, QuizRecord>>>>;
@@ -32,6 +33,11 @@ export function quizRecord(records: QuizRecords, continent: ContinentKey, diffic
   return records[continent]?.[difficulty] ?? {};
 }
 
+// a best time is only ever saved for a finished quiz, so records written before `completed` existed still prove completion
+export function isCompleted(record: QuizRecord): boolean {
+  return record.completed === true || record.bestTimeMs !== undefined;
+}
+
 export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
   const records = loadQuizRecords(store);
   const previous = quizRecord(records, continent, difficulty);
@@ -41,6 +47,7 @@ export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, dif
   const next: QuizRecord = { ...previous };
   if (score) next.bestScore = outcome.score;
   if (time) next.bestTimeMs = timeMs;
+  if (outcome.finished) next.completed = true;
   records[continent] = { ...records[continent], [difficulty]: next };
   store.setItem(STORAGE_KEY, JSON.stringify(records));
   return { score, time };

@@ -9,6 +9,8 @@ Choice questions can be answered with the keys 1–6, and two-option questions w
 
 Quiz shows every flag of the level at once as a grid on the same levels: type the name of the highlighted flag, tap any other flag to switch to it or "Pular" to move to the next one, and race the timer. Answered flags show a check and their name, and a red mark flags one you got wrong. The best score and, for a quiz finished with no errors, the best time are kept per level.
 
+Progresso, from the home screen, counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, with a bar per continent and Mundo and the best time of each completed level.
+
 The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.
 
 ## Run

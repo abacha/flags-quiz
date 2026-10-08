@@ -9,6 +9,7 @@ export function renderHome(root: HTMLElement, navigate: Navigate): void {
       ...CONTINENT_KEYS.map((continent) =>
         el('button', { className: 'big', onclick: () => navigate({ name: 'continent', continent }) }, [CONTINENT_LABEL[continent]]),
       ),
+      el('button', { className: 'big', onclick: () => navigate({ name: 'progress' }) }, ['Progresso']),
     ]),
   );
 }
