@@ -40,6 +40,8 @@ Success means a player sees the whole level as a grid, answers the highlighted f
 
 When the quiz was ended early, the result screen lists the flags left unanswered as "Bandeiras sem resposta (N)", each with its name and badge, in the same cards as the wrong flags (added at the operator's request on 2026-10-07). A flag missed and never answered appears in both lists.
 
+Each flag left unanswered when the quiz ends early counts as one error, on top of any misses it already had, so it lowers the score and shows in the result's error count (added at the operator's request on 2026-10-08).
+
 ## Unchanged
 
 Score (right − errors), the timer, best score and best time per continent and level (including Mundo), the result screen with the badge on revealed names, and storage keys.
