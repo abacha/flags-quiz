@@ -16,7 +16,7 @@ export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extr
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       ...review,
       el('button', { className: 'primary', onclick: () => navigate({ name: 'game', continent, difficulty }) }, ['Jogar de novo']),
-      el('button', { className: 'link', onclick: () => navigate({ name: 'continent', continent }) }, ['Voltar']),
+      el('button', { className: 'link', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
     ]),
   );
 }

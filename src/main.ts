@@ -1,10 +1,9 @@
 import './style.css';
+import { loadContinent } from './continentChoice';
 import type { Screen } from './ui/navigation';
-import { renderContinent } from './ui/screens/continent';
 import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
-import { renderHome } from './ui/screens/home';
-import { renderProgress } from './ui/screens/progress';
+import { renderHub } from './ui/screens/hub';
 import { renderQuiz } from './ui/screens/quiz';
 import { renderQuizResult } from './ui/screens/quizResult';
 import { renderResult } from './ui/screens/result';
@@ -31,14 +30,10 @@ document.addEventListener(
 function navigate(screen: Screen): void {
   app.replaceChildren();
   switch (screen.name) {
-    case 'home':
-      return renderHome(app, navigate);
+    case 'hub':
+      return renderHub(app, navigate, screen.continent);
     case 'flagTable':
       return renderFlagTable(app, navigate, screen.continent);
-    case 'progress':
-      return renderProgress(app, navigate);
-    case 'continent':
-      return renderContinent(app, navigate, screen.continent);
     case 'game':
       return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':
@@ -50,4 +45,4 @@ function navigate(screen: Screen): void {
   }
 }
 
-navigate({ name: 'home' });
+navigate({ name: 'hub', continent: loadContinent(localStorage) });

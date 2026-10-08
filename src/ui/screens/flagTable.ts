@@ -23,7 +23,7 @@ export function renderFlagTable(root: HTMLElement, navigate: Navigate, continent
         { className: 'solution-grid' },
         flags.map((c) => el('button', { className: 'flag-table-item', type: 'button', onclick: () => show(c) }, [solutionCard(c)])),
       ),
-      el('button', { className: 'link', onclick: () => navigate({ name: 'home' }) }, ['Voltar']),
+      el('button', { className: 'link', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
       dialog,
     ]),
   );

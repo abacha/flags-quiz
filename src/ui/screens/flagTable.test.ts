@@ -29,10 +29,10 @@ describe('renderFlagTable', () => {
     expect(captions(render('world'))).toHaveLength(248);
   });
 
-  it('goes back home on Voltar', () => {
+  it('goes back to the hub on the same continent on Voltar', () => {
     const root = render('oceania');
     [...root.querySelectorAll('button')].find((b) => b.textContent === 'Voltar')!.click();
-    expect(screens).toEqual([{ name: 'home' }]);
+    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
   });
 
   it('opens a flag large with its name in a dialog, and closes it on a click', () => {

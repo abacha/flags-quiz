@@ -17,7 +17,7 @@ export function renderQuizResult(root: HTMLElement, navigate: Navigate, screen: 
       ...solutionSection(`Bandeiras sem resposta (${unanswered.length})`, finished ? [] : unanswered),
       ...solutionSection('Bandeiras que você errou', missed),
       el('button', { className: 'primary', onclick: () => navigate({ name: 'quiz', continent, difficulty }) }, ['Jogar de novo']),
-      el('button', { className: 'link', onclick: () => navigate({ name: 'continent', continent }) }, ['Voltar']),
+      el('button', { className: 'link', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
     ]),
   );
 }

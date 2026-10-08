@@ -3,10 +3,8 @@ import type { ContinentKey, Difficulty } from '../engine/pool';
 import type { NewRecords } from '../quizRecords';
 
 export type Screen =
-  | { name: 'home' }
-  | { name: 'progress' }
+  | { name: 'hub'; continent: ContinentKey }
   | { name: 'flagTable'; continent: ContinentKey }
-  | { name: 'continent'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; correct: number; missed: Country[] }
   | { name: 'quiz'; continent: ContinentKey; difficulty: Difficulty }

@@ -1,0 +1,135 @@
+// @vitest-environment happy-dom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { countries } from '../../data/countries';
+import { goalFor, poolFor, type ContinentKey } from '../../engine/pool';
+import type { Screen } from '../navigation';
+import { renderHub } from './hub';
+
+describe('renderHub', () => {
+  let root: HTMLElement;
+  let screens: Screen[];
+
+  const render = (continent: ContinentKey) => {
+    root = document.createElement('div');
+    renderHub(root, (screen) => screens.push(screen), continent);
+  };
+  const tabs = () => [...root.querySelectorAll<HTMLButtonElement>('.tab')];
+  const tab = (label: string) => tabs().find((t) => t.firstChild!.textContent === label)!;
+  const card = (level: string) => [...root.querySelectorAll<HTMLElement>('.level-card')].find((c) => c.querySelector('h2')!.textContent === level)!;
+  const tags = (level: string) => [...card(level).querySelectorAll('.tag')].map((t) => [t.textContent, t.classList.contains('ok')]);
+  const button = (scope: ParentNode, text: string) => [...scope.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === text)!;
+  const goal = (continent: ContinentKey, difficulty: 'easy' | 'medium' | 'hard' | 'general') =>
+    goalFor(difficulty, poolFor(countries, continent, difficulty).length);
+
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem(
+      'flags-quiz:quiz-records-v2',
+      JSON.stringify({
+        africa: { easy: { bestScore: 20, bestTimeMs: 192000, completed: true }, medium: { bestScore: 12, completed: true }, hard: { bestScore: 9 } },
+        world: { easy: { bestScore: 84, bestTimeMs: 754000 } },
+      }),
+    );
+    localStorage.setItem('flags-quiz:medals', JSON.stringify({ africa: { easy: true } }));
+    screens = [];
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('shows the title and the completed quizzes out of all 24 in the header', () => {
+    render('africa');
+    expect(root.querySelector('.hub-header h1')!.textContent).toBe('🌍 Bandeiras');
+    expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+  });
+
+  it('shows one tab per continent in order with its completed quizzes, the chosen one filled', () => {
+    render('africa');
+    expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 1/4', 'África 2/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
+    expect(tabs().filter((t) => t.classList.contains('on'))).toEqual([tab('África')]);
+  });
+
+  it('scrolls the remembered tab into view, since the last tabs start off screen on a phone', () => {
+    const scrolled = vi.spyOn(HTMLElement.prototype, 'scrollIntoView');
+    render('oceania');
+    expect(scrolled.mock.contexts.at(-1)).toBe(tab('Oceania'));
+  });
+
+  it('remembers the continent it opens on', () => {
+    render('africa');
+    expect(localStorage.getItem('flags-quiz:continent')).toBe('africa');
+  });
+
+  it('switches continent in place, without changing screen, and remembers the new one', () => {
+    render('africa');
+    const main = root.firstElementChild;
+    tab('Oceania').click();
+    expect(screens).toEqual([]);
+    expect(root.firstElementChild).toBe(main);
+    expect(tab('Oceania').classList.contains('on')).toBe(true);
+    expect(tab('África').classList.contains('on')).toBe(false);
+    expect(card('Fácil').querySelector('.meta')!.textContent).toBe(`${poolFor(countries, 'oceania', 'easy').length} bandeiras`);
+    expect(root.querySelectorAll('.level-card')).toHaveLength(4);
+    expect(root.querySelectorAll('.see-all')).toHaveLength(1);
+    expect(localStorage.getItem('flags-quiz:continent')).toBe('oceania');
+  });
+
+  it('shows each level with its flag count and the first three flags of its pool', () => {
+    render('africa');
+    const pool = poolFor(countries, 'africa', 'hard');
+    expect([...root.querySelectorAll('.level-card h2')].map((h) => h.textContent)).toEqual(['Fácil', 'Médio', 'Difícil', 'Geral']);
+    expect(card('Difícil').querySelector('.meta')!.textContent).toBe(`${pool.length} bandeiras`);
+    expect([...card('Difícil').querySelectorAll('.thumbs img')].map((img) => img.getAttribute('src'))).toEqual(
+      pool.slice(0, 3).map((c) => `/flags/${c.iso2}.svg`),
+    );
+  });
+
+  it('tags the medal and the quiz of each level by its state', () => {
+    render('africa');
+    expect(tags('Fácil')).toEqual([
+      ['🏅 Medalha', true],
+      ['✓ Quiz 03:12', true],
+    ]);
+    expect(tags('Médio')).toEqual([
+      [`🏅 meta ${goal('africa', 'medium')}`, false],
+      ['✓ Quiz', true],
+    ]);
+    expect(tags('Difícil')).toEqual([
+      [`🏅 meta ${goal('africa', 'hard')}`, false],
+      ['Quiz 9 pts', false],
+    ]);
+    expect(tags('Geral')).toEqual([
+      [`🏅 meta ${goal('africa', 'general')}`, false],
+      ['Quiz —', false],
+    ]);
+  });
+
+  it('counts a record with a best time and no completed mark as a completed quiz', () => {
+    render('world');
+    expect(tags('Fácil')[1]).toEqual(['✓ Quiz 12:34', true]);
+  });
+
+  it('starts Aprender and Quiz on the level of the chosen continent', () => {
+    render('africa');
+    button(card('Difícil'), 'Aprender').click();
+    button(card('Difícil'), 'Quiz').click();
+    expect(screens).toEqual([
+      { name: 'game', continent: 'africa', difficulty: 'hard' },
+      { name: 'quiz', continent: 'africa', difficulty: 'hard' },
+    ]);
+  });
+
+  it('links to the flag table of the chosen continent', () => {
+    render('africa');
+    const link = root.querySelector<HTMLButtonElement>('.see-all')!;
+    expect(link.textContent).toBe(`Ver as ${poolFor(countries, 'africa', 'general').length} bandeiras da África →`);
+    link.click();
+    expect(screens).toEqual([{ name: 'flagTable', continent: 'africa' }]);
+  });
+
+  it('words the flag table link for Mundo', () => {
+    render('world');
+    expect(root.querySelector('.see-all')!.textContent).toBe('Ver as 248 bandeiras do Mundo →');
+  });
+});

@@ -30,7 +30,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     navigate(screen);
   };
 
-  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'continent', continent }) }, ['Sair']);
+  const exit = el('button', { className: 'link', onclick: () => leave({ name: 'hub', continent }) }, ['Sair']);
   root.append(el('main', { className: 'screen' }, [exit, hud, stage]));
 
   const updateHud = () =>
