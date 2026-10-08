@@ -17,4 +17,10 @@ describe('continent choice', () => {
     expect(loadContinent(store)).toBe('oceania');
     expect(store.data.get('flags-quiz:continent')).toBe('oceania');
   });
+
+  it('falls back to Mundo when the stored continent is not one of the known keys', () => {
+    const store = memoryStore();
+    store.data.set('flags-quiz:continent', 'atlantis');
+    expect(loadContinent(store)).toBe('world');
+  });
 });
