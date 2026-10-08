@@ -396,3 +396,19 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 
 .home-row { display: flex; gap: 10px; }
 .home-row .big { flex: 1; }
+
+.flag-table-item { padding: 0; border: none; background: none; text-align: left; }
+
+.flag-dialog {
+  max-width: min(90vw, 900px);
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.flag-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+.flag-dialog .flag { width: min(80vw, 860px); max-height: 70vh; object-fit: contain; box-shadow: none; }
+.flag-dialog p { margin: 12px 0 0; font-size: 1.3rem; font-weight: 600; text-align: center; }

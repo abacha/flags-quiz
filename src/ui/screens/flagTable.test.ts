@@ -34,4 +34,18 @@ describe('renderFlagTable', () => {
     [...root.querySelectorAll('button')].find((b) => b.textContent === 'Voltar')!.click();
     expect(screens).toEqual([{ name: 'home' }]);
   });
+
+  it('opens a flag large with its name in a dialog, and closes it on a click', () => {
+    const root = render('oceania');
+    document.body.append(root);
+    const tonga = [...root.querySelectorAll<HTMLButtonElement>('.flag-table-item')].find((b) => b.textContent!.startsWith('Tonga'))!;
+    tonga.click();
+    const dialog = root.querySelector('dialog')!;
+    expect(dialog.open).toBe(true);
+    expect(dialog.querySelector('img')!.getAttribute('src')).toMatch(/flags\/to\.svg$/);
+    expect(dialog.textContent).toContain('Tonga');
+    dialog.click();
+    expect(dialog.open).toBe(false);
+    root.remove();
+  });
 });
