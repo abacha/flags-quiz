@@ -20,6 +20,12 @@ No game rule, scoring, storage key or question format changes.
 - Quiz's ✕ ends the quiz and opens its result, as "Encerrar" does today.
 - The Learn keyboard shortcuts and the multi-click guard stay as they are.
 
+## Device back
+
+Added at the operator's request on 2026-10-08, once the app was installed as a PWA.
+The phone's back button does what each screen's own back does: the flag table closes an open flag first and then returns to the hub, Learn leaves to the hub, Quiz asks "Encerrar o quiz?" and ends the quiz only when confirmed, a result returns to the hub, and on the hub it closes the app.
+When the keyboard opens, the page resizes to the visible area (`interactive-widget=resizes-content`), so the quiz keeps its top bar and grid on screen; on short viewports the dock's large flag shrinks.
+
 ## Hub
 
 - Header bar in the accent color: "🌍 Bandeiras" and a pill with the total "N/24 quizzes" (completed quizzes, same rule as the progress screen spec).

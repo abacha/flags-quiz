@@ -2,6 +2,7 @@ import { countries, similarGroups } from '../../data/countries';
 import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
+import { onBack } from '../backButton';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -31,7 +32,9 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     navigate(screen);
   };
 
-  const bar = topBar(`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, () => leave({ name: 'hub', continent }));
+  const exit = () => leave({ name: 'hub', continent });
+  const bar = topBar(`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, exit);
+  onBack(exit);
   root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
   const updateHud = () =>

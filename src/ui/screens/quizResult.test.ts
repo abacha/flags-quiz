@@ -1,10 +1,20 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { countries } from '../../data/countries';
+import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderQuizResult } from './quizResult';
 
 const [fiji, tonga, samoa] = ['fj', 'to', 'ws'].map((iso2) => countries.find((c) => c.iso2 === iso2)!);
+
+function pressDeviceBack(times = 1): void {
+  vi.spyOn(history, 'pushState').mockImplementation(() => {});
+  vi.spyOn(history, 'back').mockImplementation(() => {});
+  const stop = listenForBack();
+  settleBack();
+  for (let i = 0; i < times; i++) window.dispatchEvent(new PopStateEvent('popstate'));
+  stop();
+}
 
 function render(overrides: Partial<Extract<Screen, { name: 'quizResult' }>>, screens: Screen[] = []): HTMLElement {
   const root = document.createElement('div');
@@ -71,5 +81,12 @@ describe('renderQuizResult', () => {
   it('shows no unanswered section when the quiz was finished', () => {
     const root = render({ finished: true });
     expect([...root.querySelectorAll('h2')].map((h) => h.textContent)).not.toContain('Bandeiras sem resposta (0)');
+  });
+
+  it('goes back to the hub on the device back', () => {
+    const screens: Screen[] = [];
+    render({}, screens);
+    pressDeviceBack();
+    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
   });
 });

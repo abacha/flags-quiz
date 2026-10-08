@@ -1,5 +1,6 @@
 import './style.css';
 import { loadContinent } from './continentChoice';
+import { listenForBack, settleBack } from './ui/backButton';
 import type { Screen } from './ui/navigation';
 import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
@@ -29,6 +30,11 @@ document.addEventListener(
 
 function navigate(screen: Screen): void {
   app.replaceChildren();
+  render(screen);
+  settleBack();
+}
+
+function render(screen: Screen): void {
   switch (screen.name) {
     case 'hub':
       return renderHub(app, navigate, screen.continent);
@@ -45,4 +51,5 @@ function navigate(screen: Screen): void {
   }
 }
 
+listenForBack();
 navigate({ name: 'hub', continent: loadContinent(localStorage) });

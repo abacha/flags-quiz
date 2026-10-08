@@ -1,5 +1,6 @@
 import { countries, type Country } from '../../data/countries';
 import { poolFor, type ContinentKey } from '../../engine/pool';
+import { onBack } from '../backButton';
 import { statusBadge } from '../badge';
 import { el } from '../dom';
 import { flagImg } from '../flag';
@@ -14,6 +15,7 @@ export function renderFlagTable(root: HTMLElement, navigate: Navigate, continent
     dialog.replaceChildren(flagImg(country), el('p', {}, [country.name, ' ', statusBadge(country)]));
     dialog.showModal();
   };
+  onBack(() => (dialog.open ? dialog.close() : navigate({ name: 'hub', continent })));
   root.append(
     el('main', { className: 'screen wide' }, [
       el('header', { className: 'table-head' }, [

@@ -1,8 +1,10 @@
 // @vitest-environment happy-dom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries } from '../../data/countries';
+import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderFlagTable } from './flagTable';
+
 
 describe('renderFlagTable', () => {
   let screens: Screen[];
@@ -54,5 +56,22 @@ describe('renderFlagTable', () => {
     const back = [...root.querySelectorAll('button')].find((b) => b.textContent === 'Voltar')!;
     expect(back.closest('.table-head')).not.toBeNull();
     expect(back.compareDocumentPosition(root.querySelector('.solution-grid')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('closes an open flag on the device back before leaving to the hub', () => {
+    const root = render('oceania');
+    document.body.append(root);
+    root.querySelector<HTMLButtonElement>('.flag-table-item')!.click();
+    const dialog = root.querySelector('dialog')!;
+    vi.spyOn(history, 'pushState').mockImplementation(() => {});
+    const stop = listenForBack();
+    settleBack();
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    expect(dialog.open).toBe(false);
+    expect(screens).toHaveLength(0);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
+    stop();
+    root.remove();
   });
 });

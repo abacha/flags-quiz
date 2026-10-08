@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import { poolFor } from '../../engine/pool';
+import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderQuiz } from './quiz';
 
@@ -12,6 +13,15 @@ const byIso = new Map(countries.map((c) => [c.iso2, c]));
 function countryIn(img: HTMLImageElement): Country {
   const iso2 = img.getAttribute('src')!.match(/flags\/(.+)\.svg$/)![1];
   return byIso.get(iso2)!;
+}
+
+function pressDeviceBack(times = 1): void {
+  vi.spyOn(history, 'pushState').mockImplementation(() => {});
+  vi.spyOn(history, 'back').mockImplementation(() => {});
+  const stop = listenForBack();
+  settleBack();
+  for (let i = 0; i < times; i++) window.dispatchEvent(new PopStateEvent('popstate'));
+  stop();
 }
 
 describe('renderQuiz', () => {
@@ -178,5 +188,21 @@ describe('renderQuiz', () => {
     expect(rule).toBeDefined();
     expect(rule!.style.display).not.toBe('none');
     expect(rule!.style.visibility).toBe('hidden');
+  });
+
+  it('asks before ending the quiz on the device back, and keeps playing when declined', () => {
+    const confirm = vi.fn(() => false);
+    vi.stubGlobal('confirm', confirm);
+    pressDeviceBack();
+    expect(confirm).toHaveBeenCalledWith('Encerrar o quiz?');
+    expect(screens).toHaveLength(0);
+    vi.unstubAllGlobals();
+  });
+
+  it('ends the quiz on the device back once confirmed', () => {
+    vi.stubGlobal('confirm', vi.fn(() => true));
+    pressDeviceBack();
+    expect(screens[0]).toMatchObject({ name: 'quizResult', finished: false });
+    vi.unstubAllGlobals();
   });
 });

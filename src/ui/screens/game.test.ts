@@ -1,9 +1,19 @@
 // @vitest-environment happy-dom
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries } from '../../data/countries';
 import { goalFor, poolFor } from '../../engine/pool';
+import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderGame } from './game';
+
+function pressDeviceBack(times = 1): void {
+  vi.spyOn(history, 'pushState').mockImplementation(() => {});
+  vi.spyOn(history, 'back').mockImplementation(() => {});
+  const stop = listenForBack();
+  settleBack();
+  for (let i = 0; i < times; i++) window.dispatchEvent(new PopStateEvent('popstate'));
+  stop();
+}
 
 describe('renderGame', () => {
   let root: HTMLElement;
@@ -36,5 +46,10 @@ describe('renderGame', () => {
 
   it('has no Sair button besides the top bar', () => {
     expect([...root.querySelectorAll('button')].map((b) => b.textContent)).not.toContain('Sair');
+  });
+
+  it('leaves to the hub on the device back', () => {
+    pressDeviceBack();
+    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
   });
 });

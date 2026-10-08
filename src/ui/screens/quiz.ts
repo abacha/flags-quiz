@@ -3,6 +3,7 @@ import { poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Quiz } from '../../engine/quiz';
 import { saveQuizOutcome } from '../../quizRecords';
 import { el } from '../dom';
+import { onBack } from '../backButton';
 import { flagImg } from '../flag';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate } from '../navigation';
@@ -38,6 +39,9 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     });
   };
   const bar = topBar(`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, finish);
+  onBack(() => {
+    if (window.confirm('Encerrar o quiz?')) finish();
+  });
 
   const figure = el('div', { className: 'figure' });
   const message = el('p', { className: 'quiz-message', hidden: true }, ['Errado, tente de novo']);
