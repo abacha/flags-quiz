@@ -50,6 +50,11 @@ describe('renderHub', () => {
     expect(tabs().filter((t) => t.classList.contains('on'))).toEqual([tab('África')]);
   });
 
+  it('marks the chosen tab as pressed for assistive tech and the rest as not pressed', () => {
+    render('africa');
+    expect(tabs().map((t) => t.getAttribute('aria-pressed'))).toEqual(['false', 'true', 'false', 'false', 'false', 'false']);
+  });
+
   it('scrolls the remembered tab into view, since the last tabs start off screen on a phone', () => {
     const scrolled = vi.spyOn(HTMLElement.prototype, 'scrollIntoView');
     render('oceania');
@@ -69,6 +74,8 @@ describe('renderHub', () => {
     expect(root.firstElementChild).toBe(main);
     expect(tab('Oceania').classList.contains('on')).toBe(true);
     expect(tab('África').classList.contains('on')).toBe(false);
+    expect(tab('Oceania').getAttribute('aria-pressed')).toBe('true');
+    expect(tab('África').getAttribute('aria-pressed')).toBe('false');
     expect(card('Fácil').querySelector('.meta')!.textContent).toBe(`${poolFor(countries, 'oceania', 'easy').length} bandeiras`);
     expect(root.querySelectorAll('.level-card')).toHaveLength(4);
     expect(root.querySelectorAll('.see-all')).toHaveLength(1);

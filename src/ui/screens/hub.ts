@@ -18,7 +18,11 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
 
   const select = (continent: ContinentKey) => {
     saveContinent(localStorage, continent);
-    for (const [key, tab] of tabs) tab.classList.toggle('on', key === continent);
+    for (const [key, tab] of tabs) {
+      const selected = key === continent;
+      tab.classList.toggle('on', selected);
+      tab.setAttribute('aria-pressed', String(selected));
+    }
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     levels.replaceChildren(
       ...DIFFICULTIES.map((difficulty) => levelCard(navigate, continent, difficulty, medals, records)),
