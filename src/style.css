@@ -392,5 +392,7 @@ h2 { font-size: 1.15rem; margin: 0 0 12px; }
 .progress-levels { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .progress-levels li { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
 
+.screen.wide { max-width: 1200px; }
+
 .home-row { display: flex; gap: 10px; }
 .home-row .big { flex: 1; }

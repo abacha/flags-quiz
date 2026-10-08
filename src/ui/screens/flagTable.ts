@@ -8,7 +8,7 @@ import { solutionCard } from '../questions/feedback';
 export function renderFlagTable(root: HTMLElement, navigate: Navigate, continent: ContinentKey): void {
   const flags = poolFor(countries, continent, 'general').sort((a, b) => a.name.localeCompare(b.name, 'pt'));
   root.append(
-    el('main', { className: 'screen' }, [
+    el('main', { className: 'screen wide' }, [
       el('h1', {}, [CONTINENT_LABEL[continent]]),
       el('p', { className: 'detail' }, [`${flags.length} bandeiras`]),
       el('div', { className: 'solution-grid' }, flags.map((c) => solutionCard(c))),
