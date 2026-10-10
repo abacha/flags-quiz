@@ -5,7 +5,7 @@ import { crop, flagToNames, matchPairs, sortSimilar, typeName } from './formats'
 import { LEVEL_RULES, goalFor, poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
-import { Round, STARTING_LIVES, type RoundSettings } from './round';
+import { REVIEW_GAP, Round, STARTING_LIVES, type RoundSettings } from './round';
 
 const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups, similarDistractors: false };
 const hard: FormatContext = { pool: poolFor(countries, 'africa', 'hard'), world: countries, similarGroups, similarDistractors: true };
@@ -71,54 +71,77 @@ describe('Round', () => {
     expect(round.missed.length).toBeGreaterThan(0);
   });
 
-  it('introduces every country with a choice format and asks it twice per pass, bar the one closing the pass', () => {
+  const playPasses = (round: Round, passes: number): Question[][] => {
+    const byPass: Question[][] = Array.from({ length: passes }, () => []);
+    for (;;) {
+      const question = round.nextQuestion();
+      if (round.pass > passes) return byPass;
+      byPass[round.pass - 1].push(question);
+      round.answer(rightAnswer(question));
+    }
+  };
+
+  it('introduces every country with a choice format and asks most of them twice in the first pass', () => {
     for (const seed of [4, 40, 400]) {
-      const round = new Round(easy, settings(100), seededRng(seed), [typeName, crop, flagToNames]);
+      const round = new Round(easy, settings(1000), seededRng(seed), [typeName, crop, flagToNames]);
       const formatsByTarget = new Map<string, string[]>();
-      for (let i = 0; i < 2 * easy.pool.length; i++) {
-        const question = round.nextQuestion();
-        round.answer(rightAnswer(question));
+      for (const question of playPasses(round, 1)[0]) {
         formatsByTarget.set(question.target.iso2, [...(formatsByTarget.get(question.target.iso2) ?? []), question.format]);
       }
-      expect(formatsByTarget.size).toBe(easy.pool.length);
       const lists = [...formatsByTarget.values()];
-      expect(lists.every((formats) => formats[0] === 'flagToNames')).toBe(true);
-      // The flag closing the first pass is asked once, and the second pass starts inside the window.
-      expect(lists.filter((formats) => formats.length !== 2).length).toBeLessThanOrEqual(2);
+      expect(formatsByTarget.size).toBe(easy.pool.length);
+      expect(lists.every((formats) => formats[0] === 'flagToNames' && formats.length <= 2)).toBe(true);
+      expect(lists.filter((formats) => formats.length === 2).length).toBeGreaterThanOrEqual(easy.pool.length - REVIEW_GAP);
     }
   });
 
-  it('never targets the country of the previous question', () => {
+  it(`asks ${REVIEW_GAP} other questions before bringing a country back`, () => {
     for (const seed of [41, 42, 43]) {
-      const round = new Round(easy, settings(100), seededRng(seed), [typeName, flagToNames]);
-      let previous = '';
-      for (let i = 0; i < 3 * easy.pool.length; i++) {
+      const round = new Round(easy, settings(1000), seededRng(seed), [typeName, flagToNames]);
+      const lastAsked = new Map<string, number>();
+      for (let i = 0; i < 4 * easy.pool.length; i++) {
         const question = round.nextQuestion();
         round.answer(rightAnswer(question));
-        expect(question.target.iso2).not.toBe(previous);
-        previous = question.target.iso2;
+        const last = lastAsked.get(question.target.iso2);
+        if (last !== undefined) expect(i - last).toBeGreaterThan(REVIEW_GAP);
+        lastAsked.set(question.target.iso2, i);
       }
     }
+  });
+
+  it('shows most of a small pool in a round of its goal', () => {
+    const pool = poolFor(countries, 'oceania', 'easy');
+    const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: false };
+    const goal = goalFor('easy', pool.length);
+    let distinct = 0;
+    for (let seed = 1; seed <= 200; seed++) {
+      const round = new Round(ctx, settings(goal), seededRng(seed));
+      const targets = new Set<string>();
+      while (round.status === 'playing') {
+        const question = round.nextQuestion();
+        targets.add(question.target.iso2);
+        round.answer(rightAnswer(question));
+      }
+      distinct += targets.size;
+    }
+    expect(distinct / 200).toBeGreaterThan(7);
   });
 
   it('opens every format to every country from the second pass on', () => {
-    const round = new Round(easy, settings(100), seededRng(44), [typeName, flagToNames]);
-    for (let i = 0; i < 2 * easy.pool.length; i++) round.answer(rightAnswer(round.nextQuestion()));
-    const secondPass = Array.from({ length: easy.pool.length }, () => {
-      const question = round.nextQuestion();
-      round.answer(rightAnswer(question));
-      return question;
-    });
-    expect(new Set(secondPass.map((q) => q.target.iso2)).size).toBe(easy.pool.length);
+    const round = new Round(easy, settings(1000), seededRng(44), [typeName, flagToNames]);
+    const [, secondPass] = playPasses(round, 2);
+    const targets = secondPass.map((q) => q.target.iso2);
+    expect(new Set(targets).size).toBe(targets.length);
+    expect(targets.length).toBeGreaterThanOrEqual(easy.pool.length - REVIEW_GAP);
     expect(secondPass.some((q) => q.format === 'typeName')).toBe(true);
   });
 
   it('starts the next pass with the countries missed in the round', () => {
-    const round = new Round(easy, settings(100), seededRng(5), [typeName, flagToNames]);
+    const round = new Round(easy, settings(1000), seededRng(5), [typeName, flagToNames]);
     const first = round.nextQuestion();
     round.answer(wrongAnswer(first));
-    for (let i = 0; i < 2 * easy.pool.length - 1; i++) round.answer(rightAnswer(round.nextQuestion()));
-    expect(round.nextQuestion().target).toBe(first.target);
+    const [, secondPass] = playPasses(round, 2);
+    expect(secondPass[0].target).toBe(first.target);
   });
 
   it('builds similar groups only from countries already asked and not yet spent', () => {
@@ -186,13 +209,22 @@ describe('Round', () => {
 
   it('draws recall formats more often with a higher recall weight', () => {
     let recall = 0;
-    for (let seed = 1; seed <= 400; seed++) {
-      const round = new Round(easy, settings(12, 3), seededRng(seed), [typeName, flagToNames]);
-      for (let i = 0; i < 2; i++) round.answer(rightAnswer(round.nextQuestion()));
-      if (round.nextQuestion().format === 'typeName') recall++;
+    let reviews = 0;
+    for (let seed = 1; seed <= 100; seed++) {
+      const round = new Round(easy, settings(1000, 3), seededRng(seed), [typeName, flagToNames]);
+      const asked = new Set<string>();
+      for (let i = 0; i < 2 * easy.pool.length; i++) {
+        const question = round.nextQuestion();
+        round.answer(rightAnswer(question));
+        if (asked.has(question.target.iso2)) {
+          reviews++;
+          if (question.format === 'typeName') recall++;
+        }
+        asked.add(question.target.iso2);
+      }
     }
-    expect(recall / 400).toBeGreaterThan(0.65);
-    expect(recall / 400).toBeLessThan(0.85);
+    expect(recall / reviews).toBeGreaterThan(0.65);
+    expect(recall / reviews).toBeLessThan(0.85);
   });
 
   it('refuses a second answer to the same question', () => {

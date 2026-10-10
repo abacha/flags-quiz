@@ -32,15 +32,17 @@ Seen lasts the whole round and is never reset between passes.
 - An unseen flag can only be targeted by a choice format.
 - A seen flag can be targeted by any format.
 - `sortSimilar` and `typeSimilar` show only the group members that are seen and unspent, need at least two of them, and spend every member shown.
-- The flag targeted by the previous question is never targeted again right away; when it is the only unspent flag left, a new pass starts instead.
+- A flag comes back only after at least 5 other questions (`REVIEW_GAP`), so its review is never a repeat of what the player just read.
 
 **Spending:** a flag is spent when it is targeted while already seen.
-In the first pass this means two appearances per flag, the first always a choice question.
+In the first pass this means two appearances per flag, the first always a choice question; a flag introduced in the last questions of a pass can be left with one appearance.
 From the second pass on every flag is already seen, so one appearance spends it and every format is open.
-When no format can target an unspent flag, a new pass starts as today, missed flags first.
+When no unspent flag outside the review gap can be asked, a new pass starts, missed flags first.
 
-**Format draw:** unchanged.
-A format is eligible when it can target at least one candidate; the format is drawn by weight (recall formats weigh the level's `recallWeight`, the others 1) and the target is drawn among the candidates it can take.
+**Draw:** the flag first, then the format.
+The flag is drawn evenly among the unspent flags outside the review gap that some format can take, and the format is drawn by weight among the formats that can take it (recall formats weigh the level's `recallWeight`, the others 1).
+Drawing the format first let the review formats pull flags back early: a round of Oceania Fácil, 8 questions on 9 flags, showed 5.0 different flags on average.
+Drawing the flag first with the review gap raises that to 7.3, with 96% choice questions on Fácil and 72% on Difícil (2,000 simulated rounds per level).
 
 **Goals,** about 30% above today:
 
@@ -57,13 +59,12 @@ Every goal fits in the first pass, which offers two appearances per flag: the la
 
 - `src/engine/question.ts`: add `choice: boolean` to `Format`; drop `cropType` from `Question`.
 - `src/engine/formats.ts`: set `choice` on each format; delete `cropType` and remove it from `ALL_FORMATS`.
-- `src/engine/round.ts`: keep a `seen` set beside `spent` and the previous target's code.
-  A format may take a candidate when `format.canTarget(...)` holds and either `format.choice` is true or the candidate is seen; the group formats see a pool narrowed to seen, unspent flags.
-  After building a question, its targets that were already seen become spent, and the question's target becomes seen.
-  The previous target is never a candidate.
+- `src/engine/round.ts`: keep the question index at which each flag was last asked beside `spent`, and expose the current `pass`.
+  A format may take a flag when `format.canTarget(...)` holds and either `format.choice` is true or the flag was asked before; the group formats see a pool narrowed to asked, unspent flags outside the review gap.
+  After building a question, its flags that were already asked become spent, and the target's index is recorded.
 - `src/engine/pool.ts`: new goal ratios in `LEVEL_RULES`.
 - `src/engine/answer.ts` and `src/ui/questions/render.ts`: delete the `cropType` branches.
-- Tests: `round.test.ts` covers an unseen flag never getting a non-choice format, the two appearances per flag in the first pass, the group formats showing only seen, unspent members, the no-immediate-repeat rule and the second pass opening every format; `pool.test.ts` covers the new goals; the `cropType` tests go away.
+- Tests: `round.test.ts` covers an unseen flag never getting a non-choice format, the two appearances per flag in the first pass, the group formats showing only seen, unspent members, the review gap, how many flags a short round shows, and the second pass opening every format; `pool.test.ts` covers the new goals; the `cropType` tests go away.
 - `README.md`: "eleven question formats" becomes ten, and the sentence describes the choice-first introduction.
 
 ## Unchanged
