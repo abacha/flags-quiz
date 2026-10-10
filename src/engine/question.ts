@@ -16,7 +16,6 @@ export type Question =
   | { format: 'matchPairs'; target: Country; countries: Country[] }
   | { format: 'oddOneOut'; target: Country; intruder: Country; options: Country[] }
   | { format: 'sortSimilar'; target: Country; countries: Country[] }
-  | { format: 'cropType'; target: Country; crop: Crop }
   | { format: 'typeSimilar'; target: Country; countries: Country[] };
 
 export type FormatId = Question['format'];
@@ -31,6 +30,7 @@ export interface FormatContext {
 export interface Format {
   id: FormatId;
   recall: boolean;
+  choice: boolean;
   canTarget(target: Country, ctx: FormatContext): boolean;
   build(target: Country, ctx: FormatContext, rng: Rng): Question;
 }

@@ -28,11 +28,11 @@ describe('poolFor', () => {
 
 describe('goalFor', () => {
   it.each([
-    ['africa', [14, 20, 28, 34]],
-    ['americas', [13, 18, 25, 31]],
-    ['asia', [12, 17, 23, 28]],
-    ['europe', [13, 19, 25, 32]],
-    ['oceania', [6, 9, 13, 15]],
+    ['africa', [18, 26, 37, 44]],
+    ['americas', [17, 24, 33, 40]],
+    ['asia', [15, 23, 29, 37]],
+    ['europe', [17, 25, 33, 41]],
+    ['oceania', [8, 12, 17, 20]],
   ] as const)('scales the %s goals with the pool', (continent, goals) => {
     expect(LEVELS.map((d) => goalFor(d, poolFor(countries, continent, d).length))).toEqual(goals);
   });
@@ -49,6 +49,6 @@ describe('Mundo', () => {
   it('sizes the pools and scales the goals', () => {
     const sizes = LEVELS.map((d) => poolFor(countries, 'world', d).length);
     expect(sizes).toEqual([84, 83, 81, 248]);
-    expect(LEVELS.map((d, i) => goalFor(d, sizes[i]))).toEqual([56, 83, 113, 138]);
+    expect(LEVELS.map((d, i) => goalFor(d, sizes[i]))).toEqual([73, 108, 147, 180]);
   });
 });

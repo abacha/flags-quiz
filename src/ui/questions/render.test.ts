@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import { countries, similarGroups } from '../../data/countries';
-import { crop, cropType, flagToNames, flagToTwoNames, typeName, typeSimilar } from '../../engine/formats';
+import { crop, flagToNames, flagToTwoNames, typeName, typeSimilar } from '../../engine/formats';
 import { poolFor } from '../../engine/pool';
 import type { FormatContext } from '../../engine/question';
 import { seededRng } from '../../engine/rng';
@@ -31,13 +31,6 @@ describe('prompts stay neutral between countries and territories', () => {
     const question = typeName.build(byIso('ky'), ctx, seededRng(1));
     const rendered = renderQuestion(question, () => {});
     expect(rendered.querySelector('h2')?.textContent).toBe('Escreva o nome desta bandeira');
-    expect(rendered.querySelector('input')?.placeholder).toBe('Nome');
-  });
-
-  it('asks for the name, not the country name, when typing a crop', () => {
-    const question = cropType.build(byIso('ky'), ctx, seededRng(1));
-    const rendered = renderQuestion(question, () => {});
-    expect(rendered.querySelector('h2')?.textContent).toBe('Escreva o nome deste pedaço de bandeira');
     expect(rendered.querySelector('input')?.placeholder).toBe('Nome');
   });
 

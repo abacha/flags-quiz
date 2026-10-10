@@ -33,7 +33,6 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'trueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
-    case 'cropType':
       return targetGrade(acceptsTypedName(question.target, expectKind(answer, 'text').text), question.target);
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;

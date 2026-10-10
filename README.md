@@ -6,7 +6,8 @@ Fácil, Médio and Difícil split each continent into three tiers, Geral holds a
 The header counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, and each tab counts its own out of 4.
 Each level card shows its flag count and first flags, a medal tag with the Aprender goal, a Quiz tag with the best time or score, and one button for each mode.
 
-Aprender uses eleven question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
+Aprender uses ten question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
+Each flag first appears in a choice question, with its name on screen, and only after that in the other formats.
 Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
 
 Quiz shows every flag of the level at once as a grid on the same levels: type the name of the highlighted flag, tap any other flag to switch to it or "Pular" to move to the next one, and race the timer. Answered flags show a check and their name, and a red mark flags one you got wrong. The best score and, for a quiz finished with no errors, the best time are kept per level.

@@ -3,7 +3,6 @@ import { countries, similarGroups, type Country } from '../data/countries';
 import {
   ALL_FORMATS,
   crop,
-  cropType,
   flagToNames,
   flagToTwoNames,
   matchPairs,
@@ -70,9 +69,9 @@ describe('option formats', () => {
 });
 
 describe('crop formats', () => {
-  it.each([crop, cropType])('%o places the crop origin inside the flag', (format) => {
-    for (const question of buildMany(format, easy)) {
-      if (question.format !== 'crop' && question.format !== 'cropType') throw new Error('expected a crop');
+  it('places the crop origin inside the flag', () => {
+    for (const question of buildMany(crop, easy)) {
+      if (question.format !== 'crop') throw new Error('expected a crop');
       for (const value of [question.crop.originX, question.crop.originY]) {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(100);
@@ -172,10 +171,9 @@ describe.each([sortSimilar, typeSimilar])('%o', (format) => {
 });
 
 describe('ALL_FORMATS', () => {
-  it('lists the eleven formats once each', () => {
+  it('lists the ten formats once each', () => {
     expect(ALL_FORMATS.map((f) => f.id).sort()).toEqual([
       'crop',
-      'cropType',
       'flagToNames',
       'flagToTwoNames',
       'matchPairs',
@@ -188,8 +186,17 @@ describe('ALL_FORMATS', () => {
     ]);
   });
 
-  it('marks the three typing formats as recall', () => {
-    expect(ALL_FORMATS.filter((f) => f.recall).map((f) => f.id).sort()).toEqual(['cropType', 'typeName', 'typeSimilar']);
+  it('marks the two typing formats as recall', () => {
+    expect(ALL_FORMATS.filter((f) => f.recall).map((f) => f.id).sort()).toEqual(['typeName', 'typeSimilar']);
+  });
+
+  it('marks the formats that show the names to pick from as choice', () => {
+    expect(ALL_FORMATS.filter((f) => f.choice).map((f) => f.id).sort()).toEqual([
+      'flagToNames',
+      'flagToTwoNames',
+      'matchPairs',
+      'nameToFlags',
+    ]);
   });
 });
 

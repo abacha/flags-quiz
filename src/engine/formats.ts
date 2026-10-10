@@ -44,6 +44,7 @@ const similarGroup = (target: Country, ctx: FormatContext, rng: Rng) => shuffle(
 export const nameToFlags: Format = {
   id: 'nameToFlags',
   recall: false,
+  choice: true,
   canTarget: always,
   build: (target, ctx, rng) => ({
     format: 'nameToFlags',
@@ -55,6 +56,7 @@ export const nameToFlags: Format = {
 export const flagToNames: Format = {
   id: 'flagToNames',
   recall: false,
+  choice: true,
   canTarget: always,
   build: (target, ctx, rng) => ({
     format: 'flagToNames',
@@ -66,6 +68,7 @@ export const flagToNames: Format = {
 export const flagToTwoNames: Format = {
   id: 'flagToTwoNames',
   recall: false,
+  choice: true,
   canTarget: always,
   build: (target, ctx, rng) => ({ format: 'flagToTwoNames', target, options: optionsWith(target, ctx, 2, rng) }),
 };
@@ -73,6 +76,7 @@ export const flagToTwoNames: Format = {
 export const crop: Format = {
   id: 'crop',
   recall: false,
+  choice: false,
   canTarget: always,
   build: (target, ctx, rng) => ({ format: 'crop', target, options: optionsWith(target, ctx, 4, rng), crop: randomCrop(rng) }),
 };
@@ -80,6 +84,7 @@ export const crop: Format = {
 export const trueFalse: Format = {
   id: 'trueFalse',
   recall: false,
+  choice: false,
   canTarget: always,
   build: (target, ctx, rng) => {
     const mates = similarMatesInPool(target, ctx);
@@ -91,6 +96,7 @@ export const trueFalse: Format = {
 export const typeName: Format = {
   id: 'typeName',
   recall: true,
+  choice: false,
   canTarget: always,
   build: (target) => ({ format: 'typeName', target }),
 };
@@ -98,6 +104,7 @@ export const typeName: Format = {
 export const matchPairs: Format = {
   id: 'matchPairs',
   recall: false,
+  choice: true,
   canTarget: always,
   build: (target, ctx, rng) => ({
     format: 'matchPairs',
@@ -109,6 +116,7 @@ export const matchPairs: Format = {
 export const oddOneOut: Format = {
   id: 'oddOneOut',
   recall: false,
+  choice: false,
   canTarget: (target, ctx) => continentMatesInPool(target, ctx).length >= 2,
   build: (target, ctx, rng) => {
     const intruder = pickOne(ctx.world.filter((c) => c.continent !== target.continent), rng);
@@ -120,20 +128,15 @@ export const oddOneOut: Format = {
 export const sortSimilar: Format = {
   id: 'sortSimilar',
   recall: false,
+  choice: false,
   canTarget: hasSimilarGroup,
   build: (target, ctx, rng) => ({ format: 'sortSimilar', target, countries: similarGroup(target, ctx, rng) }),
-};
-
-export const cropType: Format = {
-  id: 'cropType',
-  recall: true,
-  canTarget: always,
-  build: (target, _ctx, rng) => ({ format: 'cropType', target, crop: randomCrop(rng) }),
 };
 
 export const typeSimilar: Format = {
   id: 'typeSimilar',
   recall: true,
+  choice: false,
   canTarget: hasSimilarGroup,
   build: (target, ctx, rng) => ({ format: 'typeSimilar', target, countries: similarGroup(target, ctx, rng) }),
 };
@@ -148,6 +151,5 @@ export const ALL_FORMATS: readonly Format[] = [
   matchPairs,
   oddOneOut,
   sortSimilar,
-  cropType,
   typeSimilar,
 ];

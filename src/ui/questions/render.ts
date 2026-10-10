@@ -22,8 +22,6 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
       return renderTrueFalse(question.target, question.shown, submit);
     case 'typeName':
       return renderTypeName('Escreva o nome desta bandeira', flagFigure(question.target), submit);
-    case 'cropType':
-      return renderTypeName('Escreva o nome deste pedaço de bandeira', cropFigure(question.target, question.crop), submit);
     case 'typeSimilar':
       return renderTypeSimilar(question.countries, submit);
     case 'matchPairs':
