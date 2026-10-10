@@ -32,9 +32,13 @@ describe('goalFor', () => {
     ['americas', [17, 24, 33, 40]],
     ['asia', [15, 23, 29, 37]],
     ['europe', [17, 25, 33, 41]],
-    ['oceania', [8, 12, 17, 20]],
+    ['oceania', [15, 15, 17, 20]],
   ] as const)('scales the %s goals with the pool', (continent, goals) => {
     expect(LEVELS.map((d) => goalFor(d, poolFor(countries, continent, d).length))).toEqual(goals);
+  });
+
+  it('never asks fewer than 15 correct answers', () => {
+    expect(LEVELS.map((d) => goalFor(d, 1))).toEqual([15, 15, 15, 15]);
   });
 });
 

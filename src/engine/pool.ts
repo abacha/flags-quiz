@@ -18,9 +18,11 @@ export const LEVEL_RULES: Record<Difficulty, LevelRules> = {
   general: { tiers: [1, 2, 3], goal: [13, 18], recallWeight: 3, similarDistractors: true },
 };
 
+export const MIN_GOAL = 15;
+
 export function goalFor(difficulty: Difficulty, poolSize: number): number {
   const [numerator, denominator] = LEVEL_RULES[difficulty].goal;
-  return Math.ceil((numerator * poolSize) / denominator);
+  return Math.max(MIN_GOAL, Math.ceil((numerator * poolSize) / denominator));
 }
 
 export function poolFor(all: readonly Country[], continent: ContinentKey, difficulty: Difficulty): Country[] {

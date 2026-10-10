@@ -53,6 +53,8 @@ Drawing the flag first with the review gap raises that to 7.3, with 96% choice q
 | Difícil | 25/18 | 65/36 | 28 | 37 |
 | Geral | 30/54 | 13/18 | 34 | 44 |
 
+No goal goes below 15 (`MIN_GOAL`), which lifts the small levels: Oceania Fácil and Médio go to 15.
+
 Every goal fits in the first pass, which offers two appearances per flag: the largest ratio is 65/36, below 2.
 
 ## Technical
