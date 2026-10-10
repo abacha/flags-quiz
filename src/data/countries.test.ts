@@ -2,12 +2,29 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { acceptsTypedName, normalizeName } from '../engine/answer';
 import { poolFor, type Difficulty } from '../engine/pool';
-import { countries, similarGroups, type Continent, type Status } from './countries';
+import { countries, similarGroups, type Continent, type Country, type Status } from './countries';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'general'];
 const CONTINENTS: Continent[] = ['africa', 'americas', 'asia', 'europe', 'oceania'];
 
 const byIso = new Map(countries.map((c) => [c.iso2, c]));
+const icuEnglishNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const ENGLISH_NAMES_ICU_GETS_WRONG: Record<string, string> = {
+  'gb-eng': 'England',
+  'gb-nir': 'Northern Ireland',
+  'gb-sct': 'Scotland',
+  'gb-wls': 'Wales',
+  ci: "Côte d'Ivoire",
+  gs: 'South Georgia and the South Sandwich Islands',
+  hk: 'Hong Kong',
+  mm: 'Myanmar',
+  mo: 'Macao',
+  ps: 'Palestine',
+  vc: 'Saint Vincent and the Grenadines',
+};
+const englishName = (country: Country) =>
+  ENGLISH_NAMES_ICU_GETS_WRONG[country.iso2] ??
+  icuEnglishNames.of(country.iso2.toUpperCase())!.replace(' & ', ' and ').replace(/^St\. /, 'Saint ');
 const codesWith = (status: Status) =>
   countries
     .filter((c) => c.status === status)
@@ -100,6 +117,37 @@ describe('countries', () => {
     for (const typed of ['Turks e Caicos', 'Ilhas Turks e Caicos']) expect(acceptsTypedName(byIso.get('tc')!, typed)).toBe(true);
     expect(acceptsTypedName(byIso.get('mo')!, 'Macao')).toBe(true);
     for (const typed of ['Chagos', 'Ilhas Chagos']) expect(acceptsTypedName(byIso.get('io')!, typed)).toBe(true);
+  });
+
+  it('accepts the English name of every country', () => {
+    const missing = countries.filter((c) => !acceptsTypedName(c, englishName(c)));
+    expect(missing.map((c) => `${c.iso2}: ${englishName(c)}`)).toEqual([]);
+  });
+
+  it.each([
+    ['py', 'Paraguay'],
+    ['vn', 'Vietnam'],
+    ['mm', 'Burma'],
+    ['ci', 'Ivory Coast'],
+    ['tr', 'Turkey'],
+    ['cz', 'Czech Republic'],
+    ['cd', 'Democratic Republic of the Congo'],
+    ['cd', 'DR Congo'],
+    ['cg', 'Republic of the Congo'],
+    ['us', 'USA'],
+    ['gb', 'UK'],
+    ['ae', 'UAE'],
+    ['va', 'Vatican'],
+    ['va', 'Holy See'],
+    ['vi', 'US Virgin Islands'],
+    ['bs', 'The Bahamas'],
+    ['gm', 'The Gambia'],
+    ['sz', 'Swaziland'],
+    ['tl', 'East Timor'],
+    ['mk', 'Macedonia'],
+    ['nl', 'Holland'],
+  ])('accepts %s under the common English name "%s"', (code, typed) => {
+    expect(acceptsTypedName(byIso.get(code)!, typed)).toBe(true);
   });
 });
 

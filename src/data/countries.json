@@ -15,7 +15,9 @@
     "tier": 2,
     "aliases": [
       "Emirados Árabes",
-      "EAU"
+      "EAU",
+      "United Arab Emirates",
+      "UAE"
     ]
   },
   {
@@ -24,7 +26,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Afghanistan"
+    ]
   },
   {
     "iso2": "ag",
@@ -32,7 +36,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Antigua and Barbuda"
+    ]
   },
   {
     "iso2": "ai",
@@ -82,7 +88,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "American Samoa"
+    ]
   },
   {
     "iso2": "at",
@@ -115,7 +123,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Åland"
+      "Åland",
+      "Åland Islands"
     ]
   },
   {
@@ -124,7 +133,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Azerbaijan"
+    ]
   },
   {
     "iso2": "ba",
@@ -133,7 +144,8 @@
     "status": "un",
     "tier": 2,
     "aliases": [
-      "Bósnia"
+      "Bósnia",
+      "Bosnia and Herzegovina"
     ]
   },
   {
@@ -158,7 +170,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Belgium"
+    ]
   },
   {
     "iso2": "bf",
@@ -251,7 +265,8 @@
     "tier": 3,
     "aliases": [
       "Caribe Neerlandês",
-      "Bonaire"
+      "Bonaire",
+      "Caribbean Netherlands"
     ]
   },
   {
@@ -260,7 +275,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Brazil"
+    ]
   },
   {
     "iso2": "bs",
@@ -268,7 +285,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "The Bahamas"
+    ]
   },
   {
     "iso2": "bt",
@@ -276,7 +295,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Bhutan"
+    ]
   },
   {
     "iso2": "bw",
@@ -322,7 +343,10 @@
     "tier": 3,
     "aliases": [
       "Ilhas Cocos (Keeling)",
-      "Ilhas Keeling"
+      "Ilhas Keeling",
+      "Cocos (Keeling) Islands",
+      "Cocos Islands",
+      "Keeling Islands"
     ]
   },
   {
@@ -334,7 +358,10 @@
     "aliases": [
       "RDC",
       "Congo-Kinshasa",
-      "Congo"
+      "Congo",
+      "Democratic Republic of the Congo",
+      "DR Congo",
+      "DRC"
     ]
   },
   {
@@ -344,7 +371,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "RCA"
+      "RCA",
+      "Central African Republic"
     ]
   },
   {
@@ -355,7 +383,8 @@
     "tier": 2,
     "aliases": [
       "Congo",
-      "Congo-Brazzaville"
+      "Congo-Brazzaville",
+      "Republic of the Congo"
     ]
   },
   {
@@ -364,7 +393,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Switzerland"
+    ]
   },
   {
     "iso2": "ci",
@@ -372,7 +403,10 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Côte d'Ivoire",
+      "Ivory Coast"
+    ]
   },
   {
     "iso2": "ck",
@@ -380,7 +414,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Cook Islands"
+    ]
   },
   {
     "iso2": "cl",
@@ -396,7 +432,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Cameroon"
+    ]
   },
   {
     "iso2": "cn",
@@ -436,7 +474,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Cape Verde"
+    ]
   },
   {
     "iso2": "cw",
@@ -455,7 +495,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Ilha do Natal"
+      "Ilha do Natal",
+      "Christmas Island"
     ]
   },
   {
@@ -464,7 +505,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Cyprus"
+    ]
   },
   {
     "iso2": "cz",
@@ -474,7 +517,9 @@
     "tier": 2,
     "aliases": [
       "República Tcheca",
-      "Chéquia"
+      "Chéquia",
+      "Czechia",
+      "Czech Republic"
     ]
   },
   {
@@ -483,7 +528,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Germany"
+    ]
   },
   {
     "iso2": "dj",
@@ -502,7 +549,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Denmark"
+    ]
   },
   {
     "iso2": "dm",
@@ -518,7 +567,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Dominican Republic"
+    ]
   },
   {
     "iso2": "dz",
@@ -526,7 +577,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Algeria"
+    ]
   },
   {
     "iso2": "ec",
@@ -534,7 +587,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Ecuador"
+    ]
   },
   {
     "iso2": "ee",
@@ -550,7 +605,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Egypt"
+    ]
   },
   {
     "iso2": "eh",
@@ -558,7 +615,9 @@
     "continent": "africa",
     "status": "nonMember",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Western Sahara"
+    ]
   },
   {
     "iso2": "er",
@@ -566,7 +625,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Eritrea"
+    ]
   },
   {
     "iso2": "es",
@@ -574,7 +635,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Spain"
+    ]
   },
   {
     "iso2": "et",
@@ -582,7 +645,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Ethiopia"
+    ]
   },
   {
     "iso2": "fi",
@@ -590,7 +655,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Finland"
+    ]
   },
   {
     "iso2": "fj",
@@ -609,7 +676,8 @@
     "aliases": [
       "Malvinas",
       "Falklands",
-      "Ilhas Falkland"
+      "Ilhas Falkland",
+      "Falkland Islands"
     ]
   },
   {
@@ -619,7 +687,8 @@
     "status": "un",
     "tier": 2,
     "aliases": [
-      "Estados Federados da Micronésia"
+      "Estados Federados da Micronésia",
+      "Federated States of Micronesia"
     ]
   },
   {
@@ -631,7 +700,8 @@
     "aliases": [
       "Faroé",
       "Feroe",
-      "Ilhas Feroe"
+      "Ilhas Feroe",
+      "Faroe Islands"
     ]
   },
   {
@@ -640,7 +710,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "France"
+    ]
   },
   {
     "iso2": "ga",
@@ -648,7 +720,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Gabon"
+    ]
   },
   {
     "iso2": "gb",
@@ -657,7 +731,10 @@
     "status": "un",
     "tier": 1,
     "aliases": [
-      "Grã-Bretanha"
+      "Grã-Bretanha",
+      "United Kingdom",
+      "UK",
+      "Great Britain"
     ]
   },
   {
@@ -666,7 +743,9 @@
     "continent": "europe",
     "status": "ukNation",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "England"
+    ]
   },
   {
     "iso2": "gb-nir",
@@ -674,7 +753,9 @@
     "continent": "europe",
     "status": "ukNation",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Northern Ireland"
+    ]
   },
   {
     "iso2": "gb-sct",
@@ -682,7 +763,9 @@
     "continent": "europe",
     "status": "ukNation",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Scotland"
+    ]
   },
   {
     "iso2": "gb-wls",
@@ -691,7 +774,8 @@
     "status": "ukNation",
     "tier": 1,
     "aliases": [
-      "Gales"
+      "Gales",
+      "Wales"
     ]
   },
   {
@@ -700,7 +784,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Grenada"
+    ]
   },
   {
     "iso2": "ge",
@@ -716,7 +802,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "French Guiana"
+    ]
   },
   {
     "iso2": "gg",
@@ -732,7 +820,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Ghana"
+    ]
   },
   {
     "iso2": "gi",
@@ -748,7 +838,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Greenland"
+    ]
   },
   {
     "iso2": "gm",
@@ -756,7 +848,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "The Gambia"
+    ]
   },
   {
     "iso2": "gn",
@@ -764,7 +858,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Guinea"
+    ]
   },
   {
     "iso2": "gp",
@@ -772,7 +868,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Guadeloupe"
+    ]
   },
   {
     "iso2": "gq",
@@ -780,7 +878,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Equatorial Guinea"
+    ]
   },
   {
     "iso2": "gr",
@@ -788,7 +888,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Greece"
+    ]
   },
   {
     "iso2": "gs",
@@ -797,7 +899,9 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Geórgia do Sul"
+      "Geórgia do Sul",
+      "South Georgia and the South Sandwich Islands",
+      "South Georgia"
     ]
   },
   {
@@ -822,7 +926,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Guinea-Bissau"
+    ]
   },
   {
     "iso2": "gy",
@@ -830,7 +936,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Guyana"
+    ]
   },
   {
     "iso2": "hk",
@@ -854,7 +962,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Croatia"
+    ]
   },
   {
     "iso2": "ht",
@@ -870,7 +980,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Hungary"
+    ]
   },
   {
     "iso2": "id",
@@ -886,7 +998,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Ireland"
+    ]
   },
   {
     "iso2": "il",
@@ -902,7 +1016,9 @@
     "continent": "europe",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Isle of Man"
+    ]
   },
   {
     "iso2": "in",
@@ -920,7 +1036,8 @@
     "tier": 3,
     "aliases": [
       "Chagos",
-      "Ilhas Chagos"
+      "Ilhas Chagos",
+      "British Indian Ocean Territory"
     ]
   },
   {
@@ -929,7 +1046,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Iraq"
+    ]
   },
   {
     "iso2": "ir",
@@ -937,7 +1056,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Iran"
+    ]
   },
   {
     "iso2": "is",
@@ -945,7 +1066,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Iceland"
+    ]
   },
   {
     "iso2": "it",
@@ -953,7 +1076,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Italy"
+    ]
   },
   {
     "iso2": "je",
@@ -977,7 +1102,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Jordan"
+    ]
   },
   {
     "iso2": "jp",
@@ -985,7 +1112,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Japan"
+    ]
   },
   {
     "iso2": "ke",
@@ -993,7 +1122,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Kenya"
+    ]
   },
   {
     "iso2": "kg",
@@ -1002,7 +1133,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Quirguízia"
+      "Quirguízia",
+      "Kyrgyzstan"
     ]
   },
   {
@@ -1011,7 +1143,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Cambodia"
+    ]
   },
   {
     "iso2": "ki",
@@ -1030,7 +1164,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Ilhas Comores"
+      "Ilhas Comores",
+      "Comoros"
     ]
   },
   {
@@ -1040,7 +1175,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "São Cristóvão e Nevis"
+      "São Cristóvão e Nevis",
+      "Saint Kitts and Nevis"
     ]
   },
   {
@@ -1049,7 +1185,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "North Korea"
+    ]
   },
   {
     "iso2": "kr",
@@ -1057,7 +1195,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "South Korea"
+    ]
   },
   {
     "iso2": "kw",
@@ -1077,7 +1217,8 @@
     "tier": 3,
     "aliases": [
       "Ilhas Caimã",
-      "Cayman"
+      "Cayman",
+      "Cayman Islands"
     ]
   },
   {
@@ -1086,7 +1227,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Kazakhstan"
+    ]
   },
   {
     "iso2": "la",
@@ -1102,7 +1245,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Lebanon"
+    ]
   },
   {
     "iso2": "lc",
@@ -1110,7 +1255,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Saint Lucia"
+    ]
   },
   {
     "iso2": "li",
@@ -1152,7 +1299,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Lithuania"
+    ]
   },
   {
     "iso2": "lu",
@@ -1160,7 +1309,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Luxembourg"
+    ]
   },
   {
     "iso2": "lv",
@@ -1168,7 +1319,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Latvia"
+    ]
   },
   {
     "iso2": "ly",
@@ -1176,7 +1329,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Libya"
+    ]
   },
   {
     "iso2": "ma",
@@ -1184,7 +1339,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Morocco"
+    ]
   },
   {
     "iso2": "mc",
@@ -1226,7 +1383,9 @@
     "continent": "oceania",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Marshall Islands"
+    ]
   },
   {
     "iso2": "mk",
@@ -1235,7 +1394,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Macedônia"
+      "Macedônia",
+      "North Macedonia"
     ]
   },
   {
@@ -1253,7 +1413,9 @@
     "status": "un",
     "tier": 2,
     "aliases": [
-      "Birmânia"
+      "Birmânia",
+      "Myanmar",
+      "Burma"
     ]
   },
   {
@@ -1281,7 +1443,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Ilhas Marianas Setentrionais"
+      "Ilhas Marianas Setentrionais",
+      "Northern Mariana Islands"
     ]
   },
   {
@@ -1290,7 +1453,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Martinique"
+    ]
   },
   {
     "iso2": "mr",
@@ -1325,7 +1490,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Ilhas Maurício"
+      "Ilhas Maurício",
+      "Mauritius"
     ]
   },
   {
@@ -1334,7 +1500,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Maldives"
+    ]
   },
   {
     "iso2": "mw",
@@ -1360,7 +1528,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Malaysia"
+    ]
   },
   {
     "iso2": "mz",
@@ -1368,7 +1538,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Mozambique"
+    ]
   },
   {
     "iso2": "na",
@@ -1384,7 +1556,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "New Caledonia"
+    ]
   },
   {
     "iso2": "ne",
@@ -1400,7 +1574,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Norfolk Island"
+    ]
   },
   {
     "iso2": "ng",
@@ -1425,7 +1601,9 @@
     "status": "un",
     "tier": 1,
     "aliases": [
-      "Holanda"
+      "Holanda",
+      "Netherlands",
+      "Holland"
     ]
   },
   {
@@ -1434,7 +1612,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Norway"
+    ]
   },
   {
     "iso2": "np",
@@ -1466,7 +1646,9 @@
     "continent": "oceania",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "New Zealand"
+    ]
   },
   {
     "iso2": "om",
@@ -1474,7 +1656,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Oman"
+    ]
   },
   {
     "iso2": "pa",
@@ -1498,7 +1682,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "French Polynesia"
+    ]
   },
   {
     "iso2": "pg",
@@ -1506,7 +1692,9 @@
     "continent": "oceania",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Papua New Guinea"
+    ]
   },
   {
     "iso2": "ph",
@@ -1514,7 +1702,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Philippines"
+    ]
   },
   {
     "iso2": "pk",
@@ -1522,7 +1712,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Pakistan"
+    ]
   },
   {
     "iso2": "pl",
@@ -1530,7 +1722,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Poland"
+    ]
   },
   {
     "iso2": "pm",
@@ -1539,7 +1733,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "São Pedro e Miquelão"
+      "São Pedro e Miquelão",
+      "Saint Pierre and Miquelon"
     ]
   },
   {
@@ -1549,7 +1744,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Pitcairn"
+      "Pitcairn",
+      "Pitcairn Islands"
     ]
   },
   {
@@ -1558,7 +1754,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Puerto Rico"
+    ]
   },
   {
     "iso2": "ps",
@@ -1567,7 +1765,9 @@
     "status": "nonMember",
     "tier": 2,
     "aliases": [
-      "Estado da Palestina"
+      "Estado da Palestina",
+      "Palestine",
+      "State of Palestine"
     ]
   },
   {
@@ -1592,7 +1792,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Paraguay"
+    ]
   },
   {
     "iso2": "qa",
@@ -1610,7 +1812,9 @@
     "continent": "africa",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Réunion"
+    ]
   },
   {
     "iso2": "ro",
@@ -1618,7 +1822,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Romania"
+    ]
   },
   {
     "iso2": "rs",
@@ -1626,7 +1832,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Serbia"
+    ]
   },
   {
     "iso2": "ru",
@@ -1642,7 +1850,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Rwanda"
+    ]
   },
   {
     "iso2": "sa",
@@ -1650,7 +1860,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Saudi Arabia"
+    ]
   },
   {
     "iso2": "sb",
@@ -1658,7 +1870,9 @@
     "continent": "oceania",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Solomon Islands"
+    ]
   },
   {
     "iso2": "sc",
@@ -1676,7 +1890,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Sudan"
+    ]
   },
   {
     "iso2": "se",
@@ -1684,7 +1900,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Sweden"
+    ]
   },
   {
     "iso2": "sg",
@@ -1692,7 +1910,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Singapore"
+    ]
   },
   {
     "iso2": "sh",
@@ -1701,7 +1921,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Santa Helena"
+      "Santa Helena",
+      "Saint Helena"
     ]
   },
   {
@@ -1710,7 +1931,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Slovenia"
+    ]
   },
   {
     "iso2": "sk",
@@ -1718,7 +1941,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Slovakia"
+    ]
   },
   {
     "iso2": "sl",
@@ -1726,7 +1951,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Sierra Leone"
+    ]
   },
   {
     "iso2": "sm",
@@ -1766,7 +1993,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "South Sudan"
+    ]
   },
   {
     "iso2": "st",
@@ -1774,7 +2003,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "São Tomé and Príncipe"
+    ]
   },
   {
     "iso2": "sv",
@@ -1801,7 +2032,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Syria"
+    ]
   },
   {
     "iso2": "sz",
@@ -1811,7 +2044,8 @@
     "tier": 2,
     "aliases": [
       "Suazilândia",
-      "Eswatini"
+      "Eswatini",
+      "Swaziland"
     ]
   },
   {
@@ -1822,7 +2056,8 @@
     "tier": 3,
     "aliases": [
       "Turks e Caicos",
-      "Ilhas Turks e Caicos"
+      "Ilhas Turks e Caicos",
+      "Turks and Caicos Islands"
     ]
   },
   {
@@ -1831,7 +2066,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Chad"
+    ]
   },
   {
     "iso2": "tf",
@@ -1840,7 +2077,8 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Terras Austrais Francesas"
+      "Terras Austrais Francesas",
+      "French Southern Territories"
     ]
   },
   {
@@ -1857,7 +2095,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Thailand"
+    ]
   },
   {
     "iso2": "tj",
@@ -1866,7 +2106,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Tajiquistão"
+      "Tajiquistão",
+      "Tajikistan"
     ]
   },
   {
@@ -1885,7 +2126,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "East Timor"
+    ]
   },
   {
     "iso2": "tm",
@@ -1894,7 +2137,8 @@
     "status": "un",
     "tier": 3,
     "aliases": [
-      "Turquemenistão"
+      "Turquemenistão",
+      "Turkmenistan"
     ]
   },
   {
@@ -1919,7 +2163,10 @@
     "continent": "asia",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Türkiye",
+      "Turkey"
+    ]
   },
   {
     "iso2": "tt",
@@ -1927,7 +2174,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Trinidad and Tobago"
+    ]
   },
   {
     "iso2": "tv",
@@ -1959,7 +2208,9 @@
     "continent": "europe",
     "status": "un",
     "tier": 2,
-    "aliases": []
+    "aliases": [
+      "Ukraine"
+    ]
   },
   {
     "iso2": "ug",
@@ -1977,7 +2228,10 @@
     "tier": 1,
     "aliases": [
       "EUA",
-      "Estados Unidos da América"
+      "Estados Unidos da América",
+      "United States",
+      "USA",
+      "United States of America"
     ]
   },
   {
@@ -1986,7 +2240,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "Uruguay"
+    ]
   },
   {
     "iso2": "uz",
@@ -1994,7 +2250,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Uzbekistan"
+    ]
   },
   {
     "iso2": "va",
@@ -2004,7 +2262,10 @@
     "tier": 2,
     "aliases": [
       "Santa Sé",
-      "Cidade do Vaticano"
+      "Cidade do Vaticano",
+      "Vatican City",
+      "Vatican",
+      "Holy See"
     ]
   },
   {
@@ -2013,7 +2274,9 @@
     "continent": "americas",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Saint Vincent and the Grenadines"
+    ]
   },
   {
     "iso2": "ve",
@@ -2029,7 +2292,9 @@
     "continent": "americas",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "British Virgin Islands"
+    ]
   },
   {
     "iso2": "vi",
@@ -2038,7 +2303,9 @@
     "status": "territory",
     "tier": 3,
     "aliases": [
-      "Ilhas Virgens dos Estados Unidos"
+      "Ilhas Virgens dos Estados Unidos",
+      "U.S. Virgin Islands",
+      "US Virgin Islands"
     ]
   },
   {
@@ -2048,7 +2315,8 @@
     "status": "un",
     "tier": 1,
     "aliases": [
-      "Vietname"
+      "Vietname",
+      "Vietnam"
     ]
   },
   {
@@ -2065,7 +2333,9 @@
     "continent": "oceania",
     "status": "territory",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Wallis and Futuna"
+    ]
   },
   {
     "iso2": "ws",
@@ -2089,7 +2359,9 @@
     "continent": "asia",
     "status": "un",
     "tier": 3,
-    "aliases": []
+    "aliases": [
+      "Yemen"
+    ]
   },
   {
     "iso2": "yt",
@@ -2105,7 +2377,9 @@
     "continent": "africa",
     "status": "un",
     "tier": 1,
-    "aliases": []
+    "aliases": [
+      "South Africa"
+    ]
   },
   {
     "iso2": "zm",
