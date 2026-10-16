@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countries, similarGroups, type Country } from '../data/countries';
+import { countries, similarGroups, similarNames, type Country } from '../data/countries';
 import {
   ALL_FORMATS,
   crop,
@@ -9,6 +9,7 @@ import {
   nameToFlags,
   oddOneOut,
   sortSimilar,
+  sortSimilarNames,
   trueFalse,
   typeSimilar,
 } from './formats';
@@ -20,6 +21,7 @@ const contextFor = (difficulty: Difficulty): FormatContext => ({
   pool: poolFor(countries, 'africa', difficulty),
   world: countries,
   similarGroups,
+  similarNames,
   similarDistractors: LEVEL_RULES[difficulty].similarDistractors,
 });
 const easy = contextFor('easy');
@@ -59,12 +61,29 @@ describe('option formats', () => {
     expect(sizes).toEqual(new Set([4, 6]));
   });
 
-  it('puts every similar flag of the target among the options when the level asks for it', () => {
+  it('fills the options with the similar flags and names of the target when the level asks for it', () => {
     for (const seed of SEEDS) {
       const question = flagToNames.build(byIso('ml'), general, seededRng(seed));
       if (question.format !== 'flagToNames') throw new Error('expected flagToNames');
-      expect(iso(question.options)).toEqual(expect.arrayContaining(['ml', 'gn', 'sn', 'cm']));
+      const lookalikes = iso(question.options).filter((code) => ['ml', 'gn', 'sn', 'cm', 'mw'].includes(code));
+      expect(lookalikes).toHaveLength(Math.min(question.options.length, 5));
     }
+  });
+
+  it('puts both the similar flag and the similar name of the target among the options', () => {
+    for (const seed of SEEDS) {
+      const question = flagToNames.build(byIso('ne'), general, seededRng(seed));
+      if (question.format !== 'flagToNames') throw new Error('expected flagToNames');
+      expect(iso(question.options)).toEqual(expect.arrayContaining(['ne', 'ci', 'ng']));
+    }
+  });
+
+  it('leaves similar names out of the options when the level does not ask for it', () => {
+    const withoutNigeria = SEEDS.some((seed) => {
+      const question = flagToNames.build(byIso('ne'), { ...general, similarDistractors: false }, seededRng(seed));
+      return 'options' in question && !iso(question.options).includes('ng');
+    });
+    expect(withoutNigeria).toBe(true);
   });
 });
 
@@ -93,7 +112,7 @@ describe('trueFalse', () => {
     for (const seed of SEEDS) {
       const question = trueFalse.build(byIso('ml'), general, seededRng(seed));
       if (question.format !== 'trueFalse') throw new Error('expected trueFalse');
-      expect(['ml', 'gn', 'sn', 'cm']).toContain(question.shown.iso2);
+      expect(['ml', 'gn', 'sn', 'cm', 'mw']).toContain(question.shown.iso2);
     }
   });
 });
@@ -170,8 +189,29 @@ describe.each([sortSimilar, typeSimilar])('%o', (format) => {
   });
 });
 
+describe('sortSimilarNames', () => {
+  it('targets only countries whose similar-name group has 2 or more members in the pool', () => {
+    expect(sortSimilarNames.canTarget(byIso('cg'), general)).toBe(true);
+    expect(sortSimilarNames.canTarget(byIso('za'), general)).toBe(false);
+    expect(sortSimilarNames.canTarget(byIso('gn'), easy)).toBe(false);
+  });
+
+  it('uses only the similar-name group members inside the pool', () => {
+    const question = sortSimilarNames.build(byIso('gn'), general, seededRng(1));
+    if (question.format !== 'sortSimilarNames') throw new Error('expected sortSimilarNames');
+    expect(iso(question.countries).sort()).toEqual(['gn', 'gq', 'gw']);
+  });
+
+  it('uses the whole group across continents in Mundo', () => {
+    const world: FormatContext = { ...general, pool: poolFor(countries, 'world', 'general') };
+    const question = sortSimilarNames.build(byIso('gn'), world, seededRng(1));
+    if (question.format !== 'sortSimilarNames') throw new Error('expected sortSimilarNames');
+    expect(iso(question.countries).sort()).toEqual(['gn', 'gq', 'gw', 'pg']);
+  });
+});
+
 describe('ALL_FORMATS', () => {
-  it('lists the ten formats once each', () => {
+  it('lists the eleven formats once each', () => {
     expect(ALL_FORMATS.map((f) => f.id).sort()).toEqual([
       'crop',
       'flagToNames',
@@ -180,6 +220,7 @@ describe('ALL_FORMATS', () => {
       'nameToFlags',
       'oddOneOut',
       'sortSimilar',
+      'sortSimilarNames',
       'trueFalse',
       'typeName',
       'typeSimilar',

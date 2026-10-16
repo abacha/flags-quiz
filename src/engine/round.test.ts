@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { countries, similarGroups } from '../data/countries';
+import { countries, similarGroups, similarNames } from '../data/countries';
 import type { Answer } from './answer';
-import { crop, flagToNames, matchPairs, sortSimilar, typeName } from './formats';
+import { crop, flagToNames, matchPairs, sortSimilar, sortSimilarNames, typeName } from './formats';
 import { LEVEL_RULES, goalFor, poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
 import { REVIEW_GAP, Round, STARTING_LIVES, type RoundSettings } from './round';
 
-const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups, similarDistractors: false };
-const hard: FormatContext = { pool: poolFor(countries, 'africa', 'hard'), world: countries, similarGroups, similarDistractors: true };
+const easy: FormatContext = { pool: poolFor(countries, 'africa', 'easy'), world: countries, similarGroups, similarNames, similarDistractors: false };
+const hard: FormatContext = { pool: poolFor(countries, 'africa', 'hard'), world: countries, similarGroups, similarNames, similarDistractors: true };
 const settings = (correctToWin: number, recallWeight = 1): RoundSettings => ({ correctToWin, recallWeight });
 
 function rightAnswer(q: Question): Answer {
@@ -23,6 +23,7 @@ function rightAnswer(q: Question): Answer {
       return { kind: 'choice', iso2: q.intruder.iso2 };
     case 'matchPairs':
     case 'sortSimilar':
+    case 'sortSimilarNames':
       return { kind: 'links', links: Object.fromEntries(q.countries.map((c) => [c.iso2, c.iso2])) };
     default:
       return { kind: 'choice', iso2: q.target.iso2 };
@@ -40,7 +41,8 @@ function wrongAnswer(q: Question): Answer {
     case 'oddOneOut':
       return { kind: 'choice', iso2: q.target.iso2 };
     case 'matchPairs':
-    case 'sortSimilar': {
+    case 'sortSimilar':
+    case 'sortSimilarNames': {
       const [first, second] = q.countries;
       return { kind: 'links', links: { [first.iso2]: second.iso2, [second.iso2]: first.iso2 } };
     }
@@ -111,7 +113,7 @@ describe('Round', () => {
 
   it('shows most of a small pool in a round of its goal', () => {
     const pool = poolFor(countries, 'oceania', 'easy');
-    const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: false };
+    const ctx: FormatContext = { pool, world: countries, similarGroups, similarNames, similarDistractors: false };
     const goal = goalFor('easy', pool.length);
     let distinct = 0;
     for (let seed = 1; seed <= 200; seed++) {
@@ -144,13 +146,13 @@ describe('Round', () => {
     expect(secondPass[0].target).toBe(first.target);
   });
 
-  it('builds similar groups only from countries already asked and not yet spent', () => {
+  it.each([sortSimilar, sortSimilarNames])('builds %o groups only from countries already asked and not yet spent', (groupFormat) => {
     for (const seed of [6, 7, 8, 9, 10]) {
-      const round = new Round(hard, settings(100), seededRng(seed), [flagToNames, sortSimilar]);
+      const round = new Round(hard, settings(100), seededRng(seed), [flagToNames, groupFormat]);
       const asked = new Map<string, number>();
       for (let i = 0; i < hard.pool.length; i++) {
         const question = round.nextQuestion();
-        if (question.format === 'sortSimilar') for (const code of shown(question)) expect(asked.get(code)).toBe(1);
+        if (question.format === groupFormat.id) for (const code of shown(question)) expect(asked.get(code)).toBe(1);
         for (const code of shown(question)) asked.set(code, (asked.get(code) ?? 0) + 1);
         round.answer(rightAnswer(question));
       }
@@ -169,6 +171,7 @@ describe('Round', () => {
       pool: poolFor(countries, 'africa', 'general'),
       world: countries,
       similarGroups,
+      similarNames,
       similarDistractors: true,
     };
     const groupOf = (code: string) => similarGroups.find((g) => g.includes(code)) ?? [code];
@@ -251,7 +254,7 @@ describe('Round', () => {
   it.each(['africa', 'americas', 'asia', 'europe', 'oceania', 'world'] as const)('plays every level of %s to its goal', (continent) => {
     for (const difficulty of ['easy', 'medium', 'hard', 'general'] as const) {
       const pool = poolFor(countries, continent, difficulty);
-      const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: LEVEL_RULES[difficulty].similarDistractors };
+      const ctx: FormatContext = { pool, world: countries, similarGroups, similarNames, similarDistractors: LEVEL_RULES[difficulty].similarDistractors };
       const round = new Round(ctx, settings(goalFor(difficulty, pool.length), LEVEL_RULES[difficulty].recallWeight), seededRng(31));
       while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
       expect(round.status).toBe('won');

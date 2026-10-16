@@ -6,7 +6,7 @@ Fácil, Médio and Difícil split each continent into three tiers, Geral holds a
 The header counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, and each tab counts its own out of 4.
 Each level card shows its flag count and first flags, a medal tag with the Aprender goal, a Quiz tag with the best time or score, and one button for each mode.
 
-Aprender uses ten question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
+Aprender uses eleven question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
 Each flag first appears in a choice question, with its name on screen, and only after that in the other formats.
 Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
 
@@ -38,6 +38,6 @@ Every push to `main` runs the tests, builds and publishes to GitHub Pages at htt
 
 ## Data
 
-`src/data/countries.json` holds every flag with its Portuguese name, continent, status (`un`, `nonMember`, `ukNation` or `territory`), tier and accepted alternative spellings. `src/data/similar-groups.json` lists the groups of look-alike flags used by the sort-similar format. Flags are the SVGs in `public/flags/`, taken from flagcdn; the US states, the flags of the EU, the UN and Antarctica, and the flags identical to another one (um, bv, sj, mf, hm) are left out. Edit the JSON files directly to change names, statuses, tiers, aliases or groups.
+`src/data/countries.json` holds every flag with its Portuguese name, continent, status (`un`, `nonMember`, `ukNation` or `territory`), tier and accepted alternative spellings. `src/data/similar-groups.json` lists the groups of look-alike flags used by the sort-similar and type-similar formats, and `src/data/similar-names.json` the groups of look-alike names used by the sort-similar-names format; on Difícil and Geral both also feed the wrong options of the choice questions. A group may cross continents: a level uses only the members inside its pool, so the whole group appears in Mundo. Flags are the SVGs in `public/flags/`, taken from flagcdn; the US states, the flags of the EU, the UN and Antarctica, and the flags identical to another one (um, bv, sj, mf, hm) are left out. Edit the JSON files directly to change names, statuses, tiers, aliases or groups.
 
 Medals and Quiz records live in the browser's `localStorage`, so they belong to one browser on one device.

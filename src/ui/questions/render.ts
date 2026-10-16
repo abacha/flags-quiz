@@ -28,6 +28,8 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
       return renderPairs('Ligue cada nome à sua bandeira', question.countries, submit);
     case 'sortSimilar':
       return renderPairs('Bandeiras parecidas: ligue cada nome à sua bandeira', question.countries, submit);
+    case 'sortSimilarNames':
+      return renderPairs('Nomes parecidos: ligue cada nome à sua bandeira', question.countries, submit);
     case 'oddOneOut':
       return renderFlagChoices(`Qual destas bandeiras não é ${CONTINENT_FROM[question.target.continent]}?`, question.options, submit);
   }

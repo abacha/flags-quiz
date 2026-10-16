@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { acceptsTypedName, normalizeName } from '../engine/answer';
 import { poolFor, type Difficulty } from '../engine/pool';
-import { countries, similarGroups, type Continent, type Country, type Status } from './countries';
+import { countries, similarGroups, similarNames, type Continent, type Country, type Status } from './countries';
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard', 'general'];
 const CONTINENTS: Continent[] = ['africa', 'americas', 'asia', 'europe', 'oceania'];
@@ -151,16 +151,17 @@ describe('countries', () => {
   });
 });
 
+function expectGroupsOfExistingCountries(groups: string[][]) {
+  for (const group of groups) {
+    expect(group.length).toBeGreaterThanOrEqual(2);
+    expect(group.length).toBeLessThanOrEqual(4);
+    expect(new Set(group).size).toBe(group.length);
+    for (const iso2 of group) expect(byIso.has(iso2)).toBe(true);
+  }
+}
+
 describe('similarGroups', () => {
-  it('groups 2 to 4 existing countries of one continent', () => {
-    for (const group of similarGroups) {
-      expect(group.length).toBeGreaterThanOrEqual(2);
-      expect(group.length).toBeLessThanOrEqual(4);
-      const continents = new Set(group.map((iso2) => byIso.get(iso2)?.continent));
-      expect(continents.size).toBe(1);
-      expect(continents.has(undefined)).toBe(false);
-    }
-  });
+  it('groups 2 to 4 distinct existing countries', () => expectGroupsOfExistingCountries(similarGroups));
 
   it('covers every continent', () => {
     const covered = new Set(similarGroups.map((group) => byIso.get(group[0])?.continent));
@@ -175,6 +176,11 @@ describe('similarGroups', () => {
     expect(grouped(['gb-eng', 'gg', 'je'])).toBe(true);
     expect(grouped(['eg', 'sd', 'eh'])).toBe(true);
     expect(grouped(['ba', 'xk'])).toBe(true);
+    expect(grouped(['td', 'ro', 'md', 'ad'])).toBe(true);
+    expect(grouped(['ax', 'fo', 'is'])).toBe(true);
+    expect(grouped(['sd', 'ps', 'jo', 'ae'])).toBe(true);
+    expect(grouped(['pw', 'ne', 'la', 'jp'])).toBe(true);
+    expect(grouped(['ws', 'tw'])).toBe(true);
   });
 
   it.each([...CONTINENTS, 'world'] as const)('gives every %s level a look-alike group with at least two members inside the pool', (continent) => {
@@ -182,5 +188,17 @@ describe('similarGroups', () => {
       const pool = new Set(poolFor(countries, continent, difficulty).map((c) => c.iso2));
       expect(similarGroups.some((group) => group.filter((iso2) => pool.has(iso2)).length >= 2)).toBe(true);
     }
+  });
+});
+
+describe('similarNames', () => {
+  it('groups 2 to 4 distinct existing countries', () => expectGroupsOfExistingCountries(similarNames));
+
+  it('holds the groups the spec requires', () => {
+    const grouped = (codes: string[]) => similarNames.some((group) => codes.every((code) => group.includes(code)));
+    expect(grouped(['cg', 'cd'])).toBe(true);
+    expect(grouped(['je', 'gg'])).toBe(true);
+    expect(grouped(['mv', 'fk'])).toBe(true);
+    expect(grouped(['sx', 'bl', 'pm'])).toBe(true);
   });
 });

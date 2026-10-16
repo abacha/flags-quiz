@@ -14,10 +14,13 @@ export interface RoundSettings {
 
 export type RoundStatus = 'playing' | 'won' | 'lost';
 
-const showsSimilarGroup = (id: FormatId) => id === 'sortSimilar' || id === 'typeSimilar';
+const GROUP_FORMATS: readonly FormatId[] = ['sortSimilar', 'typeSimilar', 'sortSimilarNames'];
+const showsSimilarGroup = (id: FormatId) => GROUP_FORMATS.includes(id);
 
 function spentBy(question: Question): Country[] {
-  return question.format === 'sortSimilar' || question.format === 'typeSimilar' ? question.countries : [question.target];
+  return question.format === 'sortSimilar' || question.format === 'typeSimilar' || question.format === 'sortSimilarNames'
+    ? question.countries
+    : [question.target];
 }
 
 export class Round {

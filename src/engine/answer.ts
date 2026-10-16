@@ -40,7 +40,8 @@ export function grade(question: Question, answer: Answer): Grade {
       return { correct: false, missed: question.options.filter((c) => c.iso2 === chosen) };
     }
     case 'matchPairs':
-    case 'sortSimilar': {
+    case 'sortSimilar':
+    case 'sortSimilarNames': {
       const { links } = expectKind(answer, 'links');
       const missed = question.countries.filter((c) => links[c.iso2] !== c.iso2);
       return { correct: missed.length === 0, missed };

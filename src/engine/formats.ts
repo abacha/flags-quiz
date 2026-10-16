@@ -12,9 +12,11 @@ function continentMatesInPool(target: Country, ctx: FormatContext): Country[] {
   return othersInPool(target, ctx).filter((c) => c.continent === target.continent);
 }
 
-function similarGroupsInPool(target: Country, ctx: FormatContext): Country[][] {
+type Groups = FormatContext['similarGroups'];
+
+function groupsInPool(groups: Groups, target: Country, ctx: FormatContext): Country[][] {
   const inPool = new Map(ctx.pool.map((c) => [c.iso2, c]));
-  return ctx.similarGroups
+  return groups
     .filter((group) => group.includes(target.iso2))
     .map((group) => group.flatMap((code) => inPool.get(code) ?? []))
     .filter((members) => members.length >= 2);
@@ -22,7 +24,8 @@ function similarGroupsInPool(target: Country, ctx: FormatContext): Country[][] {
 
 function similarMatesInPool(target: Country, ctx: FormatContext): Country[] {
   if (!ctx.similarDistractors) return [];
-  return [...new Set(similarGroupsInPool(target, ctx).flat())].filter((c) => c.iso2 !== target.iso2);
+  const groups = [...groupsInPool(ctx.similarGroups, target, ctx), ...groupsInPool(ctx.similarNames, target, ctx)];
+  return [...new Set(groups.flat())].filter((c) => c.iso2 !== target.iso2);
 }
 
 function optionsWith(target: Country, ctx: FormatContext, count: number, rng: Rng): Country[] {
@@ -38,8 +41,9 @@ function randomCrop(rng: Rng): Crop {
 const optionCount = (ctx: FormatContext, rng: Rng) => pickOne([4, 6].filter((count) => count <= ctx.pool.length), rng);
 
 const always = () => true;
-const hasSimilarGroup = (target: Country, ctx: FormatContext) => similarGroupsInPool(target, ctx).length > 0;
-const similarGroup = (target: Country, ctx: FormatContext, rng: Rng) => shuffle(pickOne(similarGroupsInPool(target, ctx), rng), rng);
+const hasGroup = (groups: (ctx: FormatContext) => Groups) => (target: Country, ctx: FormatContext) =>
+  groupsInPool(groups(ctx), target, ctx).length > 0;
+const groupOf = (groups: Groups, target: Country, ctx: FormatContext, rng: Rng) => shuffle(pickOne(groupsInPool(groups, target, ctx), rng), rng);
 
 export const nameToFlags: Format = {
   id: 'nameToFlags',
@@ -129,16 +133,24 @@ export const sortSimilar: Format = {
   id: 'sortSimilar',
   recall: false,
   choice: false,
-  canTarget: hasSimilarGroup,
-  build: (target, ctx, rng) => ({ format: 'sortSimilar', target, countries: similarGroup(target, ctx, rng) }),
+  canTarget: hasGroup((ctx) => ctx.similarGroups),
+  build: (target, ctx, rng) => ({ format: 'sortSimilar', target, countries: groupOf(ctx.similarGroups, target, ctx, rng) }),
 };
 
 export const typeSimilar: Format = {
   id: 'typeSimilar',
   recall: true,
   choice: false,
-  canTarget: hasSimilarGroup,
-  build: (target, ctx, rng) => ({ format: 'typeSimilar', target, countries: similarGroup(target, ctx, rng) }),
+  canTarget: hasGroup((ctx) => ctx.similarGroups),
+  build: (target, ctx, rng) => ({ format: 'typeSimilar', target, countries: groupOf(ctx.similarGroups, target, ctx, rng) }),
+};
+
+export const sortSimilarNames: Format = {
+  id: 'sortSimilarNames',
+  recall: false,
+  choice: false,
+  canTarget: hasGroup((ctx) => ctx.similarNames),
+  build: (target, ctx, rng) => ({ format: 'sortSimilarNames', target, countries: groupOf(ctx.similarNames, target, ctx, rng) }),
 };
 
 export const ALL_FORMATS: readonly Format[] = [
@@ -152,4 +164,5 @@ export const ALL_FORMATS: readonly Format[] = [
   oddOneOut,
   sortSimilar,
   typeSimilar,
+  sortSimilarNames,
 ];

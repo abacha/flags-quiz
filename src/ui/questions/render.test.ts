@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { countries, similarGroups } from '../../data/countries';
-import { crop, flagToNames, flagToTwoNames, typeName, typeSimilar } from '../../engine/formats';
+import { countries, similarGroups, similarNames } from '../../data/countries';
+import { crop, flagToNames, flagToTwoNames, sortSimilarNames, typeName, typeSimilar } from '../../engine/formats';
 import { poolFor } from '../../engine/pool';
 import type { FormatContext } from '../../engine/question';
 import { seededRng } from '../../engine/rng';
@@ -9,7 +9,7 @@ import { renderQuestion } from './render';
 
 const byIso = (code: string) => countries.find((c) => c.iso2 === code)!;
 const pool = poolFor(countries, 'americas', 'hard');
-const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: true };
+const ctx: FormatContext = { pool, world: countries, similarGroups, similarNames, similarDistractors: true };
 
 describe('prompts stay neutral between countries and territories', () => {
   it('asks where the flag is from, not which country', () => {
@@ -41,6 +41,11 @@ describe('prompts stay neutral between countries and territories', () => {
     const placeholders = [...rendered.querySelectorAll('input')].map((input) => input.placeholder);
     expect(placeholders).toEqual(placeholders.map(() => 'Nome'));
     expect(placeholders.length).toBeGreaterThan(0);
+  });
+
+  it('titles the similar-name pairs apart from the similar flags', () => {
+    const question = sortSimilarNames.build(byIso('vg'), ctx, seededRng(1));
+    expect(renderQuestion(question, () => {}).querySelector('h2')?.textContent).toBe('Nomes parecidos: ligue cada nome à sua bandeira');
   });
 
   it('keeps the oddOneOut continent wording unchanged', () => {

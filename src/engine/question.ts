@@ -16,6 +16,7 @@ export type Question =
   | { format: 'matchPairs'; target: Country; countries: Country[] }
   | { format: 'oddOneOut'; target: Country; intruder: Country; options: Country[] }
   | { format: 'sortSimilar'; target: Country; countries: Country[] }
+  | { format: 'sortSimilarNames'; target: Country; countries: Country[] }
   | { format: 'typeSimilar'; target: Country; countries: Country[] };
 
 export type FormatId = Question['format'];
@@ -24,6 +25,7 @@ export interface FormatContext {
   pool: readonly Country[];
   world: readonly Country[];
   similarGroups: readonly (readonly string[])[];
+  similarNames: readonly (readonly string[])[];
   similarDistractors: boolean;
 }
 

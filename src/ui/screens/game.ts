@@ -1,4 +1,4 @@
-import { countries, similarGroups } from '../../data/countries';
+import { countries, similarGroups, similarNames } from '../../data/countries';
 import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
@@ -15,7 +15,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   const rules = LEVEL_RULES[difficulty];
   const pool = poolFor(countries, continent, difficulty);
   const round = new Round(
-    { pool, world: countries, similarGroups, similarDistractors: rules.similarDistractors },
+    { pool, world: countries, similarGroups, similarNames, similarDistractors: rules.similarDistractors },
     { correctToWin: goalFor(difficulty, pool.length), recallWeight: rules.recallWeight },
     Math.random,
   );

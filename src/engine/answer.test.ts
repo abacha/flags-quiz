@@ -102,6 +102,15 @@ describe('grade', () => {
     });
   });
 
+  describe('sortSimilarNames', () => {
+    const question: Question = { format: 'sortSimilarNames', target: c('cg'), countries: [c('cg'), c('cd')] };
+
+    it('grades the links like the other pair formats', () => {
+      expect(grade(question, { kind: 'links', links: { cg: 'cg', cd: 'cd' } }).correct).toBe(true);
+      expect(grade(question, { kind: 'links', links: { cg: 'cd', cd: 'cg' } })).toEqual({ correct: false, missed: [c('cg'), c('cd')] });
+    });
+  });
+
   describe('typeSimilar', () => {
     const question: Question = { format: 'typeSimilar', target: c('ga'), countries: [c('ga'), c('sl')] };
 

@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { countries, similarGroups } from '../data/countries';
+import { countries, similarGroups, similarNames } from '../data/countries';
 import { ALL_FORMATS, typeName } from '../engine/formats';
 import { poolFor } from '../engine/pool';
 import type { FormatContext } from '../engine/question';
@@ -11,7 +11,7 @@ import { renderQuestion } from './questions/render';
 
 const byIso = (code: string) => countries.find((c) => c.iso2 === code)!;
 const pool = poolFor(countries, 'americas', 'hard');
-const ctx: FormatContext = { pool, world: countries, similarGroups, similarDistractors: true };
+const ctx: FormatContext = { pool, world: countries, similarGroups, similarNames, similarDistractors: true };
 
 describe('STATUS_BADGE', () => {
   it('names every status', () => {
