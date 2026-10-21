@@ -4,7 +4,7 @@ import { onBack } from '../backButton';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
-import { mapResultActions, mapReview, statBlocks } from '../results';
+import { mapReview, resultActions, statBlocks } from '../results';
 
 export function renderMapResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'mapResult' }>): void {
   const { continent, difficulty, won, correct, missed } = screen;
@@ -16,7 +16,7 @@ export function renderMapResult(root: HTMLElement, navigate: Navigate, screen: E
       el('h1', {}, [won ? '🏅 Medalha conquistada!' : `Você fez ${correct} de ${goal}`]),
       el('p', { className: 'detail' }, [`Mapa · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       statBlocks([[`${correct}/${goal}`, 'acertos']]),
-      mapResultActions(navigate, 'mapGame', continent, difficulty),
+      resultActions(navigate, 'mapGame', continent, difficulty),
       ...review,
     ]),
   );

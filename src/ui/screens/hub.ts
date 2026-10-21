@@ -45,13 +45,13 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
     pill.textContent = `${completed()}/${CONTINENT_KEYS.length * DIFFICULTIES.length} ${area === 'flags' ? 'quizzes' : 'mapas'}`;
     for (const [key, tab] of tabs) tab.replaceChildren(CONTINENT_LABEL[key], ...tabCount(key));
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    const cards = DIFFICULTIES.map((difficulty) => levelCard(navigate, continent, difficulty, area, saved[area]));
+    const cards = () => DIFFICULTIES.map((difficulty) => levelCard(navigate, continent, difficulty, area, saved[area]));
     if (area === 'maps') {
-      levels.replaceChildren(...cards);
+      levels.replaceChildren(...cards());
       return;
     }
     levels.replaceChildren(
-      ...cards,
+      ...cards(),
       el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'flagTable', continent }) }, [
         `Ver as ${poolFor(countries, continent, 'general').length} bandeiras ${CONTINENT_FROM[continent]} →`,
       ]),

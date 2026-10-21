@@ -13,7 +13,7 @@ export function statBlocks(stats: [value: string, label: string][]): HTMLElement
   );
 }
 
-export function resultActions(navigate: Navigate, mode: 'game' | 'quiz', continent: ContinentKey, difficulty: Difficulty): HTMLElement {
+export function resultActions(navigate: Navigate, mode: 'game' | 'quiz' | 'mapGame' | 'mapQuiz', continent: ContinentKey, difficulty: Difficulty): HTMLElement {
   const next: Difficulty | undefined = DIFFICULTIES[DIFFICULTIES.indexOf(difficulty) + 1];
   return el('div', { className: 'result-actions' }, [
     ...(next
@@ -26,13 +26,6 @@ export function resultActions(navigate: Navigate, mode: 'game' | 'quiz', contine
     el('button', { className: next ? 'outline' : 'primary', type: 'button', onclick: () => navigate({ name: mode, continent, difficulty }) }, [
       'Jogar de novo',
     ]),
-    el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar ao início']),
-  ]);
-}
-
-export function mapResultActions(navigate: Navigate, mode: 'mapGame' | 'mapQuiz', continent: ContinentKey, difficulty: Difficulty): HTMLElement {
-  return el('div', { className: 'result-actions' }, [
-    el('button', { className: 'primary', type: 'button', onclick: () => navigate({ name: mode, continent, difficulty }) }, ['Jogar de novo']),
     el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar ao início']),
   ]);
 }

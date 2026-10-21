@@ -66,6 +66,13 @@ describe('renderMapQuizResult', () => {
     ]);
   });
 
+  it('offers the next level of the map Quiz first on Fácil and none on Geral', () => {
+    const easy = render({ difficulty: 'easy' });
+    easy.button('Próximo nível: Médio →').click();
+    expect(easy.screens).toEqual([{ name: 'mapQuiz', continent: 'oceania', difficulty: 'medium' }]);
+    expect(render({ difficulty: 'general' }).root.querySelector('.result-actions')!.textContent).not.toContain('Próximo nível');
+  });
+
   it('goes back to the hub on the device back', () => {
     const { screens } = render({});
     pressDeviceBack();

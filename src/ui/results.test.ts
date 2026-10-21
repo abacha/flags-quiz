@@ -18,7 +18,7 @@ describe('statBlocks', () => {
 });
 
 describe('resultActions', () => {
-  const render = (mode: 'game' | 'quiz', difficulty: 'easy' | 'medium' | 'hard' | 'general') => {
+  const render = (mode: 'game' | 'quiz' | 'mapGame' | 'mapQuiz', difficulty: 'easy' | 'medium' | 'hard' | 'general') => {
     const screens: Screen[] = [];
     const actions = resultActions((screen) => screens.push(screen), mode, 'africa', difficulty);
     const buttons = [...actions.querySelectorAll('button')];
@@ -38,7 +38,7 @@ describe('resultActions', () => {
     ['medium', 'hard'],
     ['hard', 'general'],
   ] as const)('opens the same mode on the level after %s', (difficulty, next) => {
-    for (const mode of ['game', 'quiz'] as const) {
+    for (const mode of ['game', 'quiz', 'mapGame', 'mapQuiz'] as const) {
       const { screens, buttons } = render(mode, difficulty);
       buttons[0].click();
       expect(screens).toEqual([{ name: mode, continent: 'africa', difficulty: next }]);
@@ -46,6 +46,10 @@ describe('resultActions', () => {
   });
 
   it('has no next level after Geral and fills Jogar de novo instead', () => {
+    expect(render('mapQuiz', 'general').labels).toEqual([
+      ['Jogar de novo', 'primary'],
+      ['Voltar ao início', 'link'],
+    ]);
     expect(render('game', 'general').labels).toEqual([
       ['Jogar de novo', 'primary'],
       ['Voltar ao início', 'link'],

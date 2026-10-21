@@ -34,6 +34,13 @@ describe('renderMapResult', () => {
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
   });
 
+  it('offers the next level of the map Learn first on Fácil and none on Geral', () => {
+    const easy = render({ difficulty: 'easy' });
+    easy.button('Próximo nível: Médio →').click();
+    expect(easy.screens).toEqual([{ name: 'mapGame', continent: 'oceania', difficulty: 'medium' }]);
+    expect([...render({ difficulty: 'general' }).root.querySelectorAll('button')].map((b) => b.textContent)).toEqual(['Jogar de novo', 'Voltar ao início']);
+  });
+
   it('keeps the not-won title', () => {
     expect(render({}).root.querySelector('h1')!.textContent).toBe(`Você fez 3 de ${goal}`);
   });
