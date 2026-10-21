@@ -54,4 +54,10 @@ describe('style.css', () => {
   it('lets grey neighbours catch taps so they never reach a hit circle beneath them', () => {
     expect(declared('.map .context', 'pointer-events')).not.toContain('none');
   });
+
+  it('shows the answer feedback as a sheet over the question so the screen never grows', () => {
+    expect(declared('.feedback', 'position')).toContain('fixed');
+    expect(declared('.feedback', 'bottom')).toContain('0px');
+    expect(declared('.feedback', 'overflow-y')).toContain('auto');
+  });
 });

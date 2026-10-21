@@ -293,17 +293,38 @@ input::placeholder { text-overflow: ellipsis; }
 }
 
 .feedback {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
+  max-height: 75dvh;
+  margin: 0 auto;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-top: 4px solid var(--border);
   background: var(--surface);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+  animation: sheet-up 180ms ease-out;
 }
 
-.feedback.right { border-color: var(--success); }
-.feedback.wrong { border-color: var(--wrong); }
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback { animation: none; }
+}
+
+.feedback.right { border-top-color: var(--success); }
+.feedback.wrong { border-top-color: var(--wrong); }
 .verdict { margin: 0; font-weight: 700; font-size: 1.2rem; }
 .feedback.right .verdict { color: var(--success); }
 .feedback.wrong .verdict { color: var(--wrong); }
