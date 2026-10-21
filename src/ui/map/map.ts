@@ -28,10 +28,13 @@ export interface MapView {
   focus(iso2s: readonly string[], options?: { animate: boolean }): void;
 }
 
-interface Hit {
+interface CountryHit {
   center: [number, number];
   size: number;
   cap: number;
+}
+
+interface Hit extends CountryHit {
   circle: SVGCircleElement;
 }
 
@@ -84,7 +87,18 @@ const between = (from: ViewBox, to: ViewBox, k: number): ViewBox => ({
   height: from.height + (to.height - from.height) * k,
 });
 
-export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
+interface ContinentMap {
+  pool: Map<string, Country>;
+  continentFit: ViewBox;
+  bounds: ViewBox;
+  countryLayer: SVGGElement;
+  hits: Map<string, CountryHit>;
+  surroundings(iso2: string): ViewBox;
+}
+
+const continentMaps = new Map<ContinentKey, ContinentMap>();
+
+function buildContinentMap(continent: ContinentKey): ContinentMap {
   const units = continent === 'world' ? worldUnits : continentUnits;
   const pool = new Map(mapPool(continent, 'general').map((c) => [c.iso2, c]));
   const poolFeatures: FeatureCollection = {
@@ -95,29 +109,13 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   const path = geoPath(projection);
   const [[worldWest], [worldEast]] = path.bounds({ type: 'Sphere' });
   const halfWorld = (worldEast - worldWest) / 2;
-  const continentFit = viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures)));
-  const bounds = viewBoxOf(path.bounds(poolFeatures));
-  let fit = continentFit;
-  let box = fit;
-  let unitsPerPx = 0;
-  let aspect = 0;
-  let pending: readonly string[] | undefined;
-  let slide = 0;
-  let sliding: readonly string[] | undefined;
 
-  const svg = svgEl('svg', { viewBox: `${fit.x} ${fit.y} ${fit.width} ${fit.height}` });
   const countryLayer = svgEl('g');
-  const markLayer = svgEl('g');
-  const hitLayer = svgEl('g');
-  svg.append(hitLayer, countryLayer, markLayer);
-
-  const shapes = new Map<string, SVGPathElement>();
   for (const [id, geometry] of units) {
     const shape = svgEl('path', { d: path(geometry)! });
     if (id !== null && pool.has(id)) {
       shape.classList.add('country');
       shape.dataset.iso2 = id;
-      shapes.set(id, shape);
     } else {
       shape.classList.add('context');
     }
@@ -134,20 +132,68 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     return viewBoxOf([[x0, y0], [x1, y1]]);
   }
 
-  const hits = new Map<string, Hit>();
-  const surroundings = new Map<string, ViewBox>();
+  const hits = new Map<string, CountryHit>();
   for (const iso2 of pool.keys()) {
     const largest = largestPolygon(path, units.get(iso2)!);
-    const center = path.centroid(largest);
-    const hitCircle = svgEl('circle', { class: 'hit', cx: center[0], cy: center[1] });
-    hitCircle.dataset.iso2 = iso2;
-    hits.set(iso2, { center, size: Math.sqrt(path.area(largest) / Math.PI), cap: Infinity, circle: hitCircle });
-    const circle = geoCircle().center(centroidOf(iso2)).radius(SURROUNDINGS_DEGREES).precision(1)();
-    surroundings.set(iso2, nearSideBounds([...units.get(iso2)!.coordinates.flat(2), ...circle.coordinates.flat()], center[0]));
-    hitLayer.append(hitCircle);
+    hits.set(iso2, { center: path.centroid(largest), size: Math.sqrt(path.area(largest) / Math.PI), cap: Infinity });
   }
   for (const hit of hits.values()) {
     for (const other of hits.values()) if (other !== hit) hit.cap = Math.min(hit.cap, distance(hit.center, other.center) / 2);
+  }
+
+  const surroundings = new Map<string, ViewBox>();
+  return {
+    pool,
+    continentFit: viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures))),
+    bounds: viewBoxOf(path.bounds(poolFeatures)),
+    countryLayer,
+    hits,
+    surroundings(iso2) {
+      let box = surroundings.get(iso2);
+      if (!box) {
+        const circle = geoCircle().center(centroidOf(iso2)).radius(SURROUNDINGS_DEGREES).precision(1)();
+        box = nearSideBounds([...units.get(iso2)!.coordinates.flat(2), ...circle.coordinates.flat()], hits.get(iso2)!.center[0]);
+        surroundings.set(iso2, box);
+      }
+      return box;
+    },
+  };
+}
+
+function continentMap(continent: ContinentKey): ContinentMap {
+  let built = continentMaps.get(continent);
+  if (!built) {
+    built = buildContinentMap(continent);
+    continentMaps.set(continent, built);
+  }
+  return built;
+}
+
+export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
+  const shared = continentMap(continent);
+  const { pool, continentFit, bounds, surroundings } = shared;
+  let fit = continentFit;
+  let box = fit;
+  let unitsPerPx = 0;
+  let aspect = 0;
+  let pending: readonly string[] | undefined;
+  let slide = 0;
+  let sliding: readonly string[] | undefined;
+
+  const svg = svgEl('svg', { viewBox: `${fit.x} ${fit.y} ${fit.width} ${fit.height}` });
+  const countryLayer = shared.countryLayer.cloneNode(true) as SVGGElement;
+  const markLayer = svgEl('g');
+  const hitLayer = svgEl('g');
+  svg.append(hitLayer, countryLayer, markLayer);
+
+  const shapes = new Map([...countryLayer.querySelectorAll<SVGPathElement>('path[data-iso2]')].map((shape) => [shape.dataset.iso2!, shape]));
+
+  const hits = new Map<string, Hit>();
+  for (const [iso2, hit] of shared.hits) {
+    const circle = svgEl('circle', { class: 'hit', cx: hit.center[0], cy: hit.center[1] });
+    circle.dataset.iso2 = iso2;
+    hits.set(iso2, { ...hit, circle });
+    hitLayer.append(circle);
   }
 
   const marks = new Map<string, Marks>();
@@ -163,7 +209,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   const screenUnitsPerPx = () => 1 / svg.getScreenCTM()!.a;
 
   function framing(iso2s: readonly string[]): ViewBox {
-    const boxes = iso2s.map((iso2) => surroundings.get(iso2)!);
+    const boxes = iso2s.map(surroundings);
     const x0 = Math.min(...boxes.map((b) => b.x));
     const y0 = Math.min(...boxes.map((b) => b.y));
     const x1 = Math.max(...boxes.map((b) => b.x + b.width));

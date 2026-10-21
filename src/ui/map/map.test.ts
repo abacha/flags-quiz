@@ -9,6 +9,11 @@ import type { ContinentKey } from '../../engine/pool';
 import { renderMap, type MapView } from './map';
 import { projectionFor } from './projection';
 
+vi.mock('./projection', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./projection')>();
+  return { ...actual, projectionFor: vi.fn(actual.projectionFor) };
+});
+
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 
 const viewBoxOf = (svg: SVGSVGElement) => svg.getAttribute('viewBox')!.split(' ').map(Number) as [number, number, number, number];
@@ -492,5 +497,30 @@ describe('renderMap', () => {
     const svg = layOut(view.element);
     view.focus(['mt']);
     expect(Number(view.element.querySelector('circle.hit[data-iso2="mt"]')!.getAttribute('r'))).toBeCloseTo(22 / svg.getScreenCTM()!.a);
+  });
+
+  it('projects a continent once and reuses it for every later map of that continent', () => {
+    renderMap('oceania');
+    const calls = vi.mocked(projectionFor).mock.calls.length;
+    renderMap('oceania');
+    expect(vi.mocked(projectionFor).mock.calls).toHaveLength(calls);
+  });
+
+  it('keeps paints, marks, framing and taps per map when the same continent is drawn twice', () => {
+    const firstTap = vi.fn();
+    const secondTap = vi.fn();
+    const first = renderMap('europe', firstTap);
+    const second = renderMap('europe', secondTap);
+    layOut(first.element);
+    const secondSvg = layOut(second.element);
+    const secondBox = viewBoxOf(secondSvg);
+    first.paint('fr', 'missed', 'França');
+    first.focus(['fr']);
+    click(second.element.querySelector('path[data-iso2="de"]')!);
+    expect(second.element.querySelector('path[data-iso2="fr"]')!.classList.contains('missed')).toBe(false);
+    expect(second.element.querySelector('[data-mark]')).toBeNull();
+    expect(viewBoxOf(secondSvg)).toEqual(secondBox);
+    expect(secondTap).toHaveBeenCalledWith(country('de'));
+    expect(firstTap).not.toHaveBeenCalled();
   });
 });
