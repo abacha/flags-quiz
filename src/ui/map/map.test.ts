@@ -11,10 +11,22 @@ import { projectionFor } from './projection';
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 
-const layOut = (element: HTMLElement) => {
+const viewBoxOf = (svg: SVGSVGElement) => svg.getAttribute('viewBox')!.split(' ').map(Number) as [number, number, number, number];
+
+const layOut = (element: HTMLElement, width = 500, height = 300) => {
   const svg = element.querySelector('svg')!;
-  svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 500, height: 300, right: 500, bottom: 300, x: 0, y: 0, toJSON: () => ({}) });
+  svg.getBoundingClientRect = () => ({ left: 0, top: 0, width, height, right: width, bottom: height, x: 0, y: 0, toJSON: () => ({}) });
+  svg.getScreenCTM = () => {
+    const [x, y, w, h] = viewBoxOf(svg);
+    const scale = Math.min(width / w, height / h);
+    return new DOMMatrix([scale, 0, 0, scale, (width - w * scale) / 2 - x * scale, (height - h * scale) / 2 - y * scale]);
+  };
   return svg;
+};
+
+const toViewBox = (svg: SVGSVGElement, x: number, y: number) => {
+  const point = new DOMPoint(x, y).matrixTransform(svg.getScreenCTM()!.inverse());
+  return [point.x, point.y];
 };
 
 const pointer = (target: Element, type: string, pointerId: number, clientX: number, clientY: number) =>
@@ -118,8 +130,9 @@ describe('renderMap', () => {
     expect(viewBox()[2]).toBeCloseTo(baseWidth! / 2);
     pointer(svg, 'pointerup', 2, 400, 150);
     const [x] = viewBox();
+    const unitsPerPx = 1 / svg.getScreenCTM()!.a;
     pointer(svg, 'pointermove', 1, 150, 150);
-    expect(viewBox()[0]).toBeCloseTo(x! + baseWidth! / 20);
+    expect(viewBox()[0]).toBeCloseTo(x! + 50 * unitsPerPx);
     pointer(svg, 'pointerup', 1, 150, 150);
     for (let i = 0; i < 40; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
     expect(viewBox()[2]).toBeCloseTo(baseWidth! / 24);
@@ -152,9 +165,9 @@ describe('renderMap', () => {
 
   it('keeps hit circles at 22 px on screen, capped by the nearest neighbour', () => {
     const view = renderMap('europe');
-    const svg = layOut(view.element);
-    svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, clientX: 250, clientY: 150, cancelable: true }));
-    const unitsPerPx = Number(svg.getAttribute('viewBox')!.split(' ')[2]) / 500;
+    const svg = layOut(view.element, 800, 480);
+    svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, clientX: 400, clientY: 240, cancelable: true }));
+    const unitsPerPx = 1 / svg.getScreenCTM()!.a;
     const radius = (iso2: string) => Number(view.element.querySelector(`circle[data-iso2="${iso2}"]`)!.getAttribute('r'));
     expect(radius('mt')).toBeCloseTo(22 * unitsPerPx);
     expect(radius('ad')).toBeLessThan(22 * unitsPerPx);
@@ -191,6 +204,64 @@ describe('renderMap', () => {
     brazil.dispatchEvent(new PointerEvent('pointerup', { pointerId: 2, clientX: 200, clientY: 200, isPrimary: true, bubbles: true }));
     click(brazil);
     expect(onTap).toHaveBeenCalledWith(country('br'));
+  });
+
+  it('keeps the pinched point under the fingers on a letterboxed map', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element, 390, 600);
+    pointer(svg, 'pointerdown', 1, 150, 300);
+    pointer(svg, 'pointerdown', 2, 230, 300);
+    const anchor = toViewBox(svg, 190, 300);
+    pointer(svg, 'pointermove', 2, 310, 300);
+    const [x, y] = toViewBox(svg, 230, 300);
+    expect(x).toBeCloseTo(anchor[0]!);
+    expect(y).toBeCloseTo(anchor[1]!);
+  });
+
+  it('pans by the distance the finger moved on a letterboxed map', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element, 390, 200);
+    pointer(svg, 'pointerdown', 1, 150, 100);
+    pointer(svg, 'pointerdown', 2, 250, 100);
+    pointer(svg, 'pointermove', 2, 350, 100);
+    pointer(svg, 'pointerup', 2, 350, 100);
+    const grabbed = toViewBox(svg, 150, 100);
+    pointer(svg, 'pointermove', 1, 120, 100);
+    expect(toViewBox(svg, 120, 100)[0]).toBeCloseTo(grabbed[0]!);
+  });
+
+  it('sizes the hit circles, rings and labels in screen pixels on a letterboxed map', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element, 390, 200);
+    view.paint('mt', 'highlight', 'Malta');
+    pointer(svg, 'pointerdown', 1, 150, 100);
+    pointer(svg, 'pointerdown', 2, 200, 100);
+    pointer(svg, 'pointermove', 2, 350, 100);
+    pointer(svg, 'pointerup', 2, 350, 100);
+    pointer(svg, 'pointerup', 1, 150, 100);
+    const unitsPerPx = 1 / svg.getScreenCTM()!.a;
+    expect(Number(view.element.querySelector('circle.hit[data-iso2="mt"]')!.getAttribute('r'))).toBeCloseTo(22 * unitsPerPx);
+    expect(Number(view.element.querySelector('circle.map-ring')!.getAttribute('r'))).toBeCloseTo(14 * unitsPerPx);
+    expect(Number(view.element.querySelector('text.map-label')!.getAttribute('font-size'))).toBeCloseTo(13 * unitsPerPx);
+  });
+
+  it('keeps its marks sized while the map is hidden', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element, 0, 0);
+    view.paint('mt', 'highlight', 'Malta');
+    svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, clientX: 0, clientY: 0, cancelable: true }));
+    expect(Number.isFinite(Number(view.element.querySelector('circle.hit[data-iso2="mt"]')!.getAttribute('r')))).toBe(true);
+    expect(Number.isFinite(Number(view.element.querySelector('circle.map-ring')!.getAttribute('r')))).toBe(true);
+    expect(Number.isFinite(Number(view.element.querySelector('text.map-label')!.getAttribute('font-size')))).toBe(true);
+  });
+
+  it('ignores a wheel event without vertical movement', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element);
+    svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
+    const [, , zoomedWidth] = viewBoxOf(svg);
+    svg.dispatchEvent(new WheelEvent('wheel', { deltaX: 100, deltaY: 0, clientX: 250, clientY: 150, cancelable: true }));
+    expect(viewBoxOf(svg)[2]).toBe(zoomedWidth);
   });
 
   it('paints and labels a country', () => {

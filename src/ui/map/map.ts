@@ -125,8 +125,12 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     }
   }
 
+  const screenUnitsPerPx = () => 1 / svg.getScreenCTM()!.a;
+
   function rescale() {
-    unitsPerPx = box.width / svg.getBoundingClientRect().width;
+    const { width, height } = svg.getBoundingClientRect();
+    if (width === 0 || height === 0) return;
+    unitsPerPx = screenUnitsPerPx();
     sizeMarks();
   }
 
@@ -136,9 +140,8 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   }
 
   function toViewBox([clientX, clientY]: Point): Point {
-    const rect = svg.getBoundingClientRect();
-    const scale = box.width / rect.width;
-    return [box.x + (clientX - rect.left) * scale, box.y + (clientY - rect.top) * scale];
+    const point = new DOMPoint(clientX, clientY).matrixTransform(svg.getScreenCTM()!.inverse());
+    return [point.x, point.y];
   }
 
   function unmark(iso2: string) {
@@ -175,7 +178,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     const point: Point = [event.clientX, event.clientY];
     pointers.set(event.pointerId, point);
     if (!gesture && distance(start, point) > TAP_SLOP_PX) beginGesture();
-    const scale = box.width / svg.getBoundingClientRect().width;
+    const scale = screenUnitsPerPx();
     if (pointers.size === 1) {
       show(panBy(box, (previous[0] - point[0]) * scale, (previous[1] - point[1]) * scale, bounds));
       return;
@@ -184,7 +187,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     const before: Point = [(previous[0] + other![0]) / 2, (previous[1] + other![1]) / 2];
     const after: Point = [(point[0] + other![0]) / 2, (point[1] + other![1]) / 2];
     const zoomed = zoomAt(box, distance(point, other!) / distance(previous, other!), toViewBox(before), fit, MAX_ZOOM, bounds);
-    const zoomedScale = zoomed.width / svg.getBoundingClientRect().width;
+    const zoomedScale = (scale * zoomed.width) / box.width;
     show(panBy(zoomed, (before[0] - after[0]) * zoomedScale, (before[1] - after[1]) * zoomedScale, bounds));
   });
 
@@ -199,6 +202,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     'wheel',
     (event) => {
       event.preventDefault();
+      if (event.deltaY === 0) return;
       const factor = event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP;
       show(zoomAt(box, factor, toViewBox([event.clientX, event.clientY]), fit, MAX_ZOOM, bounds));
       rescale();
