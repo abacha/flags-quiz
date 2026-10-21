@@ -42,6 +42,8 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 
 **Zoom.** Pinch and drag on the map in every map question and in the Quiz.
 
+**Initial view (Adriano's decision, after playing Américas).** The map takes at most about 45% of the screen height in a landscape frame, and zoom does the rest. A map question opens framed on the highlighted country and its surroundings (at least about 1500 km across); `mapPairs` frames its four countries; "Onde fica X?" keeps the whole continent so the answer is not given away. In the Quiz the map slides to each new highlighted country. The player can always zoom out to the whole continent.
+
 ## My calls (Adriano did not decide these)
 
 - **Map data:** Natural Earth 1:50m admin-0 map units, bundled as TopoJSON, keyed to our `iso2`. Rendered as inline SVG with `d3-geo` (projection and paths) and `topojson-client`. One projection per continent fitted to its pool's bounding box; Mundo uses Equal Earth. Russia sits in Europe in `countries.json` and is drawn whole on the Europe map.
@@ -52,7 +54,7 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 - **Goal above pool size:** a Maps pool smaller than `MIN_GOAL` keeps the goal of 15. Learn rounds start a new pass once every country is spent, so the goal stays reachable.
 - **United Kingdom (Adriano's decision):** Maps asks the four nations (`gb-eng`, `gb-sct`, `gb-wls`, `gb-nir`) as separate countries, drawn from the Natural Earth map units that split them, and leaves `gb` out of Maps.
 - **Countries outside the pool on a continent map** (a neighbour drawn for context, such as Russia on the Asia map) are drawn in a neutral grey and cannot be tapped.
-- **Highlight for small countries:** besides the fill, the highlighted country gets a circle marker around its centroid, so it is visible at any zoom. The Quiz and the map questions open zoomed to fit the continent; the highlight never auto-zooms.
+- **Highlight for small countries:** besides the fill, the highlighted country gets a circle marker around its centroid, so it is visible at any zoom.
 - **Medal goal:** `goalFor` with the Geral ratio (13/18) on the Maps pool, `MIN_GOAL` still 15.
 - **Storage:** separate keys for Maps medals and Maps quiz records, keyed by continent only, so flag progress is untouched. The hub header counter stays the flags counter while Bandeiras is selected and shows "N/6 mapas" while Mapas is selected.
 - **Selector memory:** the hub remembers the last selected area (Bandeiras or Mapas) the same way it remembers the continent.
