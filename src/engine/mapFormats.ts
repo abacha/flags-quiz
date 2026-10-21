@@ -1,17 +1,19 @@
-import { mapPool } from '../data/maps';
-import { optionsWith, othersInPool } from './formats';
+import type { Country } from '../data/countries';
+import { mapPool, nearestCountries } from '../data/maps';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey, Difficulty } from './pool';
 import { pickOne, sample, shuffle } from './rng';
 
 const always = () => true;
+const NEAR_COUNT = 8;
+const nearby = (target: Country, ctx: FormatContext) => nearestCountries(target, ctx.pool, NEAR_COUNT);
 
 export const mapToNames: Format = {
   id: 'mapToNames',
   recall: false,
   choice: true,
   canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'mapToNames', target, options: optionsWith(target, ctx, 4, rng) }),
+  build: (target, ctx, rng) => ({ format: 'mapToNames', target, options: shuffle([target, ...sample(nearby(target, ctx), 3, rng)], rng) }),
 };
 
 export const nameToMap: Format = {
@@ -30,7 +32,7 @@ export const mapPairs: Format = {
   build: (target, ctx, rng) => ({
     format: 'mapPairs',
     target,
-    countries: shuffle([target, ...sample(othersInPool(target, ctx), 3, rng)], rng),
+    countries: shuffle([target, ...sample(nearby(target, ctx), 3, rng)], rng),
   }),
 };
 
@@ -42,7 +44,7 @@ export const mapTrueFalse: Format = {
   build: (target, ctx, rng) => ({
     format: 'mapTrueFalse',
     target,
-    shown: rng() < 0.5 ? target : pickOne(othersInPool(target, ctx), rng),
+    shown: rng() < 0.5 ? target : pickOne(nearby(target, ctx), rng),
   }),
 };
 

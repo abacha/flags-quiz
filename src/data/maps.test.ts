@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { countries } from './countries';
-import { MAP_OBJECT, mapExcluded, mapPool, topology } from './maps';
+import { geoDistance } from 'd3-geo';
+import { MAP_OBJECT, centroidOf, mapExcluded, mapPool, nearestCountries, topology } from './maps';
 
 const topologyIds = (): string[] =>
   topology.objects[MAP_OBJECT].geometries.flatMap((g) => (g.id === null || g.id === undefined ? [] : [String(g.id)]));
@@ -53,5 +54,33 @@ describe('maps data', () => {
 
   it('lists only known entries as excluded', () => {
     for (const iso2 of mapExcluded) expect(countries.some((c) => c.iso2 === iso2), iso2).toBe(true);
+  });
+
+  describe('nearest countries', () => {
+    const c = (code: string) => countries.find((country) => country.iso2 === code)!;
+    const americas = mapPool('americas', 'general');
+
+    it('keeps Guatemala among its neighbours and away from distant countries', () => {
+      const nearest = nearestCountries(c('gt'), americas, 8).map((country) => country.iso2);
+      expect(nearest).toHaveLength(8);
+      expect(nearest).toEqual(expect.arrayContaining(['sv', 'hn', 'bz']));
+      for (const far of ['ar', 'cl', 'ca']) expect(nearest).not.toContain(far);
+    });
+
+    it('never returns the target', () => {
+      expect(nearestCountries(c('gt'), americas, 8).map((country) => country.iso2)).not.toContain('gt');
+    });
+
+    it('returns every other country when the pool has fewer than count', () => {
+      const oceania = mapPool('oceania', 'hard');
+      expect(nearestCountries(oceania[0], oceania, 8)).toHaveLength(oceania.length - 1);
+    });
+
+    it('places Portugal on the mainland, not pulled to the Azores', () => {
+      const [lon, lat] = centroidOf('pt');
+      expect(lon).toBeGreaterThan(-10);
+      expect(lat).toBeGreaterThan(36);
+      expect(geoDistance([lon, lat], [-8, 39.5])).toBeLessThan(0.05);
+    });
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
-import { mapPool } from '../data/maps';
+import { mapPool, nearestCountries } from '../data/maps';
 import { grade, type Answer } from './answer';
 import { MAP_FORMATS, mapContext, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
 import type { Question } from './question';
@@ -131,5 +131,46 @@ describe('grade a tap outside the level', () => {
     expect(level.pool).not.toContain(outside);
     const q = { format: 'nameToMap', target } as const;
     expect(grade(q, { kind: 'choice', iso2: outside.iso2 })).toEqual({ correct: false, missed: [target] });
+  });
+
+  describe('regional distractors', () => {
+    const gt = c('gt');
+    const americas = mapContext('americas', 'general');
+    const near = new Set(nearestCountries(gt, americas.pool, 8).map((country) => country.iso2));
+    const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    it('draws mapToNames options from the 8 nearest countries', () => {
+      for (const seed of seeds) {
+        const q = mapToNames.build(gt, americas, seededRng(seed));
+        if (q.format !== 'mapToNames') throw new Error('wrong format');
+        for (const option of q.options.filter((o) => o !== gt)) expect(near.has(option.iso2), option.iso2).toBe(true);
+      }
+    });
+
+    it('draws mapPairs countries from the 8 nearest countries', () => {
+      for (const seed of seeds) {
+        const q = mapPairs.build(gt, americas, seededRng(seed));
+        if (q.format !== 'mapPairs') throw new Error('wrong format');
+        for (const country of q.countries.filter((o) => o !== gt)) expect(near.has(country.iso2), country.iso2).toBe(true);
+      }
+    });
+
+    it('draws the mapTrueFalse wrong country from the 8 nearest countries', () => {
+      for (const seed of seeds) {
+        const q = mapTrueFalse.build(gt, americas, seededRng(seed));
+        if (q.format !== 'mapTrueFalse') throw new Error('wrong format');
+        if (q.shown !== gt) expect(near.has(q.shown.iso2), q.shown.iso2).toBe(true);
+      }
+    });
+
+    it('still builds 4-country questions in Oceania hard', () => {
+      const small = mapContext('oceania', 'hard');
+      expect(small.pool).toHaveLength(4);
+      const names = mapToNames.build(small.pool[0], small, seededRng(1));
+      const pairs = mapPairs.build(small.pool[0], small, seededRng(1));
+      if (names.format !== 'mapToNames' || pairs.format !== 'mapPairs') throw new Error('wrong format');
+      expect(new Set(names.options.map((o) => o.iso2)).size).toBe(4);
+      expect(new Set(pairs.countries.map((o) => o.iso2)).size).toBe(4);
+    });
   });
 });

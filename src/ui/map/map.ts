@@ -1,8 +1,8 @@
-import { geoBounds, geoCentroid, geoCircle, geoPath, type GeoPath } from 'd3-geo';
+import { geoBounds, geoCircle, geoPath, type GeoPath } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson';
 import { feature, merge } from 'topojson-client';
 import type { Country } from '../../data/countries';
-import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
+import { MAP_OBJECT, centroidOf, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
@@ -142,7 +142,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     const hitCircle = svgEl('circle', { class: 'hit', cx: center[0], cy: center[1] });
     hitCircle.dataset.iso2 = iso2;
     hits.set(iso2, { center, size: Math.sqrt(path.area(largest) / Math.PI), cap: Infinity, circle: hitCircle });
-    const circle = geoCircle().center(geoCentroid(largest)).radius(SURROUNDINGS_DEGREES).precision(1)();
+    const circle = geoCircle().center(centroidOf(iso2)).radius(SURROUNDINGS_DEGREES).precision(1)();
     surroundings.set(iso2, nearSideBounds([...units.get(iso2)!.coordinates.flat(2), ...circle.coordinates.flat()], center[0]));
     hitLayer.append(hitCircle);
   }
