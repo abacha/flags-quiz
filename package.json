@@ -10,7 +10,8 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview --host",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "build:map": "node scripts/build-map.mjs"
   },
   "keywords": [],
   "author": "",
@@ -18,11 +19,22 @@
   "type": "module",
   "private": "true",
   "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^26.6.4",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-server": "^3.0.4",
+    "@types/topojson-simplify": "^3.0.3",
     "happy-dom": "^20.14.5",
+    "topojson-server": "^3.0.1",
+    "topojson-simplify": "^3.0.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.3",
     "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0"
   }
 }
