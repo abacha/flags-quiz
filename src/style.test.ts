@@ -46,4 +46,8 @@ describe('style.css', () => {
     expect(declared('.flag-box .flag', 'width')).toContain('100%');
     expect(declared('.flag-box .flag', 'height')).toContain('100%');
   });
+
+  it('keeps the browser from scrolling the page while the map is pinched or dragged', () => {
+    expect(declared('.map', 'touch-action')).toContain('none');
+  });
 });

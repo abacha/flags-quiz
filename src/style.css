@@ -591,3 +591,31 @@ input::placeholder { text-overflow: ellipsis; }
 .stat span { color: var(--muted); font-size: 0.8rem; }
 
 .result-actions { display: flex; flex-direction: column; gap: 12px; margin: 8px 0; }
+
+.map {
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.map svg { display: block; width: 100%; height: auto; }
+.map path { stroke: var(--border); stroke-width: 0.75; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.map .country { fill: var(--surface); cursor: pointer; }
+.map .context { fill: var(--tag-bg); pointer-events: none; }
+.map .country.highlight { fill: var(--accent); }
+.map .country.answered { fill: var(--success); }
+.map .country.missed { fill: var(--wrong); }
+.map .hit { fill: transparent; pointer-events: all; cursor: pointer; }
+.map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
+.map-label {
+  fill: var(--text);
+  stroke: var(--surface);
+  stroke-width: 0.25em;
+  paint-order: stroke;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
