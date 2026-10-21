@@ -1,7 +1,9 @@
 import type { Answer } from '../../engine/answer';
 import type { Question } from '../../engine/question';
+import type { ContinentKey } from '../../engine/pool';
 import { CONTINENT_FROM } from '../labels';
 import { cropFigure, flagFigure, renderFlagChoices, renderNameChoices } from './choices';
+import { renderMapQuestion } from './mapQuestions';
 import { renderPairs } from './pairs';
 import { renderTrueFalse } from './trueFalse';
 import { renderTypeName } from './typeName';
@@ -9,7 +11,7 @@ import { renderTypeSimilar } from './typeSimilar';
 
 export type Submit = (answer: Answer) => void;
 
-export function renderQuestion(question: Question, submit: Submit): HTMLElement {
+export function renderQuestion(question: Question, submit: Submit, continent?: ContinentKey): HTMLElement {
   switch (question.format) {
     case 'nameToFlags':
       return renderFlagChoices(`Qual é a bandeira de ${question.target.name}?`, question.options, submit);
@@ -37,6 +39,7 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
     case 'mapPairs':
     case 'mapTrueFalse':
     case 'mapTypeName':
-      throw new Error(`No renderer for the ${question.format} question yet`);
+      if (!continent) throw new Error(`The ${question.format} question needs a continent`);
+      return renderMapQuestion(question, continent, submit);
   }
 }

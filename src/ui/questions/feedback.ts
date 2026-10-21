@@ -29,10 +29,10 @@ function solution(question: Question): HTMLElement {
   }
 }
 
-export function renderFeedback(question: Question, result: Grade, onContinue: () => void): HTMLElement {
+export function renderFeedback(question: Question, result: Grade, onContinue: () => void, solutionOverride?: HTMLElement): HTMLElement {
   return el('section', { className: `feedback ${result.correct ? 'right' : 'wrong'}` }, [
     el('p', { className: 'verdict' }, [result.correct ? 'Certo!' : 'Errado']),
-    ...(result.correct ? [] : [solution(question)]),
+    ...(result.correct ? [] : [solutionOverride ?? solution(question)]),
     el('button', { className: 'primary', onclick: onContinue }, ['Continuar']),
   ]);
 }

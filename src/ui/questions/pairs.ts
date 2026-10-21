@@ -5,7 +5,12 @@ import type { Submit } from './render';
 
 type Selection = { side: 'name' | 'flag'; iso2: string } | null;
 
-export function renderPairs(prompt: string, countries: Country[], submit: Submit): HTMLElement {
+interface PairsOptions {
+  figure?: HTMLElement;
+  face?: (country: Country, index: number) => HTMLElement;
+}
+
+export function renderPairs(prompt: string, countries: Country[], submit: Submit, { figure, face = (country) => flagImg(country) }: PairsOptions = {}): HTMLElement {
   const names = [...countries].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   const links: Record<string, string> = {};
   let selected: Selection = null;
@@ -48,13 +53,14 @@ export function renderPairs(prompt: string, countries: Country[], submit: Submit
   const draw = () => {
     container.replaceChildren(
       el('h2', {}, [prompt]),
+      ...(figure ? [figure] : []),
       el(
         'div',
         { className: 'pair-flags' },
-        countries.map((flag) => {
+        countries.map((flag, index) => {
           const name = nameOnFlag(flag.iso2);
           return el('button', { className: classes('pair-flag', 'flag', flag.iso2, Boolean(name)), onclick: () => tapFlag(flag.iso2) }, [
-            flagImg(flag),
+            face(flag, index),
             el('span', { className: 'pair-label' }, [name?.name ?? '—']),
           ]);
         }),
