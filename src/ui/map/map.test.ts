@@ -157,18 +157,42 @@ describe('renderMap', () => {
     const svg = layOut(view.element);
     const viewBox = () => svg.getAttribute('viewBox')!.split(' ').map(Number);
     const [, , baseWidth] = viewBox();
-    pointer(svg, 'pointerdown', 1, 200, 150);
-    pointer(svg, 'pointerdown', 2, 300, 150);
-    pointer(svg, 'pointermove', 2, 600, 150);
-    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 4);
-    pointer(svg, 'pointerup', 2, 600, 150);
-    const [x] = viewBox();
+    pointer(svg, 'pointerdown', 1, 250, 100);
+    pointer(svg, 'pointerdown', 2, 250, 150);
+    const pinched = toViewBox(svg, 250, 125);
+    pointer(svg, 'pointermove', 2, 250, 200);
+    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 2);
+    expect(toViewBox(svg, 250, 150)[0]).toBeCloseTo(pinched[0]!);
+    expect(toViewBox(svg, 250, 150)[1]).toBeCloseTo(pinched[1]!);
+    pointer(svg, 'pointerup', 2, 250, 200);
+    const [, y] = viewBox();
     const unitsPerPx = 1 / svg.getScreenCTM()!.a;
-    pointer(svg, 'pointermove', 1, 150, 150);
-    expect(viewBox()[0]).toBeCloseTo(x! + 50 * unitsPerPx);
-    pointer(svg, 'pointerup', 1, 150, 150);
+    pointer(svg, 'pointermove', 1, 250, 90);
+    expect(viewBox()[1]).toBeCloseTo(y! + 10 * unitsPerPx);
+    pointer(svg, 'pointerup', 1, 250, 90);
     for (let i = 0; i < 40; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
     expect(viewBox()[2]).toBeCloseTo(baseWidth! / 24);
+  });
+
+  it('keeps the pinched point under the fingers where the view is wider than the continent', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    const [[west], [east]] = poolCollection('americas').features.reduce(
+      ([[x0], [x1]], f) => {
+        const [[a], [b]] = geoPath(poolProjection('americas')).bounds(f);
+        return [[Math.min(x0, a)], [Math.max(x1, b)]];
+      },
+      [[Infinity], [-Infinity]],
+    );
+    pointer(svg, 'pointerdown', 1, 150, 150);
+    pointer(svg, 'pointerdown', 2, 250, 150);
+    const pinched = toViewBox(svg, 200, 150);
+    pointer(svg, 'pointermove', 2, 275, 150);
+    const [x, , width] = viewBoxOf(svg);
+    expect(width).toBeGreaterThan(east! - west!);
+    expect(toViewBox(svg, 212.5, 150)[0]).toBeCloseTo(pinched[0]!);
+    expect(x).toBeLessThanOrEqual(west! + 1e-6);
+    expect(x + width).toBeGreaterThanOrEqual(east! - 1e-6);
   });
 
   it('draws grey neighbours above the hit circles and ignores taps on them or the ocean', () => {
@@ -370,26 +394,97 @@ describe('renderMap', () => {
     expect(viewBoxOf(svg)[2]).toBeLessThan(before[2]);
   });
 
-  it('slides to a focus over animation frames, and a gesture stops the slide', () => {
+  const queueFrames = () => {
     const frames: FrameRequestCallback[] = [];
     vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => frames.push(callback));
     vi.stubGlobal('cancelAnimationFrame', () => frames.splice(0));
+    return frames;
+  };
+
+  const labelSize = (view: MapView) => Number(view.element.querySelector('text.map-label')!.getAttribute('font-size'));
+
+  it('slides to a focus over animation frames', () => {
+    const frames = queueFrames();
     const view = renderMap('americas');
     const svg = layOut(view.element);
     const start = viewBoxOf(svg);
     view.focus(['cl'], { animate: true });
     expect(viewBoxOf(svg)).toEqual(start);
+    frames.shift()!(performance.now() - 50);
+    expect(viewBoxOf(svg)).toEqual(start);
     frames.shift()!(performance.now() + 150);
     const halfway = viewBoxOf(svg);
     expect(halfway).not.toEqual(start);
     expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
-    pointer(svg, 'pointerdown', 1, 100, 100);
-    expect(frames).toHaveLength(0);
-    view.focus(['cl'], { animate: true });
     frames.shift()!(performance.now() + 1000);
     expect(frames).toHaveLength(0);
-    const target = viewBoxOf(svg);
-    expect(target[2]).toBeLessThan(halfway[2]);
+    expect(viewBoxOf(svg)[2]).toBeLessThan(halfway[2]);
+  });
+
+  it('stops the slide once a drag starts, sizing the marks for where it stopped', () => {
+    const frames = queueFrames();
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    view.paint('cl', 'highlight', 'Chile');
+    view.focus(['cl'], { animate: true });
+    frames.shift()!(performance.now() + 150);
+    pointer(svg, 'pointerdown', 1, 100, 100);
+    expect(frames).toHaveLength(1);
+    pointer(svg, 'pointermove', 1, 130, 100);
+    expect(frames).toHaveLength(0);
+    expect(labelSize(view)).toBeCloseTo(13 / svg.getScreenCTM()!.a);
+  });
+
+  it('finishes the slide after a tap that did not move', () => {
+    const frames = queueFrames();
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    view.paint('cl', 'highlight', 'Chile');
+    view.focus(['cl'], { animate: true });
+    frames.shift()!(performance.now() + 150);
+    pointer(svg, 'pointerdown', 1, 100, 100);
+    pointer(svg, 'pointerup', 1, 100, 100);
+    while (frames.length) frames.shift()!(performance.now() + 1000);
+    const [, , width] = viewBoxOf(svg);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    view.focus(['cl']);
+    expect(viewBoxOf(svg)[2]).toBeCloseTo(width);
+    expect(labelSize(view)).toBeCloseTo(13 / svg.getScreenCTM()!.a);
+  });
+
+  it('re-frames a sliding focus when the map changes shape', () => {
+    const frames = queueFrames();
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    view.focus(['cl'], { animate: true });
+    frames.shift()!(performance.now() + 150);
+    layOut(view.element, 300, 300);
+    expect(frames).toHaveLength(0);
+    const [, , width, height] = viewBoxOf(svg);
+    expect(width / height).toBeCloseTo(1);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    view.focus(['cl']);
+    expect(viewBoxOf(svg)[2]).toBeCloseTo(width!);
+  });
+
+  it.each(['fj', 'ki', 'nz', 'us'])('frames %s on the world map without wrapping across the antimeridian', (iso2) => {
+    const view = renderMap('world');
+    const svg = layOut(view.element);
+    const [, , fitWidth] = viewBoxOf(svg);
+    view.focus([iso2]);
+    const [x, y, width, height] = viewBoxOf(svg);
+    const hit = view.element.querySelector(`circle.hit[data-iso2="${iso2}"]`)!;
+    const [cx, cy] = [Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))];
+    expect(width).toBeLessThan(fitWidth! / 2);
+    expect(cx >= x! && cx <= x! + width! && cy >= y! && cy <= y! + height!).toBe(true);
+  });
+
+  it('frames Russia on the world map without its far eastern tip wrapping round', () => {
+    const view = renderMap('world');
+    const svg = layOut(view.element);
+    const [, , fitWidth] = viewBoxOf(svg);
+    view.focus(['ru']);
+    expect(viewBoxOf(svg)[2]).toBeLessThan(fitWidth! * 0.7);
   });
 
   it('sizes the hit circles for the focused view', () => {

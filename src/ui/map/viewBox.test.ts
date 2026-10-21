@@ -75,8 +75,19 @@ describe('frame', () => {
   });
 });
 
-describe('a view larger than the map', () => {
-  it('stays centred on the map', () => {
-    expect(panBy({ x: 0, y: 0, width: 2000, height: 600 }, 100, 0, base)).toEqual({ x: -500, y: 0, width: 2000, height: 600 });
+describe('a view wider than the map', () => {
+  const widened = { x: -500, y: 0, width: 2000, height: 600 };
+
+  it('zooms around the anchor while the whole map stays in view', () => {
+    expect(zoomAt(widened, 1.25, [200, 300], widened, 24, base)).toEqual({ x: -360, y: 60, width: 1600, height: 480 });
+  });
+
+  it('stops a zoom where the map would leave the view', () => {
+    expect(zoomAt({ ...widened, x: -900 }, 1.25, [-900, 300], widened, 24, base).x).toBe(-600);
+  });
+
+  it('pans only as far as the map stays in view', () => {
+    expect(panBy(widened, 1000, 0, base).x).toBe(0);
+    expect(panBy(widened, -1000, 0, base).x).toBe(-1000);
   });
 });

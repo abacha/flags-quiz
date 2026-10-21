@@ -10,7 +10,7 @@ const FRAME_PADDING = 0.1;
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 const placeWithin = (start: number, size: number, min: number, span: number) =>
-  size > span ? min + (span - size) / 2 : clamp(start, min, min + span - size);
+  clamp(start, Math.min(min, min + span - size), Math.max(min, min + span - size));
 
 export function keepInside(box: ViewBox, bounds: ViewBox): ViewBox {
   return {

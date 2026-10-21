@@ -632,7 +632,7 @@ input::placeholder { text-overflow: ellipsis; }
 .map .hit { fill: transparent; pointer-events: all; cursor: pointer; }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
 .question > .map, .feedback > .map { min-width: 0; width: 100%; }
-.question > .map, .feedback > .map, .quiz-screen > .map { aspect-ratio: 4 / 3; max-height: 45vh; }
+.question > .map, .feedback > .map, .quiz-screen > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }
 .question > .map svg, .feedback > .map svg, .quiz-screen > .map svg { height: 100%; }
 .map-names { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
 .pair-letter {
