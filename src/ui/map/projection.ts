@@ -13,8 +13,11 @@ const ROTATION: Record<Continent, [number, number]> = {
   oceania: [-160, 0],
 };
 
+export function fittedFeatures(continent: ContinentKey, features: FeatureCollection): FeatureCollection {
+  return continent === 'europe' ? { ...features, features: features.features.filter((f) => f.id !== 'ru') } : features;
+}
+
 export function projectionFor(continent: ContinentKey, features: FeatureCollection): GeoProjection {
   if (continent === 'world') return geoEqualEarth().fitWidth(MAP_WIDTH, features);
-  const fitted = continent === 'europe' ? { ...features, features: features.features.filter((f) => f.id !== 'ru') } : features;
-  return geoMercator().rotate(ROTATION[continent]).fitWidth(MAP_WIDTH, fitted);
+  return geoMercator().rotate(ROTATION[continent]).fitWidth(MAP_WIDTH, fittedFeatures(continent, features));
 }

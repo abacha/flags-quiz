@@ -1,8 +1,12 @@
 // @vitest-environment happy-dom
+import { geoPath } from 'd3-geo';
+import type { Feature, FeatureCollection } from 'geojson';
+import { merge } from 'topojson-client';
 import { describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
-import { mapPool } from '../../data/maps';
+import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import { renderMap } from './map';
+import { projectionFor } from './projection';
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 
@@ -14,6 +18,20 @@ const layOut = (element: HTMLElement) => {
 
 const pointer = (target: Element, type: string, pointerId: number, clientX: number, clientY: number) =>
   target.dispatchEvent(new PointerEvent(type, { pointerId, clientX, clientY, bubbles: true }));
+
+const russiaEastEdge = () => {
+  const pool: FeatureCollection = {
+    type: 'FeatureCollection',
+    features: mapPool('europe').map((c): Feature => ({
+      type: 'Feature',
+      id: c.iso2,
+      properties: {},
+      geometry: merge(topology, topology.objects[MAP_OBJECT].geometries.filter((g) => g.id === c.iso2)),
+    })),
+  };
+  const path = geoPath(projectionFor('europe', pool));
+  return path.bounds(pool.features.find((f) => f.id === 'ru')!)[1][0];
+};
 
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
@@ -112,6 +130,39 @@ describe('renderMap', () => {
     const radius = (iso2: string) => Number(view.element.querySelector(`circle[data-iso2="${iso2}"]`)!.getAttribute('r'));
     expect(radius('mt')).toBeCloseTo(22 * unitsPerPx);
     expect(radius('ad')).toBeLessThan(22 * unitsPerPx);
+    expect(radius('fr')).toBeLessThanOrEqual(22 * unitsPerPx);
+    expect(radius('ru')).toBeLessThanOrEqual(22 * unitsPerPx);
+  });
+
+  it('lets the real country shapes win over the hit circles', () => {
+    const view = renderMap('europe');
+    const firstHit = view.element.querySelector('circle.hit')!;
+    const firstCountry = view.element.querySelector('path.country')!;
+    expect(firstHit.compareDocumentPosition(firstCountry) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('pans the Europe map east until all of Russia is in view', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element);
+    for (let i = 0; i < 40; i++) {
+      pointer(svg, 'pointerdown', 1, 400, 150);
+      pointer(svg, 'pointermove', 1, 0, 150);
+      pointer(svg, 'pointerup', 1, 0, 150);
+    }
+    const [x, , width] = svg.getAttribute('viewBox')!.split(' ').map(Number);
+    expect(x! + width!).toBeCloseTo(russiaEastEdge(), 0);
+  });
+
+  it('recovers from a press that was released outside the map', () => {
+    const onTap = vi.fn();
+    const view = renderMap('americas', onTap);
+    const svg = layOut(view.element);
+    const brazil = view.element.querySelector('path[data-iso2="br"]')!;
+    svg.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 1, clientX: 100, clientY: 100, isPrimary: true, bubbles: true }));
+    brazil.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 2, clientX: 200, clientY: 200, isPrimary: true, bubbles: true }));
+    brazil.dispatchEvent(new PointerEvent('pointerup', { pointerId: 2, clientX: 200, clientY: 200, isPrimary: true, bubbles: true }));
+    click(brazil);
+    expect(onTap).toHaveBeenCalledWith(country('br'));
   });
 
   it('paints and labels a country', () => {

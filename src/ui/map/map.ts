@@ -5,7 +5,7 @@ import type { Country } from '../../data/countries';
 import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
-import { MAP_WIDTH, projectionFor } from './projection';
+import { fittedFeatures, projectionFor } from './projection';
 import { panBy, zoomAt, type ViewBox } from './viewBox';
 
 export const MAX_ZOOM = 24;
@@ -60,6 +60,8 @@ function largestPolygon(path: GeoPath, geometry: MultiPolygon): Polygon {
 
 const units = unitsById();
 
+const viewBoxOf = ([[x0, y0], [x1, y1]]: [Point, Point]): ViewBox => ({ x: x0, y: y0, width: x1 - x0, height: y1 - y0 });
+
 const distance = ([ax, ay]: Point, [bx, by]: Point) => Math.hypot(ax - bx, ay - by);
 
 export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
@@ -69,16 +71,16 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     features: [...pool.keys()].map((iso2): Feature => ({ type: 'Feature', id: iso2, properties: {}, geometry: units.get(iso2)! })),
   };
   const path = geoPath(projectionFor(continent, poolFeatures));
-  const [, [, bottom]] = path.bounds(poolFeatures);
-  const base: ViewBox = { x: 0, y: 0, width: MAP_WIDTH, height: Math.ceil(bottom) };
-  let box = base;
+  const fit = viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures)));
+  const bounds = viewBoxOf(path.bounds(poolFeatures));
+  let box = fit;
   let unitsPerPx = 0;
 
-  const svg = svgEl('svg', { viewBox: `${base.x} ${base.y} ${base.width} ${base.height}` });
+  const svg = svgEl('svg', { viewBox: `${fit.x} ${fit.y} ${fit.width} ${fit.height}` });
   const countryLayer = svgEl('g');
   const markLayer = svgEl('g');
   const hitLayer = svgEl('g');
-  svg.append(countryLayer, markLayer, hitLayer);
+  svg.append(hitLayer, countryLayer, markLayer);
 
   const shapes = new Map<string, SVGPathElement>();
   for (const [id, geometry] of units) {
@@ -109,7 +111,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   const marks = new Map<string, Marks>();
 
   function sizeMarks() {
-    for (const hit of hits.values()) hit.circle.setAttribute('r', String(Math.min(hit.cap, Math.max(MIN_HIT_PX * unitsPerPx, hit.size))));
+    for (const hit of hits.values()) hit.circle.setAttribute('r', String(Math.min(hit.cap, MIN_HIT_PX * unitsPerPx)));
     for (const [iso2, { ring, label }] of marks) {
       ring?.setAttribute('r', String(Math.max(RING_PX * unitsPerPx, hits.get(iso2)!.size)));
       label?.setAttribute('font-size', String(LABEL_PX * unitsPerPx));
@@ -150,6 +152,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
 
   svg.addEventListener('pointerdown', (event) => {
     const point: Point = [event.clientX, event.clientY];
+    if (event.isPrimary) pointers.clear();
     pointers.set(event.pointerId, point);
     if (pointers.size === 1) {
       start = point;
@@ -167,15 +170,15 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     if (!gesture && distance(start, point) > TAP_SLOP_PX) beginGesture();
     const scale = box.width / svg.getBoundingClientRect().width;
     if (pointers.size === 1) {
-      show(panBy(box, (previous[0] - point[0]) * scale, (previous[1] - point[1]) * scale, base));
+      show(panBy(box, (previous[0] - point[0]) * scale, (previous[1] - point[1]) * scale, bounds));
       return;
     }
     const [other] = [...pointers].filter(([id]) => id !== event.pointerId).map(([, p]) => p);
     const before: Point = [(previous[0] + other![0]) / 2, (previous[1] + other![1]) / 2];
     const after: Point = [(point[0] + other![0]) / 2, (point[1] + other![1]) / 2];
-    const zoomed = zoomAt(box, distance(point, other!) / distance(previous, other!), toViewBox(before), base, MAX_ZOOM);
+    const zoomed = zoomAt(box, distance(point, other!) / distance(previous, other!), toViewBox(before), fit, MAX_ZOOM, bounds);
     const zoomedScale = zoomed.width / svg.getBoundingClientRect().width;
-    show(panBy(zoomed, (before[0] - after[0]) * zoomedScale, (before[1] - after[1]) * zoomedScale, base));
+    show(panBy(zoomed, (before[0] - after[0]) * zoomedScale, (before[1] - after[1]) * zoomedScale, bounds));
   });
 
   const release = (event: PointerEvent) => {
@@ -190,7 +193,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     (event) => {
       event.preventDefault();
       const factor = event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP;
-      show(zoomAt(box, factor, toViewBox([event.clientX, event.clientY]), base, MAX_ZOOM));
+      show(zoomAt(box, factor, toViewBox([event.clientX, event.clientY]), fit, MAX_ZOOM, bounds));
       rescale();
     },
     { passive: false },
