@@ -46,6 +46,11 @@ function wrongAnswer(q: Question): Answer {
       const [first, second] = q.countries;
       return { kind: 'links', links: { [first.iso2]: second.iso2, [second.iso2]: first.iso2 } };
     }
+    case 'nameToMap':
+    case 'mapTrueFalse':
+    case 'mapTypeName':
+    case 'mapPairs':
+      throw new Error(`Flag rounds never ask ${q.format}`);
     default:
       return { kind: 'choice', iso2: q.options.find((c) => c !== q.target)!.iso2 };
   }

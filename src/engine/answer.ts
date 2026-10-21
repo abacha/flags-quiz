@@ -29,10 +29,14 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'flagToNames':
     case 'flagToTwoNames':
     case 'crop':
+    case 'mapToNames':
+    case 'nameToMap':
       return targetGrade(expectKind(answer, 'choice').iso2 === question.target.iso2, question.target);
     case 'trueFalse':
+    case 'mapTrueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
+    case 'mapTypeName':
       return targetGrade(acceptsTypedName(question.target, expectKind(answer, 'text').text), question.target);
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;
@@ -40,6 +44,7 @@ export function grade(question: Question, answer: Answer): Grade {
       return { correct: false, missed: question.options.filter((c) => c.iso2 === chosen) };
     }
     case 'matchPairs':
+    case 'mapPairs':
     case 'sortSimilar':
     case 'sortSimilarNames': {
       const { links } = expectKind(answer, 'links');

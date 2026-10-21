@@ -32,5 +32,11 @@ export function renderQuestion(question: Question, submit: Submit): HTMLElement 
       return renderPairs('Nomes parecidos: ligue cada nome à sua bandeira', question.countries, submit);
     case 'oddOneOut':
       return renderFlagChoices(`Qual destas bandeiras não é ${CONTINENT_FROM[question.target.continent]}?`, question.options, submit);
+    case 'mapToNames':
+    case 'nameToMap':
+    case 'mapPairs':
+    case 'mapTrueFalse':
+    case 'mapTypeName':
+      throw new Error(`No renderer for the ${question.format} question yet`);
   }
 }

@@ -4,7 +4,7 @@ import { pickOne, sample, shuffle, type Rng } from './rng';
 
 export const CROP_SCALE = 2;
 
-function othersInPool(target: Country, ctx: FormatContext): Country[] {
+export function othersInPool(target: Country, ctx: FormatContext): Country[] {
   return ctx.pool.filter((c) => c.iso2 !== target.iso2);
 }
 
@@ -28,7 +28,7 @@ function similarMatesInPool(target: Country, ctx: FormatContext): Country[] {
   return [...new Set(groups.flat())].filter((c) => c.iso2 !== target.iso2);
 }
 
-function optionsWith(target: Country, ctx: FormatContext, count: number, rng: Rng): Country[] {
+export function optionsWith(target: Country, ctx: FormatContext, count: number, rng: Rng): Country[] {
   const preferred = shuffle(similarMatesInPool(target, ctx), rng).slice(0, count - 1);
   const rest = othersInPool(target, ctx).filter((c) => !preferred.includes(c));
   return shuffle([target, ...preferred, ...sample(rest, count - 1 - preferred.length, rng)], rng);
