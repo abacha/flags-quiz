@@ -16,6 +16,7 @@ const letterOf = (index: number) => String.fromCharCode(65 + index);
 function highlightedMap(continent: ContinentKey, ...highlighted: Country[]): HTMLElement {
   const view = renderMap(continent);
   highlighted.forEach((country, index) => view.paint(country.iso2, 'highlight', highlighted.length > 1 ? letterOf(index) : undefined));
+  view.focus(highlighted.map((c) => c.iso2));
   return view.element;
 }
 
@@ -25,7 +26,9 @@ function solutionCountries(question: MapQuestion): Country[] {
 
 export function mapSolution(question: MapQuestion, continent: ContinentKey): HTMLElement {
   const view = renderMap(continent);
-  for (const country of solutionCountries(question)) view.paint(country.iso2, 'missed', country.name);
+  const shown = solutionCountries(question);
+  for (const country of shown) view.paint(country.iso2, 'missed', country.name);
+  view.focus(shown.map((c) => c.iso2));
   return view.element;
 }
 

@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
-import { geoPath } from 'd3-geo';
-import type { Feature, FeatureCollection } from 'geojson';
+import { geoCentroid, geoCircle, geoPath } from 'd3-geo';
+import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { merge } from 'topojson-client';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
@@ -13,6 +13,8 @@ const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2
 
 const viewBoxOf = (svg: SVGSVGElement) => svg.getAttribute('viewBox')!.split(' ').map(Number) as [number, number, number, number];
 
+const resized = new Map<Element, ResizeObserverCallback>();
+
 const layOut = (element: HTMLElement, width = 500, height = 300) => {
   const svg = element.querySelector('svg')!;
   svg.getBoundingClientRect = () => ({ left: 0, top: 0, width, height, right: width, bottom: height, x: 0, y: 0, toJSON: () => ({}) });
@@ -21,6 +23,7 @@ const layOut = (element: HTMLElement, width = 500, height = 300) => {
     const scale = Math.min(width / w, height / h);
     return new DOMMatrix([scale, 0, 0, scale, (width - w * scale) / 2 - x * scale, (height - h * scale) / 2 - y * scale]);
   };
+  resized.get(svg)?.([], {} as ResizeObserver);
   return svg;
 };
 
@@ -66,6 +69,36 @@ const widestRing = (view: MapView) =>
 
 const lowestY = (view: MapView) =>
   Math.max(...[...view.element.querySelectorAll('path')].flatMap((p) => [...p.getAttribute('d')!.matchAll(/,(-?[\d.]+(?:e-?\d+)?)/g)].map((m) => Number(m[1]))));
+
+const projectedBounds = (continent: ContinentKey, iso2: string) => {
+  const pool = poolCollection(continent);
+  const path = geoPath(projectionFor(continent, pool));
+  const geometry = pool.features.find((f) => f.id === iso2)!.geometry as MultiPolygon;
+  const polygons = geometry.coordinates.map((coordinates): Polygon => ({ type: 'Polygon', coordinates }));
+  const largest = polygons.reduce((a, b) => (path.area(b) > path.area(a) ? b : a));
+  return { country: path.bounds(geometry), surroundings: path.bounds(geoCircle().center(geoCentroid(largest)).radius(6.74)()) };
+};
+
+const contains = (svg: SVGSVGElement, [[x0, y0], [x1, y1]]: [[number, number], [number, number]]) => {
+  const [x, y, width, height] = viewBoxOf(svg);
+  return x <= x0 && y <= y0 && x + width >= x1 && y + height >= y1;
+};
+
+beforeEach(() => {
+  resized.clear();
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+      observe(target: Element) {
+        resized.set(target, this.callback);
+      }
+      disconnect() {}
+    },
+  );
+});
+
+afterEach(() => vi.unstubAllGlobals());
 
 describe('renderMap', () => {
   it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('wraps no shape around the globe on %s', (continent) => {
@@ -126,9 +159,9 @@ describe('renderMap', () => {
     const [, , baseWidth] = viewBox();
     pointer(svg, 'pointerdown', 1, 200, 150);
     pointer(svg, 'pointerdown', 2, 300, 150);
-    pointer(svg, 'pointermove', 2, 400, 150);
-    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 2);
-    pointer(svg, 'pointerup', 2, 400, 150);
+    pointer(svg, 'pointermove', 2, 600, 150);
+    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 4);
+    pointer(svg, 'pointerup', 2, 600, 150);
     const [x] = viewBox();
     const unitsPerPx = 1 / svg.getScreenCTM()!.a;
     pointer(svg, 'pointermove', 1, 150, 150);
@@ -280,5 +313,89 @@ describe('renderMap', () => {
     view.clear();
     expect(view.element.querySelector('path.answered, path.highlight, path.missed')).toBeNull();
     expect(view.element.querySelector('.map-label, .map-ring')).toBeNull();
+  });
+
+  it('opens on the whole continent shaped to the frame of the map', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element, 400, 200);
+    const [, , width, height] = viewBoxOf(svg);
+    expect(width / height).toBeCloseTo(2);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    expect(contains(svg, projectedBounds('americas', 'ca').country)).toBe(true);
+  });
+
+  it('frames a focused country and its surroundings in the frame of the map', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    const [, , fitWidth] = viewBoxOf(svg);
+    view.focus(['cl']);
+    const [, , width, height] = viewBoxOf(svg);
+    expect(width).toBeLessThan(fitWidth!);
+    expect(width / height).toBeCloseTo(500 / 300);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+  });
+
+  it('frames a small country with at least its surroundings', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    const [, , fitWidth] = viewBoxOf(svg);
+    view.focus(['sv']);
+    expect(viewBoxOf(svg)[2]).toBeLessThan(fitWidth! / 4);
+    expect(contains(svg, projectedBounds('americas', 'sv').surroundings)).toBe(true);
+  });
+
+  it('frames a large country whole', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    view.focus(['br']);
+    expect(contains(svg, projectedBounds('americas', 'br').country)).toBe(true);
+  });
+
+  it('frames every focused country together', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    view.focus(['cl', 'mx']);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    expect(contains(svg, projectedBounds('americas', 'mx').country)).toBe(true);
+  });
+
+  it('applies a focus asked while hidden once the map gets a size', () => {
+    const view = renderMap('americas');
+    const svg = layOut(view.element, 0, 0);
+    const before = viewBoxOf(svg);
+    view.focus(['cl']);
+    expect(viewBoxOf(svg)).toEqual(before);
+    layOut(view.element);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    expect(viewBoxOf(svg)[2]).toBeLessThan(before[2]);
+  });
+
+  it('slides to a focus over animation frames, and a gesture stops the slide', () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => frames.push(callback));
+    vi.stubGlobal('cancelAnimationFrame', () => frames.splice(0));
+    const view = renderMap('americas');
+    const svg = layOut(view.element);
+    const start = viewBoxOf(svg);
+    view.focus(['cl'], { animate: true });
+    expect(viewBoxOf(svg)).toEqual(start);
+    frames.shift()!(performance.now() + 150);
+    const halfway = viewBoxOf(svg);
+    expect(halfway).not.toEqual(start);
+    expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+    pointer(svg, 'pointerdown', 1, 100, 100);
+    expect(frames).toHaveLength(0);
+    view.focus(['cl'], { animate: true });
+    frames.shift()!(performance.now() + 1000);
+    expect(frames).toHaveLength(0);
+    const target = viewBoxOf(svg);
+    expect(target[2]).toBeLessThan(halfway[2]);
+  });
+
+  it('sizes the hit circles for the focused view', () => {
+    const view = renderMap('europe');
+    const svg = layOut(view.element);
+    view.focus(['mt']);
+    expect(Number(view.element.querySelector('circle.hit[data-iso2="mt"]')!.getAttribute('r'))).toBeCloseTo(22 / svg.getScreenCTM()!.a);
   });
 });

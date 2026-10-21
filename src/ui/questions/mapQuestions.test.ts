@@ -1,15 +1,67 @@
 // @vitest-environment happy-dom
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import type { Question } from '../../engine/question';
 import { renderFeedback } from './feedback';
-import { mapSolution, renderMapQuestion } from './mapQuestions';
+import { mapSolution, renderMapQuestion, type MapQuestion } from './mapQuestions';
 import { renderPairs } from './pairs';
 import { renderQuestion } from './render';
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-const [br, ar, cl, pe, co] = ['br', 'ar', 'cl', 'pe', 'co'].map(country);
+const [br, ar, cl, pe, co, sv] = ['br', 'ar', 'cl', 'pe', 'co', 'sv'].map(country);
+
+const viewBoxOf = (rendered: Element) => rendered.querySelector('svg')!.getAttribute('viewBox')!.split(' ').map(Number);
+
+const shows = (rendered: Element, iso2: string) => {
+  const [x, y, width, height] = viewBoxOf(rendered);
+  const hit = rendered.querySelector(`circle.hit[data-iso2="${iso2}"]`)!;
+  const [cx, cy] = [Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))];
+  return cx >= x && cx <= x + width && cy >= y && cy <= y + height;
+};
+
+const showsAll = (rendered: Element) => [...rendered.querySelectorAll<SVGCircleElement>('circle.hit')].every((hit) => shows(rendered, hit.dataset.iso2!));
+
+beforeEach(() => {
+  vi.spyOn(SVGSVGElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 390, 260));
+  vi.spyOn(SVGSVGElement.prototype, 'getScreenCTM').mockImplementation(function (this: SVGSVGElement) {
+    const [, , width] = this.getAttribute('viewBox')!.split(' ').map(Number);
+    return new DOMMatrix([390 / width!, 0, 0, 390 / width!, 0, 0]);
+  });
+});
+
+afterEach(() => vi.restoreAllMocks());
+
+describe('the initial view of a map question', () => {
+  it('opens mapToNames, mapTrueFalse and mapTypeName on the highlighted country', () => {
+    const questions: MapQuestion[] = [
+      { format: 'mapToNames', target: sv, options: [ar, br, cl, sv] },
+      { format: 'mapTrueFalse', target: sv, shown: ar },
+      { format: 'mapTypeName', target: sv },
+    ];
+    for (const question of questions) {
+      const rendered = renderMapQuestion(question, 'americas', () => {});
+      expect(shows(rendered, 'sv')).toBe(true);
+      expect(showsAll(rendered)).toBe(false);
+    }
+  });
+
+  it('opens mapPairs on its four countries', () => {
+    const rendered = renderMapQuestion({ format: 'mapPairs', target: br, countries: [br, ar, cl, pe] }, 'americas', () => {});
+    for (const iso2 of ['br', 'ar', 'cl', 'pe']) expect(shows(rendered, iso2)).toBe(true);
+    expect(showsAll(rendered)).toBe(false);
+  });
+
+  it('opens nameToMap on the whole continent', () => {
+    expect(showsAll(renderMapQuestion({ format: 'nameToMap', target: sv }, 'americas', () => {}))).toBe(true);
+  });
+
+  it('opens the solution map on what it shows', () => {
+    const solution = mapSolution({ format: 'nameToMap', target: sv }, 'americas');
+    expect(shows(solution, 'sv')).toBe(true);
+    expect(showsAll(solution)).toBe(false);
+  });
+});
 
 describe('renderMapQuestion', () => {
   it('answers mapToNames with a name button and the 1–4 keys', () => {

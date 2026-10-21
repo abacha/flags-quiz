@@ -23,6 +23,7 @@ function mapBoard(continent: ContinentKey, quiz: Quiz, pick: (country: Country) 
     if (quiz.stateOf(country.iso2) !== 'answered') pick(country);
   });
   const painted = new Map<string, string>();
+  let framed: Country | undefined;
   return {
     element: view.element,
     paint() {
@@ -33,6 +34,9 @@ function mapBoard(continent: ContinentKey, quiz: Quiz, pick: (country: Country) 
         painted.set(country.iso2, look);
         view.paint(country.iso2, look, state === 'answered' ? country.name : undefined);
       }
+      if (quiz.current === framed) return;
+      view.focus([quiz.current.iso2], { animate: framed !== undefined });
+      framed = quiz.current;
     },
     reveal() {},
   };

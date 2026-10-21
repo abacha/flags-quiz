@@ -38,9 +38,28 @@ describe('renderMapQuiz', () => {
     root.querySelector<HTMLFormElement>('.quiz-dock form')!.requestSubmit();
   };
   const otherThan = (iso2: string) => pool.find((c) => c.iso2 !== iso2)!;
+  const shows = (iso2: string) => {
+    const [x, y, width, height] = root.querySelector('svg')!.getAttribute('viewBox')!.split(' ').map(Number);
+    const hit = root.querySelector(`circle.hit[data-iso2="${iso2}"]`)!;
+    const [cx, cy] = [Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))];
+    return cx >= x! && cx <= x! + width! && cy >= y! && cy <= y! + height!;
+  };
+  const frames: FrameRequestCallback[] = [];
+  const settle = () => {
+    while (frames.length) frames.shift()!(performance.now() + 1000);
+  };
+  const pressSkip = () => [...root.querySelectorAll<HTMLButtonElement>('.quiz-dock button')].find((b) => b.textContent === 'Pular')!.click();
 
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+    frames.length = 0;
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => frames.push(callback));
+    vi.stubGlobal('cancelAnimationFrame', () => frames.splice(0));
+    vi.spyOn(SVGSVGElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 390, 260));
+    vi.spyOn(SVGSVGElement.prototype, 'getScreenCTM').mockImplementation(function (this: SVGSVGElement) {
+      const [, , width] = this.getAttribute('viewBox')!.split(' ').map(Number);
+      return new DOMMatrix([390 / width!, 0, 0, 390 / width!, 0, 0]);
+    });
     localStorage.clear();
     root = document.createElement('div');
     document.body.append(root);
@@ -52,6 +71,30 @@ describe('renderMapQuiz', () => {
     root.remove();
     vi.useRealTimers();
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it('opens framed on the highlighted country', () => {
+    expect(frames).toHaveLength(0);
+    expect(shows(highlighted().iso2)).toBe(true);
+    expect(pool.every((c) => shows(c.iso2))).toBe(false);
+  });
+
+  it('slides to the next highlighted country after Pular', () => {
+    pressSkip();
+    expect(frames).toHaveLength(1);
+    settle();
+    expect(shows(highlighted().iso2)).toBe(true);
+    expect(pool.every((c) => shows(c.iso2))).toBe(false);
+  });
+
+  it('slides to a tapped country', () => {
+    const far = pool.find((c) => !shows(c.iso2))!;
+    click(shape(far.iso2));
+    expect(frames).toHaveLength(1);
+    settle();
+    expect(highlighted()).toBe(far);
+    expect(shows(far.iso2)).toBe(true);
   });
 
   it('shows the map with one highlighted country, no flag and no name in the page', () => {

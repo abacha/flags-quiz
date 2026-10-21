@@ -1,4 +1,4 @@
-import { geoBounds, geoPath, type GeoPath } from 'd3-geo';
+import { geoBounds, geoCentroid, geoCircle, geoPath, type GeoPath } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { feature, merge } from 'topojson-client';
 import type { Country } from '../../data/countries';
@@ -6,7 +6,7 @@ import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
-import { panBy, zoomAt, type ViewBox } from './viewBox';
+import { frame, keepInside, panBy, shapeTo, zoomAt, type ViewBox } from './viewBox';
 
 export const MAX_ZOOM = 24;
 export const MIN_HIT_PX = 22;
@@ -16,6 +16,8 @@ const LABEL_PX = 13;
 const WHEEL_STEP = 1.2;
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ANTARCTIC_CIRCLE_LATITUDE = -60;
+const SURROUNDINGS_DEGREES = 6.74;
+const SLIDE_MS = 300;
 
 export type CountryPaint = 'idle' | 'highlight' | 'answered' | 'missed';
 
@@ -23,6 +25,7 @@ export interface MapView {
   element: HTMLElement;
   paint(iso2: string, state: CountryPaint, label?: string): void;
   clear(): void;
+  focus(iso2s: readonly string[], options?: { animate: boolean }): void;
 }
 
 interface Hit {
@@ -70,6 +73,17 @@ const viewBoxOf = ([[x0, y0], [x1, y1]]: [Point, Point]): ViewBox => ({ x: x0, y
 
 const distance = ([ax, ay]: Point, [bx, by]: Point) => Math.hypot(ax - bx, ay - by);
 
+const centre = (box: ViewBox): Point => [box.x + box.width / 2, box.y + box.height / 2];
+
+const easeOut = (t: number) => 1 - (1 - t) ** 3;
+
+const between = (from: ViewBox, to: ViewBox, k: number): ViewBox => ({
+  x: from.x + (to.x - from.x) * k,
+  y: from.y + (to.y - from.y) * k,
+  width: from.width + (to.width - from.width) * k,
+  height: from.height + (to.height - from.height) * k,
+});
+
 export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
   const units = continent === 'world' ? worldUnits : continentUnits;
   const pool = new Map(mapPool(continent).map((c) => [c.iso2, c]));
@@ -78,10 +92,14 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     features: [...pool.keys()].map((iso2): Feature => ({ type: 'Feature', id: iso2, properties: {}, geometry: units.get(iso2)! })),
   };
   const path = geoPath(projectionFor(continent, poolFeatures));
-  const fit = viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures)));
+  const continentFit = viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures)));
   const bounds = viewBoxOf(path.bounds(poolFeatures));
+  let fit = continentFit;
   let box = fit;
   let unitsPerPx = 0;
+  let aspect = 0;
+  let pending: readonly string[] | undefined;
+  let slide = 0;
 
   const svg = svgEl('svg', { viewBox: `${fit.x} ${fit.y} ${fit.width} ${fit.height}` });
   const countryLayer = svgEl('g');
@@ -103,12 +121,16 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   }
 
   const hits = new Map<string, Hit>();
+  const surroundings = new Map<string, ViewBox>();
   for (const iso2 of pool.keys()) {
     const largest = largestPolygon(path, units.get(iso2)!);
     const center = path.centroid(largest);
     const circle = svgEl('circle', { class: 'hit', cx: center[0], cy: center[1] });
     circle.dataset.iso2 = iso2;
     hits.set(iso2, { center, size: Math.sqrt(path.area(largest) / Math.PI), cap: Infinity, circle });
+    const [[cx0, cy0], [cx1, cy1]] = path.bounds(geoCircle().center(geoCentroid(largest)).radius(SURROUNDINGS_DEGREES)());
+    const [[x0, y0], [x1, y1]] = path.bounds(units.get(iso2)!);
+    surroundings.set(iso2, viewBoxOf([[Math.min(x0, cx0), Math.min(y0, cy0)], [Math.max(x1, cx1), Math.max(y1, cy1)]]));
     hitLayer.append(circle);
   }
   for (const hit of hits.values()) {
@@ -127,9 +149,26 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
 
   const screenUnitsPerPx = () => 1 / svg.getScreenCTM()!.a;
 
+  function framing(iso2s: readonly string[]): ViewBox {
+    const boxes = iso2s.map((iso2) => surroundings.get(iso2)!);
+    const x0 = Math.min(...boxes.map((b) => b.x));
+    const y0 = Math.min(...boxes.map((b) => b.y));
+    const x1 = Math.max(...boxes.map((b) => b.x + b.width));
+    const y1 = Math.max(...boxes.map((b) => b.y + b.height));
+    return frame(viewBoxOf([[x0, y0], [x1, y1]]), aspect, fit, MAX_ZOOM, bounds);
+  }
+
+  function reshape(next: number) {
+    aspect = next;
+    fit = keepInside(shapeTo(continentFit, aspect), bounds);
+    show(pending ? framing(pending) : zoomAt(shapeTo(box, aspect), 1, centre(box), fit, MAX_ZOOM, bounds));
+    pending = undefined;
+  }
+
   function rescale() {
     const { width, height } = svg.getBoundingClientRect();
     if (width === 0 || height === 0) return;
+    if (width / height !== aspect) reshape(width / height);
     unitsPerPx = screenUnitsPerPx();
     sizeMarks();
   }
@@ -137,6 +176,18 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   function show(next: ViewBox) {
     box = next;
     svg.setAttribute('viewBox', `${box.x} ${box.y} ${box.width} ${box.height}`);
+  }
+
+  function slideTo(target: ViewBox) {
+    const from = box;
+    const startedAt = performance.now();
+    const step = (now: number) => {
+      const t = Math.min((now - startedAt) / SLIDE_MS, 1);
+      show(between(from, target, easeOut(t)));
+      if (t < 1) slide = requestAnimationFrame(step);
+      else rescale();
+    };
+    slide = requestAnimationFrame(step);
   }
 
   function toViewBox([clientX, clientY]: Point): Point {
@@ -161,6 +212,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   }
 
   svg.addEventListener('pointerdown', (event) => {
+    cancelAnimationFrame(slide);
     const point: Point = [event.clientX, event.clientY];
     if (event.isPrimary) pointers.clear();
     pointers.set(event.pointerId, point);
@@ -203,6 +255,7 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     (event) => {
       event.preventDefault();
       if (event.deltaY === 0) return;
+      cancelAnimationFrame(slide);
       const factor = event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP;
       show(zoomAt(box, factor, toViewBox([event.clientX, event.clientY]), fit, MAX_ZOOM, bounds));
       rescale();
@@ -243,6 +296,16 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
     clear() {
       for (const shape of shapes.values()) shape.classList.remove('highlight', 'answered', 'missed');
       for (const iso2 of [...marks.keys()]) unmark(iso2);
+    },
+    focus(iso2s, options) {
+      cancelAnimationFrame(slide);
+      pending = iso2s;
+      rescale();
+      if (!pending || aspect === 0) return;
+      pending = undefined;
+      if (options?.animate) return slideTo(framing(iso2s));
+      show(framing(iso2s));
+      rescale();
     },
   };
 }
