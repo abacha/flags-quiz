@@ -7,6 +7,8 @@ import { renderGame } from './ui/screens/game';
 import { renderMapGame } from './ui/screens/mapGame';
 import { renderMapResult } from './ui/screens/mapResult';
 import { renderHub } from './ui/screens/hub';
+import { renderMapQuiz } from './ui/screens/mapQuiz';
+import { renderMapQuizResult } from './ui/screens/mapQuizResult';
 import { renderQuiz } from './ui/screens/quiz';
 import { renderQuizResult } from './ui/screens/quizResult';
 import { renderResult } from './ui/screens/result';
@@ -50,6 +52,10 @@ function render(screen: Screen): void {
       return renderMapGame(app, navigate, screen.continent);
     case 'mapResult':
       return renderMapResult(app, navigate, screen);
+    case 'mapQuiz':
+      return renderMapQuiz(app, navigate, screen.continent);
+    case 'mapQuizResult':
+      return renderMapQuizResult(app, navigate, screen);
     case 'quiz':
       return renderQuiz(app, navigate, screen.continent, screen.difficulty);
     case 'quizResult':

@@ -10,6 +10,17 @@ export type Screen =
   | { name: 'mapGame'; continent: ContinentKey }
   | { name: 'mapResult'; continent: ContinentKey; won: boolean; correct: number; missed: Country[] }
   | { name: 'mapQuiz'; continent: ContinentKey }
+  | {
+      name: 'mapQuizResult';
+      continent: ContinentKey;
+      score: number;
+      timeMs: number;
+      errors: number;
+      finished: boolean;
+      unanswered: Country[];
+      missed: Country[];
+      newRecords: NewRecords;
+    }
   | { name: 'quiz'; continent: ContinentKey; difficulty: Difficulty }
   | {
       name: 'quizResult';

@@ -442,6 +442,9 @@ input::placeholder { text-overflow: ellipsis; }
   overflow-wrap: anywhere;
 }
 
+.quiz-screen > .map { flex: 1 1 auto; min-height: 0; }
+.quiz-screen > .map svg { height: 100%; }
+
 .quiz-name:empty { display: none; }
 
 .quiz-dock {
