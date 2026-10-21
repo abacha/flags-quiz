@@ -17,7 +17,6 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 
 ## Non-goals
 
-- No difficulty tiers. Each continent and Mundo is one level.
 - No capitals, borders, rivers or any question beyond the country's name.
 - No change to the flag modes.
 
@@ -28,11 +27,13 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 
 ## Decided
 
-**Hub.** A segmented selector "Bandeiras | Mapas" sits at the top of the hub. Bandeiras shows today's hub unchanged. Mapas shows the same continent tabs (África, Américas, Ásia, Europa, Oceania, Mundo) and, under the selected tab, a single level card with the country count, the medal tag, the Quiz tag and the buttons Aprender and Quiz.
+**Hub.** A segmented selector "Bandeiras | Mapas" sits at the top of the hub. Bandeiras shows today's hub unchanged. Mapas shows the same continent tabs (África, Américas, Ásia, Europa, Oceania, Mundo) and, under the selected tab, the same four level cards as Bandeiras (Fácil, Médio, Difícil, Geral), each with the country count, the medal tag, the Quiz tag and the buttons Aprender and Quiz.
+
+**Levels (Adriano's decision, after playing Américas).** Maps uses the flag tiers of `countries.json`: Fácil asks tier 1, Médio tier 2, Difícil tier 3 and Geral all of them, minus the excluded micro territories. On Fácil, Médio and Difícil the other countries of the continent are still drawn and tappable as usual, but they are never asked: in "Onde fica X?" tapping one of them is a wrong answer, and in the Quiz tapping one does nothing.
 
 **Pool.** The entries of `countries.json` for that continent (all of them for Mundo), of every status: UN members, the states outside the UN and the territories, such as Greenland, Puerto Rico, New Caledonia and French Guiana. Micro territories are left out of Maps entirely.
 
-**Quiz.** The Quiz of flags with the map in place of the grid: one country is highlighted, the player types its name, a correct answer paints the country and shows its name on it. Tapping another country moves the highlight to it, "Pular" moves to the next one, the timer runs, and best score, best time and completion are kept per continent. Typed answers are graded exactly as the flag modes grade them: `normalizeName` plus `aliases`.
+**Quiz.** The Quiz of flags with the map in place of the grid: one country is highlighted, the player types its name, a correct answer paints the country and shows its name on it. Tapping another country moves the highlight to it, "Pular" moves to the next one, the timer runs, and best score, best time and completion are kept per continent and level. Typed answers are graded exactly as the flag modes grade them: `normalizeName` plus `aliases`.
 
 **Aprender.** Same rules as the flag Learn mode (`2026-10-10-learn-choice-first-design.md`): each country is introduced through a choice question before any other format, 3 lives, a medal goal per level, the review gap and passes. Formats:
 
@@ -55,8 +56,8 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 - **United Kingdom (Adriano's decision):** Maps asks the four nations (`gb-eng`, `gb-sct`, `gb-wls`, `gb-nir`) as separate countries, drawn from the Natural Earth map units that split them, and leaves `gb` out of Maps.
 - **Countries outside the pool on a continent map** (a neighbour drawn for context, such as Russia on the Asia map) are drawn in a neutral grey and cannot be tapped.
 - **Highlight for small countries:** besides the fill, the highlighted country gets a circle marker around its centroid, so it is visible at any zoom.
-- **Medal goal:** `goalFor` with the Geral ratio (13/18) on the Maps pool, `MIN_GOAL` still 15.
-- **Storage:** separate keys for Maps medals and Maps quiz records, keyed by continent only, so flag progress is untouched. The hub header counter stays the flags counter while Bandeiras is selected and shows "N/6 mapas" while Mapas is selected.
+- **Medal goal and Learn rules per level:** `goalFor(difficulty, pool.length)` and the level's `recallWeight` from `LEVEL_RULES`, as in Bandeiras, `MIN_GOAL` still 15; distractors stay random from the level's pool.
+- **Storage:** separate keys for Maps medals and Maps quiz records, keyed by continent and level like the flag keys, so flag progress is untouched. The hub header counter stays the flags counter while Bandeiras is selected and shows the Maps counter, counted the way the flag counter is, while Mapas is selected.
 - **Selector memory:** the hub remembers the last selected area (Bandeiras or Mapas) the same way it remembers the continent.
 
 ## Left to the builder
