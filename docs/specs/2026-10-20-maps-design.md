@@ -50,7 +50,7 @@ Maps is a new area of the app, beside Bandeiras, with the same two modes: Aprend
 - **Reach for small countries:** each pool country gets an invisible hit circle around its centroid with a minimum on-screen radius of 22 px, capped at half the distance to the nearest neighbouring centroid so it never picks up a neighbour. Maximum zoom is 24× the fitted view.
 - **Distractors:** the wrong options of `mapToNames`, `mapPairs` and `mapTrueFalse` come from the same Maps pool, drawn at random. The flag look-alike lists are not used in Maps.
 - **Goal above pool size:** a Maps pool smaller than `MIN_GOAL` keeps the goal of 15. Learn rounds start a new pass once every country is spent, so the goal stays reachable.
-**United Kingdom (Adriano's decision):** Maps asks the four nations (`gb-eng`, `gb-sct`, `gb-wls`, `gb-nir`) as separate countries, drawn from the Natural Earth map units that split them, and leaves `gb` out of Maps.
+- **United Kingdom (Adriano's decision):** Maps asks the four nations (`gb-eng`, `gb-sct`, `gb-wls`, `gb-nir`) as separate countries, drawn from the Natural Earth map units that split them, and leaves `gb` out of Maps.
 - **Countries outside the pool on a continent map** (a neighbour drawn for context, such as Russia on the Asia map) are drawn in a neutral grey and cannot be tapped.
 - **Highlight for small countries:** besides the fill, the highlighted country gets a circle marker around its centroid, so it is visible at any zoom. The Quiz and the map questions open zoomed to fit the continent; the highlight never auto-zooms.
 - **Medal goal:** `goalFor` with the Geral ratio (13/18) on the Maps pool, `MIN_GOAL` still 15.
