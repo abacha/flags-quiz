@@ -609,6 +609,19 @@ input::placeholder { text-overflow: ellipsis; }
 .map .country.missed { fill: var(--wrong); }
 .map .hit { fill: transparent; pointer-events: all; cursor: pointer; }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
+.question > .map, .feedback > .map { min-width: 0; width: 100%; }
+.pair-letter {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
 .map-label {
   fill: var(--text);
   stroke: var(--surface);

@@ -27,3 +27,10 @@ export function resultActions(navigate: Navigate, mode: 'game' | 'quiz', contine
     el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar ao início']),
   ]);
 }
+
+export function mapResultActions(navigate: Navigate, mode: 'mapGame' | 'mapQuiz', continent: ContinentKey): HTMLElement {
+  return el('div', { className: 'result-actions' }, [
+    el('button', { className: 'primary', type: 'button', onclick: () => navigate({ name: mode, continent }) }, ['Jogar de novo']),
+    el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar ao início']),
+  ]);
+}

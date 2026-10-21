@@ -7,6 +7,9 @@ export type Screen =
   | { name: 'flagTable'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; correct: number; missed: Country[] }
+  | { name: 'mapGame'; continent: ContinentKey }
+  | { name: 'mapResult'; continent: ContinentKey; won: boolean; correct: number; missed: Country[] }
+  | { name: 'mapQuiz'; continent: ContinentKey }
   | { name: 'quiz'; continent: ContinentKey; difficulty: Difficulty }
   | {
       name: 'quizResult';

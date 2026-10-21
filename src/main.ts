@@ -4,6 +4,8 @@ import { listenForBack, settleBack } from './ui/backButton';
 import type { Screen } from './ui/navigation';
 import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
+import { renderMapGame } from './ui/screens/mapGame';
+import { renderMapResult } from './ui/screens/mapResult';
 import { renderHub } from './ui/screens/hub';
 import { renderQuiz } from './ui/screens/quiz';
 import { renderQuizResult } from './ui/screens/quizResult';
@@ -44,6 +46,10 @@ function render(screen: Screen): void {
       return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':
       return renderResult(app, navigate, screen);
+    case 'mapGame':
+      return renderMapGame(app, navigate, screen.continent);
+    case 'mapResult':
+      return renderMapResult(app, navigate, screen);
     case 'quiz':
       return renderQuiz(app, navigate, screen.continent, screen.difficulty);
     case 'quizResult':
