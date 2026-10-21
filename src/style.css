@@ -519,6 +519,26 @@ input::placeholder { text-overflow: ellipsis; }
 .hub-header h1 { margin: 0; font-size: 1.3rem; white-space: nowrap; }
 .hub-header .pill { margin-left: auto; }
 
+.area-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.area-selector button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.area-selector button.on { background: var(--surface); color: var(--text); box-shadow: 0 2px 0 var(--accent-line); }
+
 .tabs {
   display: flex;
   gap: 6px;

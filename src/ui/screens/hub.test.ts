@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries } from '../../data/countries';
+import { mapPool } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey } from '../../engine/pool';
 import type { Screen } from '../navigation';
 import { renderHub } from './hub';
@@ -138,5 +139,105 @@ describe('renderHub', () => {
   it('words the flag table link for Mundo', () => {
     render('world');
     expect(root.querySelector('.see-all')!.textContent).toBe('Ver as 248 bandeiras do Mundo →');
+  });
+
+  describe('area selector', () => {
+    const areas = () => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')];
+    const area = (label: string) => areas().find((b) => b.textContent === label)!;
+    const mapCard = () => root.querySelector<HTMLElement>('.level-card')!;
+    const mapTags = () => [...mapCard().querySelectorAll('.tag')].map((t) => [t.textContent, t.classList.contains('ok')]);
+    const mapGoal = (continent: ContinentKey) => goalFor('general', mapPool(continent).length);
+
+    beforeEach(() => {
+      localStorage.setItem(
+        'flags-quiz:map-quiz-records',
+        JSON.stringify({ europe: { bestScore: 40, bestTimeMs: 301000, completed: true }, asia: { bestScore: 12 }, oceania: { bestScore: 9, bestTimeMs: 65000 } }),
+      );
+      localStorage.setItem('flags-quiz:map-medals', JSON.stringify({ europe: true }));
+    });
+
+    it('shows Bandeiras and Mapas above the tabs, Bandeiras pressed by default with the flag cards', () => {
+      render('africa');
+      const selector = root.querySelector('.area-selector')!;
+      expect(selector.nextElementSibling).toBe(root.querySelector('.tabs'));
+      expect(areas().map((b) => [b.textContent, b.getAttribute('aria-pressed')])).toEqual([
+        ['Bandeiras', 'true'],
+        ['Mapas', 'false'],
+      ]);
+      expect(root.querySelectorAll('.level-card')).toHaveLength(4);
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+    });
+
+    it('switches to Mapas in place, remembers it and shows one card for the chosen continent', () => {
+      render('europe');
+      const main = root.firstElementChild;
+      area('Mapas').click();
+      expect(screens).toEqual([]);
+      expect(root.firstElementChild).toBe(main);
+      expect(localStorage.getItem('flags-quiz:area')).toBe('maps');
+      expect(areas().map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'true']);
+      expect(root.querySelectorAll('.level-card')).toHaveLength(1);
+      expect(mapCard().querySelector('.meta')!.textContent).toBe(`${mapPool('europe').length} países`);
+      expect(root.querySelector('.see-all')).toBeNull();
+    });
+
+    it('opens on Mapas when it was the last area chosen', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('europe');
+      expect(area('Mapas').getAttribute('aria-pressed')).toBe('true');
+      expect(root.querySelectorAll('.level-card')).toHaveLength(1);
+    });
+
+    it('goes back to the flag hub unchanged and remembers Bandeiras', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('africa');
+      area('Bandeiras').click();
+      expect(localStorage.getItem('flags-quiz:area')).toBe('flags');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 1/4', 'África 2/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
+      expect(tags('Fácil')).toEqual([
+        ['🏅 Medalha', true],
+        ['✓ Quiz 03:12', true],
+      ]);
+      expect(root.querySelectorAll('.see-all')).toHaveLength(1);
+    });
+
+    it('counts the completed map quizzes in the header and checks their tabs', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('europe');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('2/6 mapas');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo', 'África', 'Américas', 'Ásia', 'Europa ✓', 'Oceania ✓']);
+    });
+
+    it('tags the map medal and the map quiz of the chosen continent', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('europe');
+      expect(mapTags()).toEqual([
+        ['🏅 Medalha', true],
+        ['✓ Quiz 05:01', true],
+      ]);
+      tab('Ásia').click();
+      expect(mapTags()).toEqual([
+        [`🏅 meta ${mapGoal('asia')}`, false],
+        ['Quiz 12 pts', false],
+      ]);
+      tab('Mundo').click();
+      expect(mapTags()).toEqual([
+        [`🏅 meta ${mapGoal('world')}`, false],
+        ['Quiz —', false],
+      ]);
+    });
+
+    it('starts the map Learn and the map Quiz on the chosen continent', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('africa');
+      tab('Oceania').click();
+      button(mapCard(), 'Aprender').click();
+      button(mapCard(), 'Quiz').click();
+      expect(screens).toEqual([
+        { name: 'mapGame', continent: 'oceania' },
+        { name: 'mapQuiz', continent: 'oceania' },
+      ]);
+    });
   });
 });

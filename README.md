@@ -17,6 +17,13 @@ Results show the numbers as blocks, the new records, and the next level, another
 
 The link under the level cards lists every flag of the continent with its name and badge, in alphabetical order, for review; tap one to see it large.
 
+A "Bandeiras | Mapas" selector at the top of the hub switches between the flag levels and the Maps area, and the hub remembers the last area chosen.
+Mapas asks where each country lies on a map of its continent (Mundo uses the whole world), with one level per continent and no tiers.
+The header counts the map quizzes completed out of 6, a tab shows ✓ once its map quiz is completed, and the single card shows the country count, the medal tag, the Quiz tag and the Aprender and Quiz buttons.
+Aprender uses five map formats (pick the name of the highlighted country, tap the named country, link four lettered countries to their names, confirm a name, type the name) with the same lives, goals and medals as the flag levels.
+Quiz highlights one country at a time on the map: type its name, tap another country to switch to it or "Pular" to move on; answered countries turn green with their name.
+The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.
+
 The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.
 
 ## Run
