@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadContinent, saveContinent, type ContinentStore } from './continentChoice';
+import { loadArea, loadContinent, saveArea, saveContinent, type ContinentStore } from './continentChoice';
 
 function memoryStore(): ContinentStore & { data: Map<string, string> } {
   const data = new Map<string, string>();
@@ -22,5 +22,22 @@ describe('continent choice', () => {
     const store = memoryStore();
     store.data.set('flags-quiz:continent', 'atlantis');
     expect(loadContinent(store)).toBe('world');
+  });
+
+  it('opens on the flags area on the first visit', () => {
+    expect(loadArea(memoryStore())).toBe('flags');
+  });
+
+  it('remembers the area under its own key', () => {
+    const store = memoryStore();
+    saveArea(store, 'maps');
+    expect(loadArea(store)).toBe('maps');
+    expect(store.data.get('flags-quiz:area')).toBe('maps');
+  });
+
+  it('falls back to flags when the stored area is unknown', () => {
+    const store = memoryStore();
+    store.data.set('flags-quiz:area', 'atlantis');
+    expect(loadArea(store)).toBe('flags');
   });
 });

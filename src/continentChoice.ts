@@ -13,3 +13,15 @@ export function loadContinent(store: ContinentStore): ContinentKey {
 export function saveContinent(store: ContinentStore, continent: ContinentKey): void {
   store.setItem(STORAGE_KEY, continent);
 }
+
+export type Area = 'flags' | 'maps';
+
+const AREA_STORAGE_KEY = 'flags-quiz:area';
+
+export function loadArea(store: ContinentStore): Area {
+  return store.getItem(AREA_STORAGE_KEY) === 'maps' ? 'maps' : 'flags';
+}
+
+export function saveArea(store: ContinentStore, area: Area): void {
+  store.setItem(AREA_STORAGE_KEY, area);
+}

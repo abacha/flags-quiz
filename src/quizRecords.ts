@@ -38,9 +38,7 @@ export function isCompleted(record: QuizRecord): boolean {
   return record.completed === true || record.bestTimeMs !== undefined;
 }
 
-export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
-  const records = loadQuizRecords(store);
-  const previous = quizRecord(records, continent, difficulty);
+export function mergeQuizOutcome(previous: QuizRecord, outcome: QuizOutcome): { next: QuizRecord; newRecords: NewRecords } {
   const timeMs = Math.floor(outcome.timeMs / 1000) * 1000;
   const score = previous.bestScore === undefined || outcome.score > previous.bestScore;
   const time = outcome.finished && outcome.errors === 0 && (previous.bestTimeMs === undefined || timeMs < previous.bestTimeMs);
@@ -48,7 +46,13 @@ export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, dif
   if (score) next.bestScore = outcome.score;
   if (time) next.bestTimeMs = timeMs;
   if (outcome.finished) next.completed = true;
+  return { next, newRecords: { score, time } };
+}
+
+export function saveQuizOutcome(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
+  const records = loadQuizRecords(store);
+  const { next, newRecords } = mergeQuizOutcome(quizRecord(records, continent, difficulty), outcome);
   records[continent] = { ...records[continent], [difficulty]: next };
   store.setItem(STORAGE_KEY, JSON.stringify(records));
-  return { score, time };
+  return newRecords;
 }
