@@ -1,5 +1,6 @@
 import type { Status } from '../data/countries';
 import type { ContinentKey, Difficulty } from '../engine/pool';
+import type { Medal } from '../engine/round';
 
 export const CONTINENT_KEYS: readonly ContinentKey[] = ['world', 'africa', 'americas', 'asia', 'europe', 'oceania'];
 
@@ -28,6 +29,12 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   medium: 'Médio',
   hard: 'Difícil',
   general: 'Geral',
+};
+
+export const MEDAL_LABEL: Record<Medal, string> = {
+  gold: '🥇 Ouro',
+  silver: '🥈 Prata',
+  bronze: '🥉 Bronze',
 };
 
 export const STATUS_BADGE: Record<Status, string> = {

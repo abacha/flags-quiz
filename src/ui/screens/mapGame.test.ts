@@ -97,18 +97,43 @@ describe('renderMapGame', () => {
     expect(root.querySelectorAll('.heart.lost')).toHaveLength(1);
   });
 
-  it('awards the map medal and opens the result when the goal is reached', () => {
+  const button = (text: string) => [...root.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === text)!;
+
+  it('awards a gold map medal and opens the result when the goal is reached with every life', () => {
     for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
-    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: true } });
-    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: true, correct: goal, missed: [] }]);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: 'gold' } });
+    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: true, medal: 'gold', correct: goal, missed: [] }]);
   });
 
-  it('opens the lost result with the missed countries and awards no medal when the lives run out', () => {
+  it('awards silver when the goal is reached with two lives left', () => {
+    answerCurrent(wrongAnswer);
+    for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
+    expect(screens).toMatchObject([{ name: 'mapResult', won: true, medal: 'silver' }]);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: 'silver' } });
+  });
+
+  it('offers to continue without a medal when the lives run out, and ends on the lost result on Encerrar', () => {
     for (let i = 0; i < 3; i++) answerCurrent(wrongAnswer);
+    expect(screens).toEqual([]);
+    expect(root.querySelector('.out-of-lives .verdict')!.textContent).toBe('Suas vidas acabaram');
+    button('Encerrar').click();
     expect(localStorage.getItem('flags-quiz:map-medals')).toBeNull();
     const [screen] = screens;
-    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: false, correct: 0 });
+    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: false, medal: null, correct: 0 });
     expect((screen as Extract<Screen, { name: 'mapResult' }>).missed.length).toBeGreaterThan(0);
+  });
+
+  it('keeps asking after Continuar sem medalha and reaches the goal without a medal', () => {
+    for (let i = 0; i < 3; i++) answerCurrent(wrongAnswer);
+    const asking = asked.length;
+    button('Continuar sem medalha').click();
+    expect(asked.length).toBe(asking + 1);
+    expect(root.querySelector('.out-of-lives')).toBeNull();
+    answerCurrent(wrongAnswer);
+    expect(screens).toEqual([]);
+    for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
+    expect(screens).toMatchObject([{ name: 'mapResult', won: true, medal: null, correct: goal }]);
+    expect(localStorage.getItem('flags-quiz:map-medals')).toBeNull();
   });
 
   it('leaves to the hub on the same continent on ✕', () => {

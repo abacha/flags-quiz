@@ -2,12 +2,13 @@ import { loadArea, saveArea, saveContinent, type Area } from '../../continentCho
 import { countries } from '../../data/countries';
 import { mapPool } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
+import type { Medal } from '../../engine/round';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
-import { hasMedal, loadMedals, type Medals } from '../../progress';
+import { loadMedals, medalOf, type Medals } from '../../progress';
 import { isCompleted, loadQuizRecords, quizRecord, type QuizRecord, type QuizRecords } from '../../quizRecords';
 import { el } from '../dom';
 import { flagImg } from '../flag';
-import { CONTINENT_FROM, CONTINENT_KEYS, CONTINENT_LABEL, DIFFICULTIES, DIFFICULTY_LABEL } from '../labels';
+import { CONTINENT_FROM, CONTINENT_KEYS, CONTINENT_LABEL, DIFFICULTIES, DIFFICULTY_LABEL, MEDAL_LABEL } from '../labels';
 import type { Navigate } from '../navigation';
 import { formatTime } from '../time';
 
@@ -113,7 +114,7 @@ function levelCard(navigate: Navigate, continent: ContinentKey, difficulty: Diff
       ...(area === 'maps' ? [] : [el('span', { className: 'thumbs' }, pool.slice(0, 3).map((country) => flagImg(country)))]),
     ]),
     el('div', { className: 'tags' }, [
-      hasMedal(medals, continent, difficulty) ? tag('🏅 Medalha', true) : tag(`🏅 meta ${goalFor(difficulty, pool.length)}`, false),
+      medalTag(medalOf(medals, continent, difficulty), goalFor(difficulty, pool.length)),
       quizTag(quizRecord(records, continent, difficulty)),
     ]),
     el('div', { className: 'level-actions' }, [
@@ -121,6 +122,10 @@ function levelCard(navigate: Navigate, continent: ContinentKey, difficulty: Diff
       el('button', { className: 'outline', type: 'button', onclick: play('quiz') }, ['Quiz']),
     ]),
   ]);
+}
+
+function medalTag(medal: Medal | undefined, goal: number): HTMLSpanElement {
+  return medal ? tag(MEDAL_LABEL[medal], true) : tag(`🏅 meta ${goal}`, false);
 }
 
 function quizTag(record: QuizRecord): HTMLSpanElement {

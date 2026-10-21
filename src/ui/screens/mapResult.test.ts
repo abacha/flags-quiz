@@ -18,6 +18,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
     continent: 'oceania',
     difficulty: 'medium',
     won: false,
+    medal: null,
     correct: 3,
     missed: [],
     ...overrides,
@@ -28,10 +29,18 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
 
 describe('renderMapResult', () => {
   it('celebrates a won medal and shows the continent and the correct answers out of the goal', () => {
-    const { root } = render({ won: true, correct: goal });
-    expect(root.querySelector('h1')!.textContent).toBe('🏅 Medalha conquistada!');
+    const { root } = render({ won: true, medal: 'silver', correct: goal });
+    expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');
     expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania · Médio');
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
+  });
+
+  it.each([
+    ['gold', '🥇 Medalha de ouro!'],
+    ['bronze', '🥉 Medalha de bronze!'],
+    [null, '✓ Meta concluída sem medalha'],
+  ] as const)('titles a reached goal by its medal: %s', (medal, title) => {
+    expect(render({ won: true, medal, correct: goal }).root.querySelector('h1')!.textContent).toBe(title);
   });
 
   it('offers the next level of the map Learn first on Fácil and none on Geral', () => {

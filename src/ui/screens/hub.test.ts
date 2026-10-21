@@ -96,7 +96,7 @@ describe('renderHub', () => {
   it('tags the medal and the quiz of each level by its state', () => {
     render('africa');
     expect(tags('Fácil')).toEqual([
-      ['🏅 Medalha', true],
+      ['🥉 Bronze', true],
       ['✓ Quiz 03:12', true],
     ]);
     expect(tags('Médio')).toEqual([
@@ -161,7 +161,7 @@ describe('renderHub', () => {
           oceania: { hard: { bestScore: 9, bestTimeMs: 65000 } },
         }),
       );
-      localStorage.setItem('flags-quiz:map-medals', JSON.stringify({ europe: { easy: true } }));
+      localStorage.setItem('flags-quiz:map-medals', JSON.stringify({ europe: { easy: 'gold' } }));
     });
 
     it('shows Bandeiras and Mapas above the tabs, Bandeiras pressed by default with the flag cards', () => {
@@ -206,7 +206,7 @@ describe('renderHub', () => {
       expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
       expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 1/4', 'África 2/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
       expect(tags('Fácil')).toEqual([
-        ['🏅 Medalha', true],
+        ['🥉 Bronze', true],
         ['✓ Quiz 03:12', true],
       ]);
       expect(root.querySelectorAll('.see-all')).toHaveLength(1);
@@ -223,7 +223,7 @@ describe('renderHub', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
       expect(mapTags('Fácil')).toEqual([
-        ['🏅 Medalha', true],
+        ['🥇 Ouro', true],
         ['✓ Quiz 05:01', true],
       ]);
       expect(mapTags('Médio')).toEqual([

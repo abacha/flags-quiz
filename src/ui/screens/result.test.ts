@@ -16,6 +16,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'result' }>>) {
     continent: 'oceania',
     difficulty: 'medium',
     won: false,
+    medal: null,
     correct: 3,
     missed: [],
     ...overrides,
@@ -26,10 +27,18 @@ function render(overrides: Partial<Extract<Screen, { name: 'result' }>>) {
 
 describe('renderResult', () => {
   it('celebrates a won medal and shows the level and the correct answers out of the goal', () => {
-    const { root } = render({ won: true, correct: goal });
-    expect(root.querySelector('h1')!.textContent).toBe('🏅 Medalha conquistada!');
+    const { root } = render({ won: true, medal: 'silver', correct: goal });
+    expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');
     expect(root.querySelector('.detail')!.textContent).toBe('Oceania · Médio');
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
+  });
+
+  it.each([
+    ['gold', '🥇 Medalha de ouro!'],
+    ['bronze', '🥉 Medalha de bronze!'],
+    [null, '✓ Meta concluída sem medalha'],
+  ] as const)('titles a reached goal by its medal: %s', (medal, title) => {
+    expect(render({ won: true, medal, correct: goal }).root.querySelector('h1')!.textContent).toBe(title);
   });
 
   it('keeps the not-won title', () => {

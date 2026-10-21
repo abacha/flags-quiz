@@ -13,6 +13,9 @@ export interface RoundSettings {
 }
 
 export type RoundStatus = 'playing' | 'won' | 'lost';
+export type Medal = 'gold' | 'silver' | 'bronze';
+
+const MEDAL_BY_LIVES: Record<number, Medal> = { 3: 'gold', 2: 'silver', 1: 'bronze' };
 
 const GROUP_FORMATS: readonly FormatId[] = ['sortSimilar', 'typeSimilar', 'sortSimilarNames'];
 const showsSimilarGroup = (id: FormatId) => GROUP_FORMATS.includes(id);
@@ -32,6 +35,7 @@ export class Round {
   private asked = 0;
   private currentPass = 1;
   private current: Question | null = null;
+  private continued = false;
 
   constructor(
     private readonly ctx: FormatContext,
@@ -50,8 +54,17 @@ export class Round {
 
   get status(): RoundStatus {
     if (this.correct >= this.settings.correctToWin) return 'won';
-    if (this.lives <= 0) return 'lost';
+    if (this.lives <= 0 && !this.continued) return 'lost';
     return 'playing';
+  }
+
+  get medal(): Medal | null {
+    return this.continued ? null : (MEDAL_BY_LIVES[this.lives] ?? null);
+  }
+
+  continueWithoutMedal(): void {
+    if (this.status !== 'lost') throw new Error(`Round is ${this.status}`);
+    this.continued = true;
   }
 
   nextQuestion(): Question {
@@ -78,7 +91,7 @@ export class Round {
     if (result.correct) {
       this.correct++;
     } else {
-      this.lives--;
+      this.lives = Math.max(0, this.lives - 1);
       for (const country of result.missed) if (!this.missed.includes(country)) this.missed.push(country);
     }
     return result;

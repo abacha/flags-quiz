@@ -78,7 +78,30 @@ describe('Round', () => {
     expect(round.missed.length).toBeGreaterThan(0);
   });
 
-  const playPasses = (round: Round, passes: number): Question[][] => {
+  it.each([
+    [0, 'gold'],
+    [1, 'silver'],
+    [2, 'bronze'],
+  ] as const)('earns a medal by the lives left at the goal: %i lost gives %s', (lost, medal) => {
+    const round = new Round(easy, settings(5), seededRng(5));
+    for (let i = 0; i < lost; i++) round.answer(wrongAnswer(round.nextQuestion()));
+    while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+    expect(round.medal).toBe(medal);
+  });
+
+  it('keeps going without lives or a medal after the player chooses to continue a lost round', () => {
+    const round = new Round(easy, settings(5), seededRng(6));
+    expect(() => round.continueWithoutMedal()).toThrow('Round is playing');
+    for (let i = 0; i < STARTING_LIVES; i++) round.answer(wrongAnswer(round.nextQuestion()));
+    round.continueWithoutMedal();
+    expect(round.status).toBe('playing');
+    round.answer(wrongAnswer(round.nextQuestion()));
+    expect([round.status, round.lives]).toEqual(['playing', 0]);
+    while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+    expect([round.status, round.medal]).toEqual(['won', null]);
+  });
+
+  const playPasses =(round: Round, passes: number): Question[][] => {
     const byPass: Question[][] = Array.from({ length: passes }, () => []);
     for (;;) {
       const question = round.nextQuestion();

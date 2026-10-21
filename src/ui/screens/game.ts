@@ -3,6 +3,7 @@ import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } fro
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMedal } from '../../progress';
 import { onBack } from '../backButton';
+import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -52,8 +53,20 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
 
   const finish = () => {
     const won = round.status === 'won';
-    if (won) awardMedal(localStorage, continent, difficulty);
-    leave({ name: 'result', continent, difficulty, won, correct: round.correct, missed: round.missed });
+    const medal = won ? round.medal : null;
+    if (medal) awardMedal(localStorage, continent, difficulty, medal);
+    leave({ name: 'result', continent, difficulty, won, medal, correct: round.correct, missed: round.missed });
+  };
+
+  const next = (feedback: HTMLElement) => {
+    if (round.status === 'playing') return ask();
+    if (round.status === 'won') return finish();
+    const sheet = outOfLivesSheet(() => {
+      round.continueWithoutMedal();
+      ask();
+    }, finish);
+    feedback.replaceWith(sheet);
+    sheet.querySelector('button')?.focus();
   };
 
   const ask = () => {
@@ -62,7 +75,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
       questionEl.inert = true;
       const result = round.answer(answer);
       updateHud();
-      const feedback = renderFeedback(question, result, () => (round.status === 'playing' ? ask() : finish()));
+      const feedback = renderFeedback(question, result, () => next(feedback));
       stage.append(feedback);
       feedback.querySelector('button')?.focus();
     });

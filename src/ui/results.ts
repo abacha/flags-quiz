@@ -1,9 +1,21 @@
 import type { Country } from '../data/countries';
 import type { ContinentKey, Difficulty } from '../engine/pool';
+import type { Medal } from '../engine/round';
 import { el } from './dom';
 import { DIFFICULTIES, DIFFICULTY_LABEL } from './labels';
 import { renderMap } from './map/map';
 import type { Navigate } from './navigation';
+
+const MEDAL_TITLE: Record<Medal, string> = {
+  gold: '🥇 Medalha de ouro!',
+  silver: '🥈 Medalha de prata!',
+  bronze: '🥉 Medalha de bronze!',
+};
+
+export function learnResultTitle(won: boolean, medal: Medal | null, correct: number, goal: number): string {
+  if (!won) return `Você fez ${correct} de ${goal}`;
+  return medal ? MEDAL_TITLE[medal] : '✓ Meta concluída sem medalha';
+}
 
 export function statBlocks(stats: [value: string, label: string][]): HTMLElement {
   return el(

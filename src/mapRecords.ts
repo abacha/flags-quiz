@@ -1,5 +1,6 @@
 import type { ContinentKey, Difficulty } from './engine/pool';
-import type { Medals } from './progress';
+import type { Medal } from './engine/round';
+import { readMedals, writeMedal, type Medals } from './progress';
 import { mergeQuizOutcome, quizRecord, type NewRecords, type QuizOutcome, type QuizRecords, type RecordStore } from './quizRecords';
 
 export type MapMedals = Medals;
@@ -9,14 +10,11 @@ const MEDALS_KEY = 'flags-quiz:map-medals';
 const RECORDS_KEY = 'flags-quiz:map-quiz-records';
 
 export function loadMapMedals(store: RecordStore): MapMedals {
-  const raw = store.getItem(MEDALS_KEY);
-  return raw === null ? {} : (JSON.parse(raw) as MapMedals);
+  return readMedals(store, MEDALS_KEY);
 }
 
-export function awardMapMedal(store: RecordStore, continent: ContinentKey, difficulty: Difficulty): void {
-  const medals = loadMapMedals(store);
-  medals[continent] = { ...medals[continent], [difficulty]: true };
-  store.setItem(MEDALS_KEY, JSON.stringify(medals));
+export function awardMapMedal(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, medal: Medal): void {
+  writeMedal(store, MEDALS_KEY, continent, difficulty, medal);
 }
 
 export function loadMapQuizRecords(store: RecordStore): MapQuizRecords {

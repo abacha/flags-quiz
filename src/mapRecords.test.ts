@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { awardMapMedal, loadMapMedals, loadMapQuizRecords, saveMapQuizOutcome } from './mapRecords';
-import { hasMedal } from './progress';
+import { medalOf } from './progress';
 import { quizRecord, type RecordStore } from './quizRecords';
 
 function memoryStore(): RecordStore & { data: Map<string, string> } {
@@ -48,24 +48,31 @@ describe('map quiz records', () => {
 
 describe('map medals', () => {
   it('starts with no medals', () => {
-    expect(hasMedal(loadMapMedals(memoryStore()), 'europe', 'easy')).toBe(false);
+    expect(medalOf(loadMapMedals(memoryStore()), 'europe', 'easy')).toBeUndefined();
   });
 
   it('awards a map medal per level under its own key', () => {
     const store = memoryStore();
-    awardMapMedal(store, 'europe', 'easy');
+    awardMapMedal(store, 'europe', 'easy', 'silver');
+    awardMapMedal(store, 'europe', 'easy', 'bronze');
     const medals = loadMapMedals(store);
-    expect(hasMedal(medals, 'europe', 'easy')).toBe(true);
-    expect(hasMedal(medals, 'europe', 'medium')).toBe(false);
-    expect(hasMedal(medals, 'africa', 'easy')).toBe(false);
+    expect(medalOf(medals, 'europe', 'easy')).toBe('silver');
+    expect(medalOf(medals, 'europe', 'medium')).toBeUndefined();
+    expect(medalOf(medals, 'africa', 'easy')).toBeUndefined();
     expect(store.getItem('flags-quiz:medals')).toBeNull();
   });
 
   it('reads a medal saved before the levels existed as no medal and still awards new ones', () => {
     const store = memoryStore();
     store.setItem('flags-quiz:map-medals', JSON.stringify({ europe: true }));
-    expect(hasMedal(loadMapMedals(store), 'europe', 'general')).toBe(false);
-    awardMapMedal(store, 'europe', 'general');
-    expect(hasMedal(loadMapMedals(store), 'europe', 'general')).toBe(true);
+    expect(medalOf(loadMapMedals(store), 'europe', 'general')).toBeUndefined();
+    awardMapMedal(store, 'europe', 'general', 'gold');
+    expect(medalOf(loadMapMedals(store), 'europe', 'general')).toBe('gold');
+  });
+
+  it('reads a map medal saved before the tiers existed as bronze', () => {
+    const store = memoryStore();
+    store.setItem('flags-quiz:map-medals', JSON.stringify({ europe: { easy: true } }));
+    expect(medalOf(loadMapMedals(store), 'europe', 'easy')).toBe('bronze');
   });
 });

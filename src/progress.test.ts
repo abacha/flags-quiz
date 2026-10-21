@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { awardMedal, hasMedal, loadMedals, type MedalStore } from './progress';
+import { awardMedal, loadMedals, medalOf, type MedalStore } from './progress';
 
 function memoryStore(): MedalStore & { data: Map<string, string> } {
   const data = new Map<string, string>();
@@ -8,34 +8,43 @@ function memoryStore(): MedalStore & { data: Map<string, string> } {
 
 describe('medals', () => {
   it('starts with no medals', () => {
-    expect(hasMedal(loadMedals(memoryStore()), 'africa', 'easy')).toBe(false);
+    expect(medalOf(loadMedals(memoryStore()), 'africa', 'easy')).toBeUndefined();
   });
 
   it('keeps an awarded medal across loads', () => {
     const store = memoryStore();
-    awardMedal(store, 'africa', 'easy');
-    expect(hasMedal(loadMedals(store), 'africa', 'easy')).toBe(true);
-    expect(hasMedal(loadMedals(store), 'africa', 'medium')).toBe(false);
+    awardMedal(store, 'africa', 'easy', 'silver');
+    expect(medalOf(loadMedals(store), 'africa', 'easy')).toBe('silver');
+    expect(medalOf(loadMedals(store), 'africa', 'medium')).toBeUndefined();
+  });
+
+  it('keeps the best medal of a level', () => {
+    const store = memoryStore();
+    awardMedal(store, 'africa', 'easy', 'silver');
+    awardMedal(store, 'africa', 'easy', 'bronze');
+    expect(medalOf(loadMedals(store), 'africa', 'easy')).toBe('silver');
+    awardMedal(store, 'africa', 'easy', 'gold');
+    expect(medalOf(loadMedals(store), 'africa', 'easy')).toBe('gold');
   });
 
   it('keeps earlier medals when awarding another difficulty', () => {
     const store = memoryStore();
-    awardMedal(store, 'africa', 'easy');
-    awardMedal(store, 'africa', 'hard');
-    expect(loadMedals(store)).toEqual({ africa: { easy: true, hard: true } });
+    awardMedal(store, 'africa', 'easy', 'gold');
+    awardMedal(store, 'africa', 'hard', 'bronze');
+    expect(loadMedals(store)).toEqual({ africa: { easy: 'gold', hard: 'bronze' } });
   });
 
   it('stores everything under one key', () => {
     const store = memoryStore();
-    awardMedal(store, 'africa', 'medium');
+    awardMedal(store, 'africa', 'medium', 'gold');
     expect([...store.data.keys()]).toEqual(['flags-quiz:medals']);
   });
 
-  it('keeps a Mundo medal beside the medals saved before Mundo existed', () => {
+  it('reads a medal saved before the tiers existed as bronze', () => {
     const store = memoryStore();
     store.data.set('flags-quiz:medals', '{"africa":{"easy":true}}');
-    awardMedal(store, 'world', 'general');
-    expect(loadMedals(store)).toEqual({ africa: { easy: true }, world: { general: true } });
-    expect(hasMedal(loadMedals(store), 'africa', 'easy')).toBe(true);
+    expect(medalOf(loadMedals(store), 'africa', 'easy')).toBe('bronze');
+    awardMedal(store, 'world', 'general', 'gold');
+    expect(loadMedals(store)).toEqual({ africa: { easy: 'bronze' }, world: { general: 'gold' } });
   });
 });
