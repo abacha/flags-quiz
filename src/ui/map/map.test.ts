@@ -5,7 +5,8 @@ import { merge } from 'topojson-client';
 import { describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
-import { renderMap } from './map';
+import type { ContinentKey } from '../../engine/pool';
+import { renderMap, type MapView } from './map';
 import { projectionFor } from './projection';
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
@@ -19,23 +20,50 @@ const layOut = (element: HTMLElement) => {
 const pointer = (target: Element, type: string, pointerId: number, clientX: number, clientY: number) =>
   target.dispatchEvent(new PointerEvent(type, { pointerId, clientX, clientY, bubbles: true }));
 
+const poolCollection = (continent: ContinentKey): FeatureCollection => ({
+  type: 'FeatureCollection',
+  features: mapPool(continent).map((c): Feature => ({
+    type: 'Feature',
+    id: c.iso2,
+    properties: {},
+    geometry: merge(topology, topology.objects[MAP_OBJECT].geometries.filter((g) => g.id === c.iso2)),
+  })),
+});
+
+const poolProjection = (continent: ContinentKey) => projectionFor(continent, poolCollection(continent));
+
 const russiaEastEdge = () => {
-  const pool: FeatureCollection = {
-    type: 'FeatureCollection',
-    features: mapPool('europe').map((c): Feature => ({
-      type: 'Feature',
-      id: c.iso2,
-      properties: {},
-      geometry: merge(topology, topology.objects[MAP_OBJECT].geometries.filter((g) => g.id === c.iso2)),
-    })),
-  };
+  const pool = poolCollection('europe');
   const path = geoPath(projectionFor('europe', pool));
   return path.bounds(pool.features.find((f) => f.id === 'ru')!)[1][0];
 };
 
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
+const ringWidths = (d: string): number[] =>
+  d
+    .split('M')
+    .slice(1)
+    .map((ring) => {
+      const xs = [...ring.matchAll(/(-?[\d.]+(?:e-?\d+)?),/g)].map((m) => Number(m[1]));
+      return Math.max(...xs) - Math.min(...xs);
+    });
+
+const widestRing = (view: MapView) =>
+  Math.max(...[...view.element.querySelectorAll('path')].flatMap((p) => ringWidths(p.getAttribute('d')!)));
+
+const lowestY = (view: MapView) =>
+  Math.max(...[...view.element.querySelectorAll('path')].flatMap((p) => [...p.getAttribute('d')!.matchAll(/,(-?[\d.]+(?:e-?\d+)?)/g)].map((m) => Number(m[1]))));
+
 describe('renderMap', () => {
+  it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('wraps no shape around the globe on %s', (continent) => {
+    expect(widestRing(renderMap(continent))).toBeLessThan((poolProjection(continent).scale() * 2 * Math.PI) / 2);
+  });
+
+  it('keeps Antarctica on the world map', () => {
+    expect(lowestY(renderMap('world'))).toBeGreaterThan(poolProjection('world')([0, -70])![1]);
+  });
+
   it('draws every pool country as tappable and calls onTap', () => {
     const onTap = vi.fn();
     const view = renderMap('americas', onTap);

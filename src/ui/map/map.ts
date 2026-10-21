@@ -1,6 +1,6 @@
-import { geoPath, type GeoPath } from 'd3-geo';
+import { geoBounds, geoPath, type GeoPath } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
-import { merge } from 'topojson-client';
+import { feature, merge } from 'topojson-client';
 import type { Country } from '../../data/countries';
 import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
@@ -15,6 +15,7 @@ const RING_PX = 14;
 const LABEL_PX = 13;
 const WHEEL_STEP = 1.2;
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const ANTARCTIC_CIRCLE_LATITUDE = -60;
 
 export type CountryPaint = 'idle' | 'highlight' | 'answered' | 'missed';
 
@@ -44,9 +45,13 @@ function svgEl<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<strin
   return node;
 }
 
-function unitsById(): Map<string | null, MultiPolygon> {
-  const groups = new Map<string | null, typeof topology.objects[typeof MAP_OBJECT]['geometries']>();
-  for (const geometry of topology.objects[MAP_OBJECT].geometries) {
+type UnitGeometry = (typeof topology.objects)[typeof MAP_OBJECT]['geometries'][number];
+
+const isAntarctic = (geometry: UnitGeometry) => geoBounds(feature(topology, geometry))[1][1] < ANTARCTIC_CIRCLE_LATITUDE;
+
+function unitsById(geometries: UnitGeometry[]): Map<string | null, MultiPolygon> {
+  const groups = new Map<string | null, UnitGeometry[]>();
+  for (const geometry of geometries) {
     const id = geometry.id === null || geometry.id === undefined ? null : String(geometry.id);
     groups.set(id, [...(groups.get(id) ?? []), geometry]);
   }
@@ -58,13 +63,15 @@ function largestPolygon(path: GeoPath, geometry: MultiPolygon): Polygon {
   return polygons.reduce((a, b) => (path.area(b) > path.area(a) ? b : a));
 }
 
-const units = unitsById();
+const worldUnits = unitsById(topology.objects[MAP_OBJECT].geometries);
+const continentUnits = unitsById(topology.objects[MAP_OBJECT].geometries.filter((geometry) => !isAntarctic(geometry)));
 
 const viewBoxOf = ([[x0, y0], [x1, y1]]: [Point, Point]): ViewBox => ({ x: x0, y: y0, width: x1 - x0, height: y1 - y0 });
 
 const distance = ([ax, ay]: Point, [bx, by]: Point) => Math.hypot(ax - bx, ay - by);
 
 export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
+  const units = continent === 'world' ? worldUnits : continentUnits;
   const pool = new Map(mapPool(continent).map((c) => [c.iso2, c]));
   const poolFeatures: FeatureCollection = {
     type: 'FeatureCollection',
