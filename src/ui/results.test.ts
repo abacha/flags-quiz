@@ -1,7 +1,8 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
+import { countries } from '../data/countries';
 import type { Screen } from './navigation';
-import { resultActions, statBlocks } from './results';
+import { mapReview, resultActions, statBlocks } from './results';
 
 describe('statBlocks', () => {
   it('shows each number above its label', () => {
@@ -59,5 +60,16 @@ describe('resultActions', () => {
       { name: 'game', continent: 'africa', difficulty: 'hard' },
       { name: 'hub', continent: 'africa' },
     ]);
+  });
+});
+
+describe('mapReview', () => {
+  it('paints the countries as missed on an unlabelled map and names them in a list under it', () => {
+    const picked = countries.filter((c) => c.iso2 === 'to' || c.iso2 === 'fj');
+    const [map, names] = mapReview('oceania', picked);
+    expect([...map!.querySelectorAll('.country.missed')].map((shape) => shape.getAttribute('data-iso2')).sort()).toEqual(['fj', 'to']);
+    expect(map!.querySelector('.map-label')).toBeNull();
+    expect(names!.className).toBe('map-names');
+    expect([...names!.querySelectorAll('li.tag')].map((item) => item.textContent)).toEqual(picked.map((c) => c.name));
   });
 });

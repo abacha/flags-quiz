@@ -7,6 +7,7 @@ import type { Screen } from '../navigation';
 import { renderMapResult } from './mapResult';
 
 const tonga = countries.find((c) => c.iso2 === 'to')!;
+const fiji = countries.find((c) => c.iso2 === 'fj')!;
 const goal = goalFor('general', mapPool('oceania').length);
 
 function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
@@ -52,12 +53,13 @@ describe('renderMapResult', () => {
     expect([...root.querySelectorAll('h2')]).toHaveLength(0);
   });
 
-  it('shows the missed countries named on one map below the buttons', () => {
-    const { root } = render({ missed: [tonga] });
+  it('shows the missed countries on one map below the buttons, named in a list under it', () => {
+    const { root } = render({ missed: [tonga, fiji] });
     const heading = [...root.querySelectorAll('h2')].find((h) => h.textContent === 'Países para revisar')!;
     expect(heading.compareDocumentPosition(root.querySelector('.result-actions')!) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
     expect(root.querySelectorAll('.map')).toHaveLength(1);
-    expect(root.querySelector('.map .country.missed')).not.toBeNull();
-    expect(root.querySelector('.map-label')!.textContent).toBe('Tonga');
+    expect(root.querySelectorAll('.map .country.missed')).toHaveLength(2);
+    expect(root.querySelector('.map-label')).toBeNull();
+    expect([...root.querySelectorAll('.map + .map-names li')].map((item) => item.textContent)).toEqual(['Tonga', 'Fiji']);
   });
 });

@@ -77,13 +77,15 @@ describe('renderMapQuizResult', () => {
     expect(headings()).toEqual([]);
   });
 
-  it('shows the unanswered and the missed countries named on a map each, below the buttons', () => {
+  it('shows the unanswered and the missed countries on a map each, named in a list under it, below the buttons', () => {
     const { root, headings } = render({ finished: false, unanswered: [tonga], missed: [fiji] });
     expect(headings()).toEqual(['Países sem resposta (1)', 'Países que você errou']);
     const maps = root.querySelectorAll('.map');
     expect(maps).toHaveLength(2);
-    expect(maps[0].querySelector('.map-label')!.textContent).toBe('Tonga');
-    expect(maps[1].querySelector('.map-label')!.textContent).toBe('Fiji');
+    expect(maps[0].querySelector('[data-iso2="to"].missed')).not.toBeNull();
+    expect(maps[1].querySelector('[data-iso2="fj"].missed')).not.toBeNull();
+    expect(root.querySelector('.map-label')).toBeNull();
+    expect([...root.querySelectorAll('.map + .map-names')].map((list) => list.textContent)).toEqual(['Tonga', 'Fiji']);
     expect(root.querySelector('.result-actions')!.compareDocumentPosition(maps[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 

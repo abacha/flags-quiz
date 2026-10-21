@@ -633,6 +633,7 @@ input::placeholder { text-overflow: ellipsis; }
 .map .hit { fill: transparent; pointer-events: all; cursor: pointer; }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
 .question > .map, .feedback > .map { min-width: 0; width: 100%; }
+.map-names { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
 .pair-letter {
   align-self: center;
   display: grid;
