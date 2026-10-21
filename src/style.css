@@ -626,7 +626,7 @@ input::placeholder { text-overflow: ellipsis; }
 .map svg { display: block; width: 100%; height: auto; }
 .map path { stroke: var(--border); stroke-width: 0.75; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .map .country { fill: var(--surface); cursor: pointer; }
-.map .context { fill: var(--tag-bg); pointer-events: none; }
+.map .context { fill: var(--tag-bg); }
 .map .country.highlight { fill: var(--accent); }
 .map .country.answered { fill: var(--success); }
 .map .country.missed { fill: var(--wrong); }

@@ -50,4 +50,8 @@ describe('style.css', () => {
   it('keeps the browser from scrolling the page while the map is pinched or dragged', () => {
     expect(declared('.map', 'touch-action')).toContain('none');
   });
+
+  it('lets grey neighbours catch taps so they never reach a hit circle beneath them', () => {
+    expect(declared('.map .context', 'pointer-events')).not.toContain('none');
+  });
 });

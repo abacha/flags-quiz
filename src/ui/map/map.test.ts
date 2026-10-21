@@ -138,11 +138,14 @@ describe('renderMap', () => {
     expect(viewBox()[2]).toBeCloseTo(baseWidth! / 24);
   });
 
-  it('does nothing when the ocean or a grey neighbour is tapped', () => {
+  it('draws grey neighbours above the hit circles and ignores taps on them or the ocean', () => {
     const onTap = vi.fn();
     const view = renderMap('asia', onTap);
+    const lastHit = [...view.element.querySelectorAll('circle.hit')].at(-1)!;
+    const firstGrey = view.element.querySelector('path.context')!;
+    expect(lastHit.compareDocumentPosition(firstGrey) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     click(view.element.querySelector('svg')!);
-    click(view.element.querySelector('path.context')!);
+    click(firstGrey);
     expect(onTap).not.toHaveBeenCalled();
   });
 
