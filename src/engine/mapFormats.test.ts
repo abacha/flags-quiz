@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
+import { mapPool } from '../data/maps';
 import { grade, type Answer } from './answer';
 import { MAP_FORMATS, mapContext, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
 import type { Question } from './question';
@@ -7,7 +8,7 @@ import { seededRng } from './rng';
 import { Round } from './round';
 
 const c = (code: string) => countries.find((country) => country.iso2 === code)!;
-const ctx = mapContext('oceania');
+const ctx = mapContext('oceania', 'general');
 
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
@@ -26,6 +27,15 @@ describe('map formats', () => {
   it('builds the context from the Maps pool without look-alikes', () => {
     expect(ctx.pool.length).toBeGreaterThan(4);
     expect([ctx.similarGroups, ctx.similarNames, ctx.similarDistractors]).toEqual([[], [], false]);
+  });
+
+  it('builds a level context from the level pool and offers only its countries', () => {
+    const level = mapContext('americas', 'medium');
+    expect(level.pool).toEqual(mapPool('americas', 'medium'));
+    expect(level.world).toEqual(level.pool);
+    const q = mapToNames.build(level.pool[0], level, seededRng(2));
+    if (q.format !== 'mapToNames') throw new Error('wrong format');
+    for (const option of q.options) expect(level.pool).toContain(option);
   });
 
   it('offers 4 names from the Maps pool', () => {
@@ -110,5 +120,16 @@ describe('grade map questions', () => {
     expect(grade(q, rightAnswer(q)).correct).toBe(true);
     const swapped: Answer = { kind: 'links', links: { fj: 'to', to: 'fj', ws: 'ws', vu: 'vu' } };
     expect(grade(q, swapped)).toEqual({ correct: false, missed: [fiji, c('to')] });
+  });
+});
+
+describe('grade a tap outside the level', () => {
+  it('counts a drawn country of another level as a wrong answer', () => {
+    const level = mapContext('americas', 'easy');
+    const target = level.pool[0];
+    const outside = c('gt');
+    expect(level.pool).not.toContain(outside);
+    const q = { format: 'nameToMap', target } as const;
+    expect(grade(q, { kind: 'choice', iso2: outside.iso2 })).toEqual({ correct: false, missed: [target] });
   });
 });

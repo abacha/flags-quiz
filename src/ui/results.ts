@@ -30,9 +30,9 @@ export function resultActions(navigate: Navigate, mode: 'game' | 'quiz', contine
   ]);
 }
 
-export function mapResultActions(navigate: Navigate, mode: 'mapGame' | 'mapQuiz', continent: ContinentKey): HTMLElement {
+export function mapResultActions(navigate: Navigate, mode: 'mapGame' | 'mapQuiz', continent: ContinentKey, difficulty: Difficulty): HTMLElement {
   return el('div', { className: 'result-actions' }, [
-    el('button', { className: 'primary', type: 'button', onclick: () => navigate({ name: mode, continent }) }, ['Jogar de novo']),
+    el('button', { className: 'primary', type: 'button', onclick: () => navigate({ name: mode, continent, difficulty }) }, ['Jogar de novo']),
     el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar ao início']),
   ]);
 }

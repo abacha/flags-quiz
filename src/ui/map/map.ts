@@ -86,7 +86,7 @@ const between = (from: ViewBox, to: ViewBox, k: number): ViewBox => ({
 
 export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
   const units = continent === 'world' ? worldUnits : continentUnits;
-  const pool = new Map(mapPool(continent).map((c) => [c.iso2, c]));
+  const pool = new Map(mapPool(continent, 'general').map((c) => [c.iso2, c]));
   const poolFeatures: FeatureCollection = {
     type: 'FeatureCollection',
     features: [...pool.keys()].map((iso2): Feature => ({ type: 'Feature', id: iso2, properties: {}, geometry: units.get(iso2)! })),

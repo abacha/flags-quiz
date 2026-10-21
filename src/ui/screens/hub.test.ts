@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries } from '../../data/countries';
 import { mapPool } from '../../data/maps';
-import { goalFor, poolFor, type ContinentKey } from '../../engine/pool';
+import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Screen } from '../navigation';
 import { renderHub } from './hub';
 
@@ -144,16 +144,24 @@ describe('renderHub', () => {
   describe('area selector', () => {
     const areas = () => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')];
     const area = (label: string) => areas().find((b) => b.textContent === label)!;
-    const mapCard = () => root.querySelector<HTMLElement>('.level-card')!;
-    const mapTags = () => [...mapCard().querySelectorAll('.tag')].map((t) => [t.textContent, t.classList.contains('ok')]);
-    const mapGoal = (continent: ContinentKey) => goalFor('general', mapPool(continent).length);
+    const mapTags = (level: string) => tags(level);
+    const mapGoal = (continent: ContinentKey, difficulty: Difficulty) => goalFor(difficulty, mapPool(continent, difficulty).length);
 
     beforeEach(() => {
       localStorage.setItem(
         'flags-quiz:map-quiz-records',
-        JSON.stringify({ europe: { bestScore: 40, bestTimeMs: 301000, completed: true }, asia: { bestScore: 12 }, oceania: { bestScore: 9, bestTimeMs: 65000 } }),
+        JSON.stringify({
+          europe: {
+            easy: { bestScore: 40, bestTimeMs: 301000, completed: true },
+            medium: { bestScore: 30, completed: true },
+            hard: { bestScore: 20, completed: true },
+            general: { bestScore: 90, completed: true },
+          },
+          asia: { easy: { bestScore: 12 }, medium: { bestScore: 8, completed: true } },
+          oceania: { hard: { bestScore: 9, bestTimeMs: 65000 } },
+        }),
       );
-      localStorage.setItem('flags-quiz:map-medals', JSON.stringify({ europe: true }));
+      localStorage.setItem('flags-quiz:map-medals', JSON.stringify({ europe: { easy: true } }));
     });
 
     it('shows Bandeiras and Mapas above the tabs, Bandeiras pressed by default with the flag cards', () => {
@@ -168,7 +176,7 @@ describe('renderHub', () => {
       expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
     });
 
-    it('switches to Mapas in place, remembers it and shows one card for the chosen continent', () => {
+    it('switches to Mapas in place, remembers it and shows the four level cards of the chosen continent', () => {
       render('europe');
       const main = root.firstElementChild;
       area('Mapas').click();
@@ -176,8 +184,10 @@ describe('renderHub', () => {
       expect(root.firstElementChild).toBe(main);
       expect(localStorage.getItem('flags-quiz:area')).toBe('maps');
       expect(areas().map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'true']);
-      expect(root.querySelectorAll('.level-card')).toHaveLength(1);
-      expect(mapCard().querySelector('.meta')!.textContent).toBe(`${mapPool('europe').length} países`);
+      expect([...root.querySelectorAll('.level-card h2')].map((h) => h.textContent)).toEqual(['Fácil', 'Médio', 'Difícil', 'Geral']);
+      for (const [label, difficulty] of [['Fácil', 'easy'], ['Médio', 'medium'], ['Difícil', 'hard'], ['Geral', 'general']] as const) {
+        expect(card(label).querySelector('.meta')!.textContent).toBe(`${mapPool('europe', difficulty).length} países`);
+      }
       expect(root.querySelector('.see-all')).toBeNull();
     });
 
@@ -185,7 +195,7 @@ describe('renderHub', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
       expect(area('Mapas').getAttribute('aria-pressed')).toBe('true');
-      expect(root.querySelectorAll('.level-card')).toHaveLength(1);
+      expect(root.querySelectorAll('.level-card')).toHaveLength(4);
     });
 
     it('goes back to the flag hub unchanged and remembers Bandeiras', () => {
@@ -202,41 +212,45 @@ describe('renderHub', () => {
       expect(root.querySelectorAll('.see-all')).toHaveLength(1);
     });
 
-    it('counts the completed map quizzes in the header and checks their tabs', () => {
+    it('counts the completed map quizzes over every continent and level, and checks the tabs with every level completed', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('2/6 mapas');
-      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo', 'África', 'Américas', 'Ásia', 'Europa ✓', 'Oceania ✓']);
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('6/24 mapas');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo', 'África', 'Américas', 'Ásia', 'Europa ✓', 'Oceania']);
     });
 
-    it('tags the map medal and the map quiz of the chosen continent', () => {
+    it('tags the map medal and the map quiz of each level of the chosen continent', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
-      expect(mapTags()).toEqual([
+      expect(mapTags('Fácil')).toEqual([
         ['🏅 Medalha', true],
         ['✓ Quiz 05:01', true],
       ]);
+      expect(mapTags('Médio')).toEqual([
+        [`🏅 meta ${mapGoal('europe', 'medium')}`, false],
+        ['✓ Quiz', true],
+      ]);
       tab('Ásia').click();
-      expect(mapTags()).toEqual([
-        [`🏅 meta ${mapGoal('asia')}`, false],
+      expect(mapTags('Fácil')).toEqual([
+        [`🏅 meta ${mapGoal('asia', 'easy')}`, false],
         ['Quiz 12 pts', false],
       ]);
       tab('Mundo').click();
-      expect(mapTags()).toEqual([
-        [`🏅 meta ${mapGoal('world')}`, false],
+      expect(mapTags('Geral')).toEqual([
+        [`🏅 meta ${mapGoal('world', 'general')}`, false],
         ['Quiz —', false],
       ]);
     });
 
-    it('starts the map Learn and the map Quiz on the chosen continent', () => {
+    it('starts the map Learn and the map Quiz on the chosen continent and the level of the card', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('africa');
       tab('Oceania').click();
-      button(mapCard(), 'Aprender').click();
-      button(mapCard(), 'Quiz').click();
+      button(card('Médio'), 'Aprender').click();
+      button(card('Difícil'), 'Quiz').click();
       expect(screens).toEqual([
-        { name: 'mapGame', continent: 'oceania' },
-        { name: 'mapQuiz', continent: 'oceania' },
+        { name: 'mapGame', continent: 'oceania', difficulty: 'medium' },
+        { name: 'mapQuiz', continent: 'oceania', difficulty: 'hard' },
       ]);
     });
   });

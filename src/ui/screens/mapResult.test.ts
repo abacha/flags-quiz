@@ -8,7 +8,7 @@ import { renderMapResult } from './mapResult';
 
 const tonga = countries.find((c) => c.iso2 === 'to')!;
 const fiji = countries.find((c) => c.iso2 === 'fj')!;
-const goal = goalFor('general', mapPool('oceania').length);
+const goal = goalFor('medium', mapPool('oceania', 'medium').length);
 
 function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
   const root = document.createElement('div');
@@ -16,6 +16,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
   renderMapResult(root, (screen) => screens.push(screen), {
     name: 'mapResult',
     continent: 'oceania',
+    difficulty: 'medium',
     won: false,
     correct: 3,
     missed: [],
@@ -29,7 +30,7 @@ describe('renderMapResult', () => {
   it('celebrates a won medal and shows the continent and the correct answers out of the goal', () => {
     const { root } = render({ won: true, correct: goal });
     expect(root.querySelector('h1')!.textContent).toBe('🏅 Medalha conquistada!');
-    expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania');
+    expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania · Médio');
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
   });
 
@@ -42,7 +43,7 @@ describe('renderMapResult', () => {
     button('Jogar de novo').click();
     button('Voltar ao início').click();
     expect(screens).toEqual([
-      { name: 'mapGame', continent: 'oceania' },
+      { name: 'mapGame', continent: 'oceania', difficulty: 'medium' },
       { name: 'hub', continent: 'oceania' },
     ]);
   });

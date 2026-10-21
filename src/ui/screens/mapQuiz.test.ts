@@ -6,7 +6,7 @@ import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderMapQuiz } from './mapQuiz';
 
-const pool = mapPool('oceania');
+const pool = mapPool('oceania', 'general');
 const byIso = new Map(countries.map((c) => [c.iso2, c]));
 
 function pressDeviceBack(): void {
@@ -64,7 +64,7 @@ describe('renderMapQuiz', () => {
     root = document.createElement('div');
     document.body.append(root);
     screens = [];
-    renderMapQuiz(root, (screen) => screens.push(screen), 'oceania');
+    renderMapQuiz(root, (screen) => screens.push(screen), 'oceania', 'general');
   });
 
   afterEach(() => {
@@ -101,7 +101,7 @@ describe('renderMapQuiz', () => {
     expect(root.querySelectorAll('.quiz-dock .figure, .quiz-dock img')).toHaveLength(0);
     expect(root.querySelectorAll('path.country')).toHaveLength(pool.length);
     expect(labels()).toEqual([]);
-    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Oceania');
+    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Oceania · Geral');
     expect(hud()).toContain(`0/${pool.length}`);
     expect(document.activeElement).toBe(input());
   });
@@ -184,6 +184,7 @@ describe('renderMapQuiz', () => {
     expect(screens[0]).toMatchObject({
       name: 'mapQuizResult',
       continent: 'oceania',
+      difficulty: 'general',
       score: pool.length,
       errors: 0,
       finished: true,
@@ -191,7 +192,7 @@ describe('renderMapQuiz', () => {
       missed: [],
       newRecords: { score: true, time: true },
     });
-    expect(JSON.parse(localStorage.getItem('flags-quiz:map-quiz-records')!).oceania.bestScore).toBe(pool.length);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-quiz-records')!).oceania.general.bestScore).toBe(pool.length);
     expect(localStorage.getItem('flags-quiz:quiz-records-v2')).toBeNull();
   });
 
@@ -213,5 +214,39 @@ describe('renderMapQuiz', () => {
     vi.stubGlobal('confirm', vi.fn(() => true));
     pressDeviceBack();
     expect(screens[0]).toMatchObject({ name: 'mapQuizResult', finished: false });
+  });
+
+  describe('on a level narrower than the drawn continent', () => {
+    const level = mapPool('americas', 'medium');
+    const brazil = byIso.get('br')!;
+
+    beforeEach(() => {
+      root.replaceChildren();
+      renderMapQuiz(root, (screen) => screens.push(screen), 'americas', 'medium');
+    });
+
+    it('asks only the level countries while drawing the whole continent', () => {
+      expect(level).not.toContain(brazil);
+      expect(root.querySelectorAll('path.country').length).toBeGreaterThan(level.length);
+      expect(hud()).toContain(`0/${level.length}`);
+      expect(level).toContain(highlighted());
+      expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Américas · Médio');
+    });
+
+    it('ignores a tap on a drawn country outside the level, like the ocean', () => {
+      const current = highlighted();
+      type('nenhum país');
+      click(shape(brazil.iso2));
+      click(root.querySelector(`circle[data-iso2="${brazil.iso2}"]`) ?? shape(brazil.iso2));
+      expect(highlighted()).toBe(current);
+      expect(shape(brazil.iso2).classList.contains('highlight')).toBe(false);
+      expect(frames).toHaveLength(0);
+    });
+
+    it('saves the finished quiz under its level', () => {
+      for (let i = 0; i < level.length; i++) type(highlighted().name);
+      expect(screens[0]).toMatchObject({ name: 'mapQuizResult', continent: 'americas', difficulty: 'medium', finished: true });
+      expect(JSON.parse(localStorage.getItem('flags-quiz:map-quiz-records')!).americas.medium.bestScore).toBe(level.length);
+    });
   });
 });

@@ -14,7 +14,7 @@ const collection = (ids: string[]): FeatureCollection => ({
 });
 
 const fitted = (continent: ContinentKey) => {
-  const pool = collection(mapPool(continent).map((c) => c.iso2));
+  const pool = collection(mapPool(continent, 'general').map((c) => c.iso2));
   const path = geoPath(projectionFor(continent, pool));
   const [[x0], [x1]] = path.bounds(pool);
   return { path, pool, width: x1 - x0 };

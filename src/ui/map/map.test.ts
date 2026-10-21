@@ -37,7 +37,7 @@ const pointer = (target: Element, type: string, pointerId: number, clientX: numb
 
 const poolCollection = (continent: ContinentKey): FeatureCollection => ({
   type: 'FeatureCollection',
-  features: mapPool(continent).map((c): Feature => ({
+  features: mapPool(continent, 'general').map((c): Feature => ({
     type: 'Feature',
     id: c.iso2,
     properties: {},
@@ -114,7 +114,7 @@ describe('renderMap', () => {
     const view = renderMap('americas', onTap);
     click(view.element.querySelector('path[data-iso2="br"]')!);
     expect(onTap).toHaveBeenCalledWith(country('br'));
-    expect(view.element.querySelectorAll('path[data-iso2]')).toHaveLength(mapPool('americas').length);
+    expect(view.element.querySelectorAll('path[data-iso2]')).toHaveLength(mapPool('americas', 'general').length);
   });
 
   it('accepts a tap that moved less than the slop', () => {
@@ -218,7 +218,7 @@ describe('renderMap', () => {
   it('reaches a small country through its hit circle', () => {
     const onTap = vi.fn();
     const view = renderMap('europe', onTap);
-    expect(view.element.querySelectorAll('circle.hit')).toHaveLength(mapPool('europe').length);
+    expect(view.element.querySelectorAll('circle.hit')).toHaveLength(mapPool('europe', 'general').length);
     click(view.element.querySelector('circle[data-iso2="mt"]')!);
     expect(onTap).toHaveBeenCalledWith(country('mt'));
   });

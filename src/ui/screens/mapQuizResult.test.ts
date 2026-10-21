@@ -23,6 +23,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapQuizResult' }>>) 
   renderMapQuizResult(root, (screen) => screens.push(screen), {
     name: 'mapQuizResult',
     continent: 'oceania',
+    difficulty: 'medium',
     score: 7,
     timeMs: 65000,
     errors: 2,
@@ -41,7 +42,7 @@ describe('renderMapQuizResult', () => {
   it('celebrates a finished quiz with its stats and the continent', () => {
     const { root } = render({});
     expect(root.querySelector('h1')!.textContent).toBe('🎉 Quiz concluído!');
-    expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania');
+    expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania · Médio');
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['7pontos', '01:05tempo', '2erros']);
   });
 
@@ -60,7 +61,7 @@ describe('renderMapQuizResult', () => {
     button('Jogar de novo').click();
     button('Voltar ao início').click();
     expect(screens).toEqual([
-      { name: 'mapQuiz', continent: 'oceania' },
+      { name: 'mapQuiz', continent: 'oceania', difficulty: 'medium' },
       { name: 'hub', continent: 'oceania' },
     ]);
   });

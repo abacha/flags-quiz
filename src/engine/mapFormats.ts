@@ -1,7 +1,7 @@
 import { mapPool } from '../data/maps';
 import { optionsWith, othersInPool } from './formats';
 import type { Format, FormatContext } from './question';
-import type { ContinentKey } from './pool';
+import type { ContinentKey, Difficulty } from './pool';
 import { pickOne, sample, shuffle } from './rng';
 
 const always = () => true;
@@ -56,7 +56,7 @@ export const mapTypeName: Format = {
 
 export const MAP_FORMATS: readonly Format[] = [mapToNames, nameToMap, mapPairs, mapTrueFalse, mapTypeName];
 
-export function mapContext(continent: ContinentKey): FormatContext {
-  const pool = mapPool(continent);
+export function mapContext(continent: ContinentKey, difficulty: Difficulty): FormatContext {
+  const pool = mapPool(continent, difficulty);
   return { pool, world: pool, similarGroups: [], similarNames: [], similarDistractors: false };
 }

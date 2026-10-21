@@ -61,7 +61,7 @@ function pressDeviceBack(): void {
 describe('renderMapGame', () => {
   let root: HTMLElement;
   let screens: Screen[];
-  const goal = goalFor('general', mapPool('oceania').length);
+  const goal = goalFor('medium', mapPool('americas', 'medium').length);
   const navigate: Navigate = (screen) => screens.push(screen);
 
   const answerCurrent = (answer: (question: Question) => Answer) => {
@@ -76,7 +76,7 @@ describe('renderMapGame', () => {
     root = document.createElement('div');
     document.body.append(root);
     screens = [];
-    renderMapGame(root, navigate, 'oceania');
+    renderMapGame(root, navigate, 'americas', 'medium');
   });
 
   afterEach(() => {
@@ -85,7 +85,7 @@ describe('renderMapGame', () => {
   });
 
   it('shows the map label, three lives, the correct answers out of the goal and an empty bar', () => {
-    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Oceania');
+    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Américas · Médio');
     expect(root.querySelector('.topbar-counters')!.textContent).toBe(`♥♥♥0/${goal}`);
     expect(root.querySelector<HTMLElement>('.topbar-fill')!.style.width).toBe('0%');
   });
@@ -99,25 +99,25 @@ describe('renderMapGame', () => {
 
   it('awards the map medal and opens the result when the goal is reached', () => {
     for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
-    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ oceania: true });
-    expect(screens).toEqual([{ name: 'mapResult', continent: 'oceania', won: true, correct: goal, missed: [] }]);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: true } });
+    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: true, correct: goal, missed: [] }]);
   });
 
   it('opens the lost result with the missed countries and awards no medal when the lives run out', () => {
     for (let i = 0; i < 3; i++) answerCurrent(wrongAnswer);
     expect(localStorage.getItem('flags-quiz:map-medals')).toBeNull();
     const [screen] = screens;
-    expect(screen).toMatchObject({ name: 'mapResult', continent: 'oceania', won: false, correct: 0 });
+    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: false, correct: 0 });
     expect((screen as Extract<Screen, { name: 'mapResult' }>).missed.length).toBeGreaterThan(0);
   });
 
   it('leaves to the hub on the same continent on ✕', () => {
     root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
-    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
+    expect(screens).toEqual([{ name: 'hub', continent: 'americas' }]);
   });
 
   it('leaves to the hub on the device back', () => {
     pressDeviceBack();
-    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
+    expect(screens).toEqual([{ name: 'hub', continent: 'americas' }]);
   });
 });

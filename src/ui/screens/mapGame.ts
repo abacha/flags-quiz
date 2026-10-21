@@ -1,11 +1,10 @@
-import { LEVEL_RULES, goalFor, type ContinentKey } from '../../engine/pool';
+import { LEVEL_RULES, goalFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { MAP_FORMATS, mapContext } from '../../engine/mapFormats';
-import { mapPool } from '../../data/maps';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMapMedal } from '../../mapRecords';
 import { onBack } from '../backButton';
 import { el } from '../dom';
-import { CONTINENT_LABEL } from '../labels';
+import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
@@ -13,10 +12,11 @@ import { mapSolution, type MapQuestion } from '../questions/mapQuestions';
 import { renderQuestion } from '../questions/render';
 import { topBar } from '../topbar';
 
-export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey): void {
+export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
+  const context = mapContext(continent, difficulty);
   const round = new Round(
-    mapContext(continent),
-    { correctToWin: goalFor('general', mapPool(continent).length), recallWeight: LEVEL_RULES.general.recallWeight },
+    context,
+    { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
     Math.random,
     MAP_FORMATS,
   );
@@ -34,7 +34,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
   };
 
   const exit = () => leave({ name: 'hub', continent });
-  const bar = topBar(`Mapa · ${CONTINENT_LABEL[continent]}`, exit);
+  const bar = topBar(`Mapa · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, exit);
   onBack(exit);
   root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
@@ -53,8 +53,8 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
 
   const finish = () => {
     const won = round.status === 'won';
-    if (won) awardMapMedal(localStorage, continent);
-    leave({ name: 'mapResult', continent, won, correct: round.correct, missed: round.missed });
+    if (won) awardMapMedal(localStorage, continent, difficulty);
+    leave({ name: 'mapResult', continent, difficulty, won, correct: round.correct, missed: round.missed });
   };
 
   const ask = () => {

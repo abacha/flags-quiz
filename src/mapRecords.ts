@@ -1,8 +1,9 @@
-import type { ContinentKey } from './engine/pool';
-import { mergeQuizOutcome, type NewRecords, type QuizOutcome, type QuizRecord, type RecordStore } from './quizRecords';
+import type { ContinentKey, Difficulty } from './engine/pool';
+import type { Medals } from './progress';
+import { mergeQuizOutcome, quizRecord, type NewRecords, type QuizOutcome, type QuizRecords, type RecordStore } from './quizRecords';
 
-export type MapMedals = Partial<Record<ContinentKey, true>>;
-export type MapQuizRecords = Partial<Record<ContinentKey, QuizRecord>>;
+export type MapMedals = Medals;
+export type MapQuizRecords = QuizRecords;
 
 const MEDALS_KEY = 'flags-quiz:map-medals';
 const RECORDS_KEY = 'flags-quiz:map-quiz-records';
@@ -12,14 +13,10 @@ export function loadMapMedals(store: RecordStore): MapMedals {
   return raw === null ? {} : (JSON.parse(raw) as MapMedals);
 }
 
-export function awardMapMedal(store: RecordStore, continent: ContinentKey): void {
+export function awardMapMedal(store: RecordStore, continent: ContinentKey, difficulty: Difficulty): void {
   const medals = loadMapMedals(store);
-  medals[continent] = true;
+  medals[continent] = { ...medals[continent], [difficulty]: true };
   store.setItem(MEDALS_KEY, JSON.stringify(medals));
-}
-
-export function hasMapMedal(medals: MapMedals, continent: ContinentKey): boolean {
-  return medals[continent] === true;
 }
 
 export function loadMapQuizRecords(store: RecordStore): MapQuizRecords {
@@ -27,14 +24,10 @@ export function loadMapQuizRecords(store: RecordStore): MapQuizRecords {
   return raw === null ? {} : (JSON.parse(raw) as MapQuizRecords);
 }
 
-export function mapQuizRecord(records: MapQuizRecords, continent: ContinentKey): QuizRecord {
-  return records[continent] ?? {};
-}
-
-export function saveMapQuizOutcome(store: RecordStore, continent: ContinentKey, outcome: QuizOutcome): NewRecords {
+export function saveMapQuizOutcome(store: RecordStore, continent: ContinentKey, difficulty: Difficulty, outcome: QuizOutcome): NewRecords {
   const records = loadMapQuizRecords(store);
-  const { next, newRecords } = mergeQuizOutcome(mapQuizRecord(records, continent), outcome);
-  records[continent] = next;
+  const { next, newRecords } = mergeQuizOutcome(quizRecord(records, continent, difficulty), outcome);
+  records[continent] = { ...records[continent], [difficulty]: next };
   store.setItem(RECORDS_KEY, JSON.stringify(records));
   return newRecords;
 }

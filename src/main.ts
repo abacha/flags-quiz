@@ -49,11 +49,11 @@ function render(screen: Screen): void {
     case 'result':
       return renderResult(app, navigate, screen);
     case 'mapGame':
-      return renderMapGame(app, navigate, screen.continent);
+      return renderMapGame(app, navigate, screen.continent, screen.difficulty);
     case 'mapResult':
       return renderMapResult(app, navigate, screen);
     case 'mapQuiz':
-      return renderMapQuiz(app, navigate, screen.continent);
+      return renderMapQuiz(app, navigate, screen.continent, screen.difficulty);
     case 'mapQuizResult':
       return renderMapQuizResult(app, navigate, screen);
     case 'quiz':

@@ -1,26 +1,27 @@
 import type { Country } from '../../data/countries';
 import { mapPool } from '../../data/maps';
-import type { ContinentKey } from '../../engine/pool';
+import type { ContinentKey, Difficulty } from '../../engine/pool';
 import type { Quiz } from '../../engine/quiz';
 import { saveMapQuizOutcome } from '../../mapRecords';
-import { CONTINENT_LABEL } from '../labels';
+import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import { renderMap } from '../map/map';
 import type { Navigate } from '../navigation';
 import { runQuiz, type QuizBoard } from './quiz';
 
-export function renderMapQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey): void {
+export function renderMapQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
+  const pool = mapPool(continent, difficulty);
   runQuiz(root, navigate, {
-    pool: mapPool(continent),
-    title: `Mapa · ${CONTINENT_LABEL[continent]}`,
-    board: (quiz, pick) => mapBoard(continent, quiz, pick),
-    save: (store, outcome) => saveMapQuizOutcome(store, continent, outcome),
-    resultScreen: (result) => ({ name: 'mapQuizResult', continent, ...result }),
+    pool,
+    title: `Mapa · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`,
+    board: (quiz, pick) => mapBoard(continent, pool, quiz, pick),
+    save: (store, outcome) => saveMapQuizOutcome(store, continent, difficulty, outcome),
+    resultScreen: (result) => ({ name: 'mapQuizResult', continent, difficulty, ...result }),
   });
 }
 
-function mapBoard(continent: ContinentKey, quiz: Quiz, pick: (country: Country) => void): QuizBoard {
+function mapBoard(continent: ContinentKey, pool: Country[], quiz: Quiz, pick: (country: Country) => void): QuizBoard {
   const view = renderMap(continent, (country) => {
-    if (quiz.stateOf(country.iso2) !== 'answered') pick(country);
+    if (pool.includes(country) && quiz.stateOf(country.iso2) !== 'answered') pick(country);
   });
   const painted = new Map<string, string>();
   let framed: Country | undefined;
