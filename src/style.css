@@ -644,6 +644,8 @@ input::placeholder { text-overflow: ellipsis; }
   -webkit-user-select: none;
 }
 .map svg { display: block; width: 100%; height: auto; }
+.map, .map * { -webkit-tap-highlight-color: transparent; }
+.map svg:focus, .map path:focus { outline: none; }
 .map path { stroke: var(--border); stroke-width: 0.75; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .map .country { fill: var(--surface); cursor: pointer; }
 .map .context { fill: var(--tag-bg); }

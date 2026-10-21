@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 let rules: CSSStyleRule[];
+const source = readFileSync('src/style.css', 'utf8');
 
 const declared = (selector: string, property: string) =>
   rules
@@ -10,9 +11,15 @@ const declared = (selector: string, property: string) =>
     .map((rule) => rule.style.getPropertyValue(property))
     .filter(Boolean);
 
+const declaredInSource = (selector: string, property: string) =>
+  [...source.matchAll(/([^{}]+)\{([^}]*)\}/g)]
+    .filter(([, selectors]) => selectors!.split(',').map((s) => s.trim()).includes(selector))
+    .map(([, , body]) => body!.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`))?.[1]?.trim())
+    .filter(Boolean);
+
 beforeAll(() => {
   const style = document.createElement('style');
-  style.textContent = readFileSync('src/style.css', 'utf8');
+  style.textContent = source;
   document.head.append(style);
   rules = [...document.styleSheets[0]!.cssRules].filter((r): r is CSSStyleRule => 'selectorText' in r);
 });
@@ -49,6 +56,13 @@ describe('style.css', () => {
 
   it('keeps the browser from scrolling the page while the map is pinched or dragged', () => {
     expect(declared('.map', 'touch-action')).toContain('none');
+  });
+
+  it('never flashes the tapped shape bounding box on a mobile tap', () => {
+    expect(declaredInSource('.map', '-webkit-tap-highlight-color')).toContain('transparent');
+    expect(declaredInSource('.map *', '-webkit-tap-highlight-color')).toContain('transparent');
+    expect(declared('.map svg:focus', 'outline-style')).toContain('none');
+    expect(declared('.map path:focus', 'outline-style')).toContain('none');
   });
 
   it('lets grey neighbours catch taps so they never reach a hit circle beneath them', () => {
