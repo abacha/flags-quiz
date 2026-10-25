@@ -6,6 +6,7 @@ import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
 import { renderMapGame } from './ui/screens/mapGame';
 import { renderMapResult } from './ui/screens/mapResult';
+import { renderMapTable } from './ui/screens/mapTable';
 import { renderHub } from './ui/screens/hub';
 import { renderMapQuiz } from './ui/screens/mapQuiz';
 import { renderMapQuizResult } from './ui/screens/mapQuizResult';
@@ -44,6 +45,8 @@ function render(screen: Screen): void {
       return renderHub(app, navigate, screen.continent);
     case 'flagTable':
       return renderFlagTable(app, navigate, screen.continent);
+    case 'mapTable':
+      return renderMapTable(app, navigate, screen.continent);
     case 'game':
       return renderGame(app, navigate, screen.continent, screen.difficulty);
     case 'result':

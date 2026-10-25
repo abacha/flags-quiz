@@ -188,7 +188,16 @@ describe('renderHub', () => {
       for (const [label, difficulty] of [['Fácil', 'easy'], ['Médio', 'medium'], ['Difícil', 'hard'], ['Geral', 'general']] as const) {
         expect(card(label).querySelector('.meta')!.textContent).toBe(`${mapPool('europe', difficulty).length} países`);
       }
-      expect(root.querySelector('.see-all')).toBeNull();
+    });
+
+    it('links to the map table of the chosen continent', () => {
+      localStorage.setItem('flags-quiz:area', 'maps');
+      render('europe');
+      const links = root.querySelectorAll<HTMLButtonElement>('.see-all');
+      expect(links).toHaveLength(1);
+      expect(links[0]!.textContent).toBe(`Ver o mapa dos ${mapPool('europe', 'general').length} países da Europa →`);
+      links[0]!.click();
+      expect(screens).toEqual([{ name: 'mapTable', continent: 'europe' }]);
     });
 
     it('opens on Mapas when it was the last area chosen', () => {

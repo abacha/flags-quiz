@@ -58,6 +58,29 @@ describe('renderFlagTable', () => {
     expect(back.compareDocumentPosition(root.querySelector('.solution-grid')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it('hides the names when Nomes is unchecked and shows them again when checked', () => {
+    const root = render('oceania');
+    document.body.append(root);
+    const toggle = root.querySelector<HTMLInputElement>('.table-head .names-toggle input')!;
+    const grid = root.querySelector('.solution-grid')!;
+    expect(toggle.checked).toBe(true);
+    expect(grid.classList.contains('hide-names')).toBe(false);
+    toggle.click();
+    expect(grid.classList.contains('hide-names')).toBe(true);
+    toggle.click();
+    expect(grid.classList.contains('hide-names')).toBe(false);
+    root.remove();
+  });
+
+  it('still names a flag in the dialog with the names hidden', () => {
+    const root = render('oceania');
+    document.body.append(root);
+    root.querySelector<HTMLInputElement>('.names-toggle input')!.click();
+    root.querySelector<HTMLButtonElement>('.flag-table-item')!.click();
+    expect(root.querySelector('dialog')!.textContent).toContain('Austrália');
+    root.remove();
+  });
+
   it('closes an open flag on the device back before leaving to the hub', () => {
     const root = render('oceania');
     document.body.append(root);

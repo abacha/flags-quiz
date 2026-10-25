@@ -5,6 +5,7 @@ import { statusBadge } from '../badge';
 import { el } from '../dom';
 import { flagImg } from '../flag';
 import { CONTINENT_LABEL } from '../labels';
+import { namesToggle } from '../namesToggle';
 import type { Navigate } from '../navigation';
 import { solutionCard } from '../questions/feedback';
 
@@ -15,19 +16,23 @@ export function renderFlagTable(root: HTMLElement, navigate: Navigate, continent
     dialog.replaceChildren(flagImg(country), el('p', {}, [country.name, ' ', statusBadge(country)]));
     dialog.showModal();
   };
+  const grid = el(
+    'div',
+    { className: 'solution-grid' },
+    flags.map((c) => el('button', { className: 'flag-table-item', type: 'button', onclick: () => show(c) }, [solutionCard(c)])),
+  );
   onBack(() => (dialog.open ? dialog.close() : navigate({ name: 'hub', continent })));
   root.append(
     el('main', { className: 'screen wide' }, [
       el('header', { className: 'table-head' }, [
         el('h1', {}, [CONTINENT_LABEL[continent]]),
         el('span', { className: 'detail' }, [`${flags.length} bandeiras`]),
-        el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
+        el('div', { className: 'table-actions' }, [
+          namesToggle((shown) => grid.classList.toggle('hide-names', !shown)),
+          el('button', { className: 'link', type: 'button', onclick: () => navigate({ name: 'hub', continent }) }, ['Voltar']),
+        ]),
       ]),
-      el(
-        'div',
-        { className: 'solution-grid' },
-        flags.map((c) => el('button', { className: 'flag-table-item', type: 'button', onclick: () => show(c) }, [solutionCard(c)])),
-      ),
+      grid,
       dialog,
     ]),
   );

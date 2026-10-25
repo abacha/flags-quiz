@@ -48,7 +48,12 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     const cards = () => DIFFICULTIES.map((difficulty) => levelCard(navigate, continent, difficulty, area, saved[area]));
     if (area === 'maps') {
-      levels.replaceChildren(...cards());
+      levels.replaceChildren(
+        ...cards(),
+        el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'mapTable', continent }) }, [
+          `Ver o mapa dos ${mapPool(continent, 'general').length} países ${CONTINENT_FROM[continent]} →`,
+        ]),
+      );
       return;
     }
     levels.replaceChildren(

@@ -74,4 +74,8 @@ describe('style.css', () => {
     expect(declared('.feedback', 'bottom')).toContain('0px');
     expect(declared('.feedback', 'overflow-y')).toContain('auto');
   });
+
+  it('hides the flag captions under a grid with the names toggled off', () => {
+    expect(declared('.hide-names figcaption', 'display')).toContain('none');
+  });
 });

@@ -495,10 +495,16 @@ input::placeholder { text-overflow: ellipsis; }
 
 .screen.wide { max-width: 1200px; }
 
-.table-head { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.table-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; min-width: 0; }
 .table-head h1 { margin: 0; white-space: nowrap; }
 .table-head .detail { white-space: nowrap; }
-.table-head .link { margin-left: auto; }
+.table-actions { display: flex; align-items: baseline; gap: 12px; margin-left: auto; }
+.names-toggle { display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+.hide-names figcaption { display: none; }
+
+.map-table { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding-bottom: 16px; }
+.map-table > .map { flex: 1 1 auto; min-height: 0; }
+.map-table > .map svg { height: 100%; }
 
 .flag-table-item {
   padding: 8px;
