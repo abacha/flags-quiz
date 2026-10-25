@@ -8,7 +8,7 @@ export interface QuizRecord {
   completed?: true;
 }
 
-export type QuizRecords = Partial<Record<ContinentKey, Partial<Record<Difficulty, QuizRecord>>>>;
+export type QuizRecords<L extends string = Difficulty> = Partial<Record<ContinentKey, Partial<Record<L, QuizRecord>>>>;
 
 export interface QuizOutcome {
   score: number;
@@ -29,8 +29,8 @@ export function loadQuizRecords(store: RecordStore): QuizRecords {
   return raw === null ? {} : (JSON.parse(raw) as QuizRecords);
 }
 
-export function quizRecord(records: QuizRecords, continent: ContinentKey, difficulty: Difficulty): QuizRecord {
-  return records[continent]?.[difficulty] ?? {};
+export function quizRecord<L extends string>(records: QuizRecords<L>, continent: ContinentKey, level: L): QuizRecord {
+  return records[continent]?.[level] ?? {};
 }
 
 // a best time is only ever saved for a finished quiz, so records written before `completed` existed still prove completion

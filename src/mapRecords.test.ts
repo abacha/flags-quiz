@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { MAP_ALL } from './data/maps';
 import { awardMapMedal, loadMapMedals, loadMapQuizRecords, saveMapQuizOutcome } from './mapRecords';
 import { medalOf } from './progress';
 import { quizRecord, type RecordStore } from './quizRecords';
@@ -12,67 +13,64 @@ const outcome = (score: number, timeMs: number, finished = true, errors = 0) => 
 
 describe('map quiz records', () => {
   it('starts empty', () => {
-    expect(quizRecord(loadMapQuizRecords(memoryStore()), 'africa', 'easy')).toEqual({});
+    expect(quizRecord(loadMapQuizRecords(memoryStore()), 'africa', 'west-coast')).toEqual({});
   });
 
   it('keeps map records apart from flag records', () => {
     const store = memoryStore();
-    saveMapQuizOutcome(store, 'africa', 'easy', outcome(40, 61500));
-    expect(loadMapQuizRecords(store)).toEqual({ africa: { easy: { bestScore: 40, bestTimeMs: 61000, completed: true } } });
+    saveMapQuizOutcome(store, 'africa', 'west-coast', outcome(40, 61500));
+    expect(loadMapQuizRecords(store)).toEqual({ africa: { 'west-coast': { bestScore: 40, bestTimeMs: 61000, completed: true } } });
     expect(store.getItem('flags-quiz:quiz-records-v2')).toBeNull();
   });
 
   it('applies the same record rules as the flag quiz', () => {
     const store = memoryStore();
-    saveMapQuizOutcome(store, 'africa', 'easy', outcome(10, 90000, true, 8));
-    expect(saveMapQuizOutcome(store, 'africa', 'easy', outcome(10, 80000, true, 8))).toEqual({ score: false, time: false });
-    expect(saveMapQuizOutcome(store, 'africa', 'easy', outcome(12, 80000, true, 0))).toEqual({ score: true, time: true });
+    saveMapQuizOutcome(store, 'africa', 'west-coast', outcome(10, 90000, true, 8));
+    expect(saveMapQuizOutcome(store, 'africa', 'west-coast', outcome(10, 80000, true, 8))).toEqual({ score: false, time: false });
+    expect(saveMapQuizOutcome(store, 'africa', 'west-coast', outcome(12, 80000, true, 0))).toEqual({ score: true, time: true });
   });
 
   it('keeps continents and levels separate', () => {
     const store = memoryStore();
-    saveMapQuizOutcome(store, 'africa', 'easy', outcome(40, 61000));
+    saveMapQuizOutcome(store, 'africa', 'west-coast', outcome(40, 61000));
     const records = loadMapQuizRecords(store);
-    expect(quizRecord(records, 'europe', 'easy')).toEqual({});
-    expect(quizRecord(records, 'africa', 'medium')).toEqual({});
+    expect(quizRecord(records, 'europe', 'west-coast')).toEqual({});
+    expect(quizRecord(records, 'africa', MAP_ALL)).toEqual({});
   });
 
-  it('reads a record saved before the levels existed as no record', () => {
+  it('ignores the records saved per difficulty before the regions existed', () => {
     const store = memoryStore();
-    store.setItem('flags-quiz:map-quiz-records', JSON.stringify({ africa: { bestScore: 40, bestTimeMs: 61000, completed: true } }));
-    const records = loadMapQuizRecords(store);
-    for (const difficulty of ['easy', 'medium', 'hard', 'general'] as const) expect(quizRecord(records, 'africa', difficulty)).toEqual({});
-    expect(saveMapQuizOutcome(store, 'africa', 'easy', outcome(5, 9000))).toEqual({ score: true, time: true });
+    const old = JSON.stringify({ africa: { general: { bestScore: 40, bestTimeMs: 61000, completed: true } } });
+    store.setItem('flags-quiz:map-quiz-records', old);
+    expect(quizRecord(loadMapQuizRecords(store), 'africa', MAP_ALL)).toEqual({});
+    expect(saveMapQuizOutcome(store, 'africa', MAP_ALL, outcome(5, 9000))).toEqual({ score: true, time: true });
+    expect(store.getItem('flags-quiz:map-quiz-records')).toBe(old);
   });
 });
 
 describe('map medals', () => {
   it('starts with no medals', () => {
-    expect(medalOf(loadMapMedals(memoryStore()), 'europe', 'easy')).toBeUndefined();
+    expect(medalOf(loadMapMedals(memoryStore()), 'europe', 'balkans')).toBeUndefined();
   });
 
   it('awards a map medal per level under its own key', () => {
     const store = memoryStore();
-    awardMapMedal(store, 'europe', 'easy', 'silver');
-    awardMapMedal(store, 'europe', 'easy', 'bronze');
+    awardMapMedal(store, 'europe', 'balkans', 'silver');
+    awardMapMedal(store, 'europe', 'balkans', 'bronze');
     const medals = loadMapMedals(store);
-    expect(medalOf(medals, 'europe', 'easy')).toBe('silver');
-    expect(medalOf(medals, 'europe', 'medium')).toBeUndefined();
-    expect(medalOf(medals, 'africa', 'easy')).toBeUndefined();
+    expect(medalOf(medals, 'europe', 'balkans')).toBe('silver');
+    expect(medalOf(medals, 'europe', MAP_ALL)).toBeUndefined();
+    expect(medalOf(medals, 'africa', 'balkans')).toBeUndefined();
     expect(store.getItem('flags-quiz:medals')).toBeNull();
   });
 
-  it('reads a medal saved before the levels existed as no medal and still awards new ones', () => {
+  it('ignores the medals saved per difficulty before the regions existed', () => {
     const store = memoryStore();
-    store.setItem('flags-quiz:map-medals', JSON.stringify({ europe: true }));
-    expect(medalOf(loadMapMedals(store), 'europe', 'general')).toBeUndefined();
-    awardMapMedal(store, 'europe', 'general', 'gold');
-    expect(medalOf(loadMapMedals(store), 'europe', 'general')).toBe('gold');
-  });
-
-  it('reads a map medal saved before the tiers existed as bronze', () => {
-    const store = memoryStore();
-    store.setItem('flags-quiz:map-medals', JSON.stringify({ europe: { easy: true } }));
-    expect(medalOf(loadMapMedals(store), 'europe', 'easy')).toBe('bronze');
+    const old = JSON.stringify({ europe: { general: 'gold' } });
+    store.setItem('flags-quiz:map-medals', old);
+    expect(medalOf(loadMapMedals(store), 'europe', MAP_ALL)).toBeUndefined();
+    awardMapMedal(store, 'europe', MAP_ALL, 'bronze');
+    expect(medalOf(loadMapMedals(store), 'europe', MAP_ALL)).toBe('bronze');
+    expect(store.getItem('flags-quiz:map-medals')).toBe(old);
   });
 });

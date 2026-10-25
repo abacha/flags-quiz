@@ -1,4 +1,5 @@
 import type { Country } from '../data/countries';
+import type { MapLevel } from '../data/maps';
 import type { ContinentKey, Difficulty } from '../engine/pool';
 import type { Medal } from '../engine/round';
 import type { NewRecords } from '../quizRecords';
@@ -9,13 +10,13 @@ export type Screen =
   | { name: 'mapTable'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
-  | { name: 'mapGame'; continent: ContinentKey; difficulty: Difficulty }
-  | { name: 'mapResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
-  | { name: 'mapQuiz'; continent: ContinentKey; difficulty: Difficulty }
+  | { name: 'mapGame'; continent: ContinentKey; level: MapLevel }
+  | { name: 'mapResult'; continent: ContinentKey; level: MapLevel; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
+  | { name: 'mapQuiz'; continent: ContinentKey; level: MapLevel }
   | {
       name: 'mapQuizResult';
       continent: ContinentKey;
-      difficulty: Difficulty;
+      level: MapLevel;
       score: number;
       timeMs: number;
       errors: number;

@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
-import { mapPool, nearestCountries } from '../data/maps';
+import { MAP_ALL, mapPool, nearestCountries } from '../data/maps';
 import { grade, type Answer } from './answer';
-import { MAP_FORMATS, mapContext, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
+import { MAP_FORMATS, mapContext, mapDifficulty, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 import { Round } from './round';
 
 const c = (code: string) => countries.find((country) => country.iso2 === code)!;
-const ctx = mapContext('oceania', 'general');
+const ctx = mapContext('oceania', MAP_ALL);
 
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
@@ -30,8 +30,8 @@ describe('map formats', () => {
   });
 
   it('builds a level context from the level pool and offers only its countries', () => {
-    const level = mapContext('americas', 'medium');
-    expect(level.pool).toEqual(mapPool('americas', 'medium'));
+    const level = mapContext('americas', 'central-america');
+    expect(level.pool).toEqual(mapPool('americas', 'central-america'));
     expect(level.world).toEqual(level.pool);
     const q = mapToNames.build(level.pool[0], level, seededRng(2));
     if (q.format !== 'mapToNames') throw new Error('wrong format');
@@ -123,9 +123,16 @@ describe('grade map questions', () => {
   });
 });
 
+describe('map level rules', () => {
+  it('plays a region by the Médio rules and the whole continent by the Geral rules', () => {
+    expect(mapDifficulty('west-coast')).toBe('medium');
+    expect(mapDifficulty(MAP_ALL)).toBe('general');
+  });
+});
+
 describe('grade a tap outside the level', () => {
   it('counts a drawn country of another level as a wrong answer', () => {
-    const level = mapContext('americas', 'easy');
+    const level = mapContext('americas', 'southern-cone');
     const target = level.pool[0];
     const outside = c('gt');
     expect(level.pool).not.toContain(outside);
@@ -135,7 +142,7 @@ describe('grade a tap outside the level', () => {
 
   describe('regional distractors', () => {
     const gt = c('gt');
-    const americas = mapContext('americas', 'general');
+    const americas = mapContext('americas', MAP_ALL);
     const near = new Set(nearestCountries(gt, americas.pool, 8).map((country) => country.iso2));
     const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -163,9 +170,9 @@ describe('grade a tap outside the level', () => {
       }
     });
 
-    it('still builds 4-country questions in Oceania hard', () => {
-      const small = mapContext('oceania', 'hard');
-      expect(small.pool).toHaveLength(4);
+    it('still builds 4-country questions in the smallest region', () => {
+      const small = mapContext('europe', 'eastern-europe');
+      expect(small.pool).toHaveLength(5);
       const names = mapToNames.build(small.pool[0], small, seededRng(1));
       const pairs = mapPairs.build(small.pool[0], small, seededRng(1));
       if (names.format !== 'mapToNames' || pairs.format !== 'mapPairs') throw new Error('wrong format');

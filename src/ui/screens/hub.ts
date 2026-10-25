@@ -1,6 +1,7 @@
 import { loadArea, saveArea, saveContinent, type Area } from '../../continentChoice';
-import { countries } from '../../data/countries';
-import { mapPool } from '../../data/maps';
+import { countries, type Country } from '../../data/countries';
+import { MAP_ALL, mapLevelLabel, mapLevels, mapPool, type MapLevel } from '../../data/maps';
+import { mapDifficulty } from '../../engine/mapFormats';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Medal } from '../../engine/round';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
@@ -9,7 +10,7 @@ import { isCompleted, loadQuizRecords, quizRecord, type QuizRecord, type QuizRec
 import { el } from '../dom';
 import { flagImg } from '../flag';
 import { CONTINENT_FROM, CONTINENT_KEYS, CONTINENT_LABEL, DIFFICULTIES, DIFFICULTY_LABEL, MEDAL_LABEL } from '../labels';
-import type { Navigate } from '../navigation';
+import type { Navigate, Screen } from '../navigation';
 import { formatTime } from '../time';
 
 const AREA_LABEL: Record<Area, string> = { flags: 'Bandeiras', maps: 'Mapas' };
@@ -20,8 +21,10 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   const mapMedals = loadMapMedals(localStorage);
   const mapRecords = loadMapQuizRecords(localStorage);
   const saved: Record<Area, Saved> = { flags: { medals, records }, maps: { medals: mapMedals, records: mapRecords } };
-  const completedIn = (continent: ContinentKey) => DIFFICULTIES.filter((d) => isCompleted(quizRecord(saved[area].records, continent, d))).length;
+  const levelsOf = (continent: ContinentKey): readonly string[] => (area === 'flags' ? DIFFICULTIES : mapLevels(continent));
+  const completedIn = (continent: ContinentKey) => levelsOf(continent).filter((level) => isCompleted(quizRecord(saved[area].records, continent, level))).length;
   const completed = () => CONTINENT_KEYS.reduce((sum, continent) => sum + completedIn(continent), 0);
+  const total = () => CONTINENT_KEYS.reduce((sum, continent) => sum + levelsOf(continent).length, 0);
   const pill = el('span', { className: 'pill' });
   const levels = el('div', { className: 'levels' });
   let area = loadArea(localStorage);
@@ -37,27 +40,26 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
 
   const tabCount = (key: ContinentKey) => {
     if (area === 'flags') return [' ', el('small', {}, [`${completedIn(key)}/${DIFFICULTIES.length}`])];
-    return completedIn(key) === DIFFICULTIES.length ? [' ', el('small', {}, ['✓'])] : [];
+    return completedIn(key) === levelsOf(key).length ? [' ', el('small', {}, ['✓'])] : [];
   };
 
   const render = () => {
     press(areas, area);
     press(tabs, continent);
-    pill.textContent = `${completed()}/${CONTINENT_KEYS.length * DIFFICULTIES.length} ${area === 'flags' ? 'quizzes' : 'mapas'}`;
+    pill.textContent = `${completed()}/${total()} ${area === 'flags' ? 'quizzes' : 'mapas'}`;
     for (const [key, tab] of tabs) tab.replaceChildren(CONTINENT_LABEL[key], ...tabCount(key));
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    const cards = () => DIFFICULTIES.map((difficulty) => levelCard(navigate, continent, difficulty, area, saved[area]));
     if (area === 'maps') {
       levels.replaceChildren(
-        ...cards(),
+        ...mapLevels(continent).map((level) => levelCard(navigate, mapLevelCard(continent, level, mapMedals, mapRecords))),
         el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'mapTable', continent }) }, [
-          `Ver o mapa dos ${mapPool(continent, 'general').length} países ${CONTINENT_FROM[continent]} →`,
+          `Ver o mapa dos ${mapPool(continent, MAP_ALL).length} países ${CONTINENT_FROM[continent]} →`,
         ]),
       );
       return;
     }
     levels.replaceChildren(
-      ...cards(),
+      ...DIFFICULTIES.map((difficulty) => levelCard(navigate, flagLevelCard(continent, difficulty, medals, records))),
       el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'flagTable', continent }) }, [
         `Ver as ${poolFor(countries, continent, 'general').length} bandeiras ${CONTINENT_FROM[continent]} →`,
       ]),
@@ -102,29 +104,58 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   render();
 }
 
-const SCREEN_OF = { flags: { game: 'game', quiz: 'quiz' }, maps: { game: 'mapGame', quiz: 'mapQuiz' } } as const;
-
 interface Saved {
-  medals: Medals;
-  records: QuizRecords;
+  medals: Medals<string>;
+  records: QuizRecords<string>;
 }
 
-function levelCard(navigate: Navigate, continent: ContinentKey, difficulty: Difficulty, area: Area, { medals, records }: Saved): HTMLElement {
-  const pool = area === 'maps' ? mapPool(continent, difficulty) : poolFor(countries, continent, difficulty);
-  const play = (mode: 'game' | 'quiz') => () => navigate({ name: SCREEN_OF[area][mode], continent, difficulty });
+interface LevelCard {
+  title: string;
+  count: string;
+  thumbs: Country[];
+  medal: Medal | undefined;
+  goal: number;
+  record: QuizRecord;
+  play: (mode: 'learn' | 'quiz') => Screen;
+}
+
+function flagLevelCard(continent: ContinentKey, difficulty: Difficulty, medals: Medals, records: QuizRecords): LevelCard {
+  const pool = poolFor(countries, continent, difficulty);
+  return {
+    title: DIFFICULTY_LABEL[difficulty],
+    count: `${pool.length} bandeiras`,
+    thumbs: pool.slice(0, 3),
+    medal: medalOf(medals, continent, difficulty),
+    goal: goalFor(difficulty, pool.length),
+    record: quizRecord(records, continent, difficulty),
+    play: (mode) => ({ name: mode === 'learn' ? 'game' : 'quiz', continent, difficulty }),
+  };
+}
+
+function mapLevelCard(continent: ContinentKey, level: MapLevel, medals: Medals<MapLevel>, records: QuizRecords<MapLevel>): LevelCard {
+  const pool = mapPool(continent, level);
+  return {
+    title: mapLevelLabel(continent, level),
+    count: `${pool.length} países`,
+    thumbs: [],
+    medal: medalOf(medals, continent, level),
+    goal: goalFor(mapDifficulty(level), pool.length),
+    record: quizRecord(records, continent, level),
+    play: (mode) => ({ name: mode === 'learn' ? 'mapGame' : 'mapQuiz', continent, level }),
+  };
+}
+
+function levelCard(navigate: Navigate, { title, count, thumbs, medal, goal, record, play }: LevelCard): HTMLElement {
   return el('section', { className: 'card level-card' }, [
     el('div', { className: 'level-head' }, [
-      el('h2', {}, [DIFFICULTY_LABEL[difficulty]]),
-      el('span', { className: 'meta' }, [area === 'maps' ? `${pool.length} países` : `${pool.length} bandeiras`]),
-      ...(area === 'maps' ? [] : [el('span', { className: 'thumbs' }, pool.slice(0, 3).map((country) => flagImg(country)))]),
+      el('h2', {}, [title]),
+      el('span', { className: 'meta' }, [count]),
+      ...(thumbs.length ? [el('span', { className: 'thumbs' }, thumbs.map((country) => flagImg(country)))] : []),
     ]),
-    el('div', { className: 'tags' }, [
-      medalTag(medalOf(medals, continent, difficulty), goalFor(difficulty, pool.length)),
-      quizTag(quizRecord(records, continent, difficulty)),
-    ]),
+    el('div', { className: 'tags' }, [medalTag(medal, goal), quizTag(record)]),
     el('div', { className: 'level-actions' }, [
-      el('button', { className: 'primary', type: 'button', onclick: play('game') }, ['Aprender']),
-      el('button', { className: 'outline', type: 'button', onclick: play('quiz') }, ['Quiz']),
+      el('button', { className: 'primary', type: 'button', onclick: () => navigate(play('learn')) }, ['Aprender']),
+      el('button', { className: 'outline', type: 'button', onclick: () => navigate(play('quiz')) }, ['Quiz']),
     ]),
   ]);
 }

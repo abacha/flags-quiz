@@ -1,27 +1,27 @@
 import type { Country } from '../../data/countries';
-import { mapPool } from '../../data/maps';
-import type { ContinentKey, Difficulty } from '../../engine/pool';
+import { mapLevelLabel, mapPool, type MapLevel, type MapScope } from '../../data/maps';
+import type { ContinentKey } from '../../engine/pool';
 import type { Quiz } from '../../engine/quiz';
 import { saveMapQuizOutcome } from '../../mapRecords';
-import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
+import { CONTINENT_LABEL } from '../labels';
 import { renderMap } from '../map/map';
 import type { Navigate } from '../navigation';
 import { runQuiz, type QuizBoard } from './quiz';
 
-export function renderMapQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
-  const pool = mapPool(continent, difficulty);
+export function renderMapQuiz(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
+  const pool = mapPool(continent, level);
   runQuiz(root, navigate, {
     pool,
-    title: `Mapa · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`,
-    board: (quiz, pick) => mapBoard(continent, pool, quiz, pick),
-    save: (store, outcome) => saveMapQuizOutcome(store, continent, difficulty, outcome),
-    resultScreen: (result) => ({ name: 'mapQuizResult', continent, difficulty, ...result }),
+    title: `Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`,
+    board: (quiz, pick) => mapBoard({ continent, level }, quiz, pick),
+    save: (store, outcome) => saveMapQuizOutcome(store, continent, level, outcome),
+    resultScreen: (result) => ({ name: 'mapQuizResult', continent, level, ...result }),
   });
 }
 
-function mapBoard(continent: ContinentKey, pool: Country[], quiz: Quiz, pick: (country: Country) => void): QuizBoard {
-  const view = renderMap(continent, (country) => {
-    if (pool.includes(country) && quiz.stateOf(country.iso2) !== 'answered') pick(country);
+function mapBoard(scope: MapScope, quiz: Quiz, pick: (country: Country) => void): QuizBoard {
+  const view = renderMap(scope, (country) => {
+    if (quiz.stateOf(country.iso2) !== 'answered') pick(country);
   });
   const painted = new Map<string, string>();
   let framed: Country | undefined;

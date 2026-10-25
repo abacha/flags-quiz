@@ -1,6 +1,6 @@
 import type { Answer } from '../../engine/answer';
 import type { Question } from '../../engine/question';
-import type { ContinentKey } from '../../engine/pool';
+import type { MapScope } from '../../data/maps';
 import { CONTINENT_FROM } from '../labels';
 import { cropFigure, flagFigure, renderFlagChoices, renderNameChoices } from './choices';
 import { renderMapQuestion } from './mapQuestions';
@@ -11,7 +11,7 @@ import { renderTypeSimilar } from './typeSimilar';
 
 export type Submit = (answer: Answer) => void;
 
-export function renderQuestion(question: Question, submit: Submit, continent?: ContinentKey): HTMLElement {
+export function renderQuestion(question: Question, submit: Submit, scope?: MapScope): HTMLElement {
   switch (question.format) {
     case 'nameToFlags':
       return renderFlagChoices(`Qual é a bandeira de ${question.target.name}?`, question.options, submit);
@@ -39,7 +39,7 @@ export function renderQuestion(question: Question, submit: Submit, continent?: C
     case 'mapPairs':
     case 'mapTrueFalse':
     case 'mapTypeName':
-      if (!continent) throw new Error(`The ${question.format} question needs a continent`);
-      return renderMapQuestion(question, continent, submit);
+      if (!scope) throw new Error(`The ${question.format} question needs a map scope`);
+      return renderMapQuestion(question, scope, submit);
   }
 }

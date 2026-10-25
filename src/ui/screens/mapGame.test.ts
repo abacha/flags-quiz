@@ -61,7 +61,8 @@ function pressDeviceBack(): void {
 describe('renderMapGame', () => {
   let root: HTMLElement;
   let screens: Screen[];
-  const goal = goalFor('medium', mapPool('americas', 'medium').length);
+  const region = mapPool('americas', 'central-america');
+  const goal = goalFor('medium', region.length);
   const navigate: Navigate = (screen) => screens.push(screen);
 
   const answerCurrent = (answer: (question: Question) => Answer) => {
@@ -76,7 +77,7 @@ describe('renderMapGame', () => {
     root = document.createElement('div');
     document.body.append(root);
     screens = [];
-    renderMapGame(root, navigate, 'americas', 'medium');
+    renderMapGame(root, navigate, 'americas', 'central-america');
   });
 
   afterEach(() => {
@@ -85,9 +86,15 @@ describe('renderMapGame', () => {
   });
 
   it('shows the map label, three lives, the correct answers out of the goal and an empty bar', () => {
-    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Américas · Médio');
+    expect(root.querySelector('.topbar-label')!.textContent).toBe('Mapa · Américas · América Central');
     expect(root.querySelector('.topbar-counters')!.textContent).toBe(`♥♥♥0/${goal}`);
     expect(root.querySelector<HTMLElement>('.topbar-fill')!.style.width).toBe('0%');
+  });
+
+  it('asks only the countries of the region, with the goal of 15', () => {
+    expect(goal).toBe(15);
+    for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
+    for (const { question } of asked) expect(region).toContain(question.target);
   });
 
   it('counts a correct answer and costs a life per wrong one', () => {
@@ -101,15 +108,15 @@ describe('renderMapGame', () => {
 
   it('awards a gold map medal and opens the result when the goal is reached with every life', () => {
     for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
-    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: 'gold' } });
-    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: true, medal: 'gold', correct: goal, missed: [] }]);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals-v2')!)).toEqual({ americas: { 'central-america': 'gold' } });
+    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', level: 'central-america', won: true, medal: 'gold', correct: goal, missed: [] }]);
   });
 
   it('awards silver when the goal is reached with two lives left', () => {
     answerCurrent(wrongAnswer);
     for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
     expect(screens).toMatchObject([{ name: 'mapResult', won: true, medal: 'silver' }]);
-    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals')!)).toEqual({ americas: { medium: 'silver' } });
+    expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals-v2')!)).toEqual({ americas: { 'central-america': 'silver' } });
   });
 
   it('offers to continue without a medal when the lives run out, and ends on the lost result on Encerrar', () => {
@@ -117,9 +124,9 @@ describe('renderMapGame', () => {
     expect(screens).toEqual([]);
     expect(root.querySelector('.out-of-lives .verdict')!.textContent).toBe('Suas vidas acabaram');
     button('Encerrar').click();
-    expect(localStorage.getItem('flags-quiz:map-medals')).toBeNull();
+    expect(localStorage.getItem('flags-quiz:map-medals-v2')).toBeNull();
     const [screen] = screens;
-    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', difficulty: 'medium', won: false, medal: null, correct: 0 });
+    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', level: 'central-america', won: false, medal: null, correct: 0 });
     expect((screen as Extract<Screen, { name: 'mapResult' }>).missed.length).toBeGreaterThan(0);
   });
 
@@ -133,7 +140,7 @@ describe('renderMapGame', () => {
     expect(screens).toEqual([]);
     for (let i = 0; i < goal; i++) answerCurrent(correctAnswer);
     expect(screens).toMatchObject([{ name: 'mapResult', won: true, medal: null, correct: goal }]);
-    expect(localStorage.getItem('flags-quiz:map-medals')).toBeNull();
+    expect(localStorage.getItem('flags-quiz:map-medals-v2')).toBeNull();
   });
 
   it('leaves to the hub on the same continent on ✕', () => {

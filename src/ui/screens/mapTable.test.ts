@@ -1,11 +1,11 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mapPool } from '../../data/maps';
+import { MAP_ALL, mapPool } from '../../data/maps';
 import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderMapTable } from './mapTable';
 
-const pool = mapPool('oceania', 'general');
+const pool = mapPool('oceania', MAP_ALL);
 
 describe('renderMapTable', () => {
   let root: HTMLElement;

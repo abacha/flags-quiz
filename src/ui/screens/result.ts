@@ -5,7 +5,7 @@ import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { solutionCard } from '../questions/feedback';
-import { learnResultTitle, resultActions, statBlocks } from '../results';
+import { flagLadder, learnResultTitle, resultActions, statBlocks } from '../results';
 
 export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'result' }>): void {
   const { continent, difficulty, won, medal, correct, missed } = screen;
@@ -19,7 +19,7 @@ export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extr
       el('h1', {}, [learnResultTitle(won, medal, correct, goal)]),
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       statBlocks([[`${correct}/${goal}`, 'acertos']]),
-      resultActions(navigate, 'game', continent, difficulty),
+      resultActions(navigate, continent, flagLadder('game', continent, difficulty)),
       ...review,
     ]),
   );

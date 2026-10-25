@@ -2,9 +2,10 @@ import { geoArea, geoCentroid, geoDistance } from 'd3-geo';
 import { merge } from 'topojson-client';
 import type { Polygon as GeoPolygon } from 'geojson';
 import type { MultiPolygon, Polygon, Topology } from 'topojson-specification';
-import { poolFor, type ContinentKey, type Difficulty } from '../engine/pool';
+import { poolFor, type ContinentKey } from '../engine/pool';
 import { countries, type Country } from './countries';
 import mapExcludedJson from './map-excluded.json';
+import mapRegionsJson from './map-regions.json';
 import topologyJson from './map.topo.json';
 
 export const MAP_OBJECT = 'units';
@@ -12,8 +13,45 @@ export const MAP_OBJECT = 'units';
 export const topology = topologyJson as unknown as Topology<{ [MAP_OBJECT]: { type: 'GeometryCollection'; geometries: (Polygon | MultiPolygon)[] } }>;
 export const mapExcluded: readonly string[] = mapExcludedJson;
 
-export function mapPool(continent: ContinentKey, difficulty: Difficulty): Country[] {
-  return poolFor(countries, continent, difficulty).filter((c) => !mapExcluded.includes(c.iso2));
+export const MAP_ALL = 'all';
+
+export type MapLevel = string;
+
+export interface MapScope {
+  continent: ContinentKey;
+  level: MapLevel;
+}
+
+interface MapRegion {
+  key: MapLevel;
+  label: string;
+  countries: string[];
+}
+
+const mapRegions: Partial<Record<ContinentKey, MapRegion[]>> = mapRegionsJson;
+
+const regionsOf = (continent: ContinentKey): MapRegion[] => mapRegions[continent] ?? [];
+
+function regionOf(continent: ContinentKey, level: MapLevel): MapRegion {
+  const region = regionsOf(continent).find((r) => r.key === level);
+  if (!region) throw new Error(`No map level ${level} in ${continent}`);
+  return region;
+}
+
+export function mapLevels(continent: ContinentKey): MapLevel[] {
+  return [...regionsOf(continent).map((r) => r.key), MAP_ALL];
+}
+
+export function mapLevelLabel(continent: ContinentKey, level: MapLevel): string {
+  if (level === MAP_ALL) return continent === 'world' ? 'Mundo inteiro' : 'Continente inteiro';
+  return regionOf(continent, level).label;
+}
+
+export function mapPool(continent: ContinentKey, level: MapLevel): Country[] {
+  const pool = poolFor(countries, continent, 'general').filter((c) => !mapExcluded.includes(c.iso2));
+  if (level === MAP_ALL) return pool;
+  const { countries: members } = regionOf(continent, level);
+  return members.map((iso2) => pool.find((c) => c.iso2 === iso2)!);
 }
 
 let centroids: Map<string, [number, number]> | undefined;

@@ -1,0 +1,162 @@
+{
+  "africa": [
+    {
+      "key": "north-africa",
+      "label": "Norte",
+      "countries": ["ma", "eh", "dz", "tn", "ly", "eg", "sd"]
+    },
+    {
+      "key": "west-coast",
+      "label": "Costa Oeste",
+      "countries": ["mr", "sn", "gm", "gw", "gn", "sl", "lr", "ml", "cv"]
+    },
+    {
+      "key": "gulf-of-guinea",
+      "label": "Golfo da Guiné",
+      "countries": ["ci", "bf", "gh", "tg", "bj", "ne", "ng"]
+    },
+    {
+      "key": "central-africa",
+      "label": "Central",
+      "countries": ["td", "cm", "cf", "gq", "ga", "st", "cg", "cd", "ao", "sh"]
+    },
+    {
+      "key": "horn-and-great-lakes",
+      "label": "Chifre e Grandes Lagos",
+      "countries": ["ss", "er", "et", "dj", "so", "ke", "ug", "rw", "bi", "tz"]
+    },
+    {
+      "key": "southern-africa",
+      "label": "Austral",
+      "countries": ["zm", "mw", "mz", "zw", "bw", "na", "za", "ls", "sz"]
+    },
+    {
+      "key": "indian-ocean",
+      "label": "Ilhas do Índico",
+      "countries": ["mg", "km", "yt", "sc", "mu", "re", "io", "tf"]
+    }
+  ],
+  "americas": [
+    {
+      "key": "north-america",
+      "label": "América do Norte",
+      "countries": ["ca", "us", "mx", "gl", "pm"]
+    },
+    {
+      "key": "central-america",
+      "label": "América Central",
+      "countries": ["gt", "bz", "sv", "hn", "ni", "cr", "pa"]
+    },
+    {
+      "key": "greater-antilles",
+      "label": "Grandes Antilhas",
+      "countries": ["cu", "jm", "ht", "do", "pr", "bs", "tc", "ky", "vi", "vg"]
+    },
+    {
+      "key": "lesser-antilles",
+      "label": "Pequenas Antilhas",
+      "countries": ["ag", "kn", "gp", "dm", "mq", "lc"]
+    },
+    {
+      "key": "southern-caribbean",
+      "label": "Caribe Sul",
+      "countries": ["vc", "bb", "gd", "tt", "aw", "cw", "bq"]
+    },
+    {
+      "key": "north-and-andes",
+      "label": "Norte e Andes",
+      "countries": ["co", "ve", "gy", "sr", "gf", "ec", "pe", "bo"]
+    },
+    {
+      "key": "southern-cone",
+      "label": "Cone Sul",
+      "countries": ["br", "ar", "cl", "py", "uy", "fk", "gs"]
+    }
+  ],
+  "asia": [
+    {
+      "key": "middle-east-and-caucasus",
+      "label": "Oriente Médio e Cáucaso",
+      "countries": ["tr", "ge", "am", "az", "sy", "lb", "il", "ps", "jo", "iq"]
+    },
+    {
+      "key": "arabian-peninsula",
+      "label": "Península Arábica",
+      "countries": ["sa", "ye", "om", "ae", "qa", "bh", "kw"]
+    },
+    {
+      "key": "central-asia",
+      "label": "Ásia Central",
+      "countries": ["kz", "uz", "tm", "kg", "tj", "af", "ir"]
+    },
+    {
+      "key": "indian-subcontinent",
+      "label": "Subcontinente Indiano",
+      "countries": ["in", "pk", "np", "bt", "bd", "lk"]
+    },
+    {
+      "key": "far-east",
+      "label": "Extremo Oriente",
+      "countries": ["cn", "mn", "kp", "kr", "jp", "tw", "hk"]
+    },
+    {
+      "key": "mainland-southeast-asia",
+      "label": "Sudeste Continental",
+      "countries": ["mm", "th", "la", "kh", "vn"]
+    },
+    {
+      "key": "maritime-southeast-asia",
+      "label": "Sudeste Insular",
+      "countries": ["my", "sg", "id", "bn", "ph", "tl"]
+    }
+  ],
+  "europe": [
+    {
+      "key": "british-isles",
+      "label": "Ilhas Britânicas e Atlântico Norte",
+      "countries": ["gb-eng", "gb-sct", "gb-wls", "gb-nir", "ie", "im", "je", "is", "fo"]
+    },
+    {
+      "key": "nordic-and-baltic",
+      "label": "Nórdicos e Bálticos",
+      "countries": ["no", "se", "fi", "dk", "ax", "ee", "lv", "lt"]
+    },
+    {
+      "key": "western-europe",
+      "label": "Ocidental",
+      "countries": ["pt", "es", "ad", "fr", "be", "nl", "lu", "it", "mt"]
+    },
+    {
+      "key": "central-europe",
+      "label": "Central",
+      "countries": ["de", "ch", "li", "at", "cz", "sk", "pl", "hu"]
+    },
+    {
+      "key": "balkans",
+      "label": "Bálcãs",
+      "countries": ["si", "hr", "ba", "rs", "me", "xk", "mk", "al", "gr", "bg", "cy"]
+    },
+    {
+      "key": "eastern-europe",
+      "label": "Leste",
+      "countries": ["ru", "by", "ua", "md", "ro"]
+    }
+  ],
+  "oceania": [
+    {
+      "key": "australia-and-melanesia",
+      "label": "Austrália e Melanésia",
+      "countries": ["au", "nz", "pg", "sb", "vu", "nc", "fj", "cx"]
+    },
+    {
+      "key": "micronesia",
+      "label": "Micronésia",
+      "countries": ["pw", "fm", "gu", "mp", "mh", "ki"]
+    },
+    {
+      "key": "polynesia",
+      "label": "Polinésia",
+      "countries": ["ws", "as", "to", "nu", "wf", "pf"]
+    }
+  ]
+}

@@ -1,11 +1,12 @@
-import { LEVEL_RULES, goalFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { MAP_FORMATS, mapContext } from '../../engine/mapFormats';
+import { mapLevelLabel, type MapLevel } from '../../data/maps';
+import { LEVEL_RULES, goalFor, type ContinentKey } from '../../engine/pool';
+import { MAP_FORMATS, mapContext, mapDifficulty } from '../../engine/mapFormats';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMapMedal } from '../../mapRecords';
 import { onBack } from '../backButton';
 import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
-import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
+import { CONTINENT_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
@@ -13,8 +14,9 @@ import { mapSolution, type MapQuestion } from '../questions/mapQuestions';
 import { renderQuestion } from '../questions/render';
 import { topBar } from '../topbar';
 
-export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
-  const context = mapContext(continent, difficulty);
+export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
+  const context = mapContext(continent, level);
+  const difficulty = mapDifficulty(level);
   const round = new Round(
     context,
     { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
@@ -35,7 +37,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
   };
 
   const exit = () => leave({ name: 'hub', continent });
-  const bar = topBar(`Mapa · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`, exit);
+  const bar = topBar(`Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`, exit);
   onBack(exit);
   root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
@@ -55,8 +57,8 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
   const finish = () => {
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
-    if (medal) awardMapMedal(localStorage, continent, difficulty, medal);
-    leave({ name: 'mapResult', continent, difficulty, won, medal, correct: round.correct, missed: round.missed });
+    if (medal) awardMapMedal(localStorage, continent, level, medal);
+    leave({ name: 'mapResult', continent, level, won, medal, correct: round.correct, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {
@@ -82,12 +84,12 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
           question,
           result,
           () => next(feedback),
-          result.correct ? undefined : mapSolution(question as MapQuestion, continent),
+          result.correct ? undefined : mapSolution(question as MapQuestion, { continent, level }),
         );
         stage.append(feedback);
         feedback.querySelector('button')?.focus();
       },
-      continent,
+      { continent, level },
     );
     currentQuestion = questionEl;
     stage.replaceChildren(questionEl);

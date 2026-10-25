@@ -1,5 +1,5 @@
 import type { Country } from '../data/countries';
-import { mapPool, nearestCountries } from '../data/maps';
+import { MAP_ALL, mapPool, nearestCountries, type MapLevel } from '../data/maps';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey, Difficulty } from './pool';
 import { pickOne, sample, shuffle } from './rng';
@@ -58,7 +58,11 @@ export const mapTypeName: Format = {
 
 export const MAP_FORMATS: readonly Format[] = [mapToNames, nameToMap, mapPairs, mapTrueFalse, mapTypeName];
 
-export function mapContext(continent: ContinentKey, difficulty: Difficulty): FormatContext {
-  const pool = mapPool(continent, difficulty);
+export function mapDifficulty(level: MapLevel): Difficulty {
+  return level === MAP_ALL ? 'general' : 'medium';
+}
+
+export function mapContext(continent: ContinentKey, level: MapLevel): FormatContext {
+  const pool = mapPool(continent, level);
   return { pool, world: pool, similarGroups: [], similarNames: [], similarDistractors: false };
 }

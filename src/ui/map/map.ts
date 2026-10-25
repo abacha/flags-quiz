@@ -2,7 +2,7 @@ import { geoBounds, geoCircle, geoPath, type GeoPath } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson';
 import { feature, merge } from 'topojson-client';
 import type { Country } from '../../data/countries';
-import { MAP_OBJECT, centroidOf, mapPool, topology } from '../../data/maps';
+import { MAP_ALL, MAP_OBJECT, centroidOf, mapPool, topology, type MapScope } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
@@ -100,7 +100,7 @@ const continentMaps = new Map<ContinentKey, ContinentMap>();
 
 function buildContinentMap(continent: ContinentKey): ContinentMap {
   const units = continent === 'world' ? worldUnits : continentUnits;
-  const pool = new Map(mapPool(continent, 'general').map((c) => [c.iso2, c]));
+  const pool = new Map(mapPool(continent, MAP_ALL).map((c) => [c.iso2, c]));
   const poolFeatures: FeatureCollection = {
     type: 'FeatureCollection',
     features: [...pool.keys()].map((iso2): Feature => ({ type: 'Feature', id: iso2, properties: {}, geometry: units.get(iso2)! })),
@@ -169,8 +169,9 @@ function continentMap(continent: ContinentKey): ContinentMap {
   return built;
 }
 
-export function renderMap(continent: ContinentKey, onTap?: (country: Country) => void): MapView {
+export function renderMap({ continent, level }: MapScope, onTap?: (country: Country) => void): MapView {
   const shared = continentMap(continent);
+  const playable = new Set(mapPool(continent, level).map((c) => c.iso2));
   const { pool, continentFit, bounds, surroundings } = shared;
   let fit = continentFit;
   let box = fit;
@@ -187,9 +188,11 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   svg.append(hitLayer, countryLayer, markLayer);
 
   const shapes = new Map([...countryLayer.querySelectorAll<SVGPathElement>('path[data-iso2]')].map((shape) => [shape.dataset.iso2!, shape]));
+  for (const [iso2, shape] of shapes) if (!playable.has(iso2)) shape.classList.replace('country', 'context');
 
   const hits = new Map<string, Hit>();
   for (const [iso2, hit] of shared.hits) {
+    if (!playable.has(iso2)) continue;
     const circle = svgEl('circle', { class: 'hit', cx: hit.center[0], cy: hit.center[1] });
     circle.dataset.iso2 = iso2;
     hits.set(iso2, { ...hit, circle });
@@ -341,13 +344,13 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
   svg.addEventListener('click', (event) => {
     if (gesture) return;
     const iso2 = (event.target as Element).closest<SVGElement>('[data-iso2]')?.dataset.iso2;
-    if (iso2) onTap?.(pool.get(iso2)!);
+    if (iso2 && playable.has(iso2)) onTap?.(pool.get(iso2)!);
   });
 
   new ResizeObserver(rescale).observe(svg);
   sizeMarks();
 
-  return {
+  const view: MapView = {
     element: el('div', { className: 'map' }, [svg]),
     paint(iso2, state, label) {
       const shape = shapes.get(iso2)!;
@@ -384,4 +387,6 @@ export function renderMap(continent: ContinentKey, onTap?: (country: Country) =>
       rescale();
     },
   };
+  if (level !== MAP_ALL) view.focus([...playable]);
+  return view;
 }

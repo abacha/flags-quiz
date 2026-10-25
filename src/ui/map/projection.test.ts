@@ -3,7 +3,7 @@ import type { FeatureCollection } from 'geojson';
 import { merge } from 'topojson-client';
 import { describe, expect, it } from 'vitest';
 import type { ContinentKey } from '../../engine/pool';
-import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
+import { MAP_ALL, MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import { projectionFor } from './projection';
 
 const geometries = topology.objects[MAP_OBJECT].geometries;
@@ -14,7 +14,7 @@ const collection = (ids: string[]): FeatureCollection => ({
 });
 
 const fitted = (continent: ContinentKey) => {
-  const pool = collection(mapPool(continent, 'general').map((c) => c.iso2));
+  const pool = collection(mapPool(continent, MAP_ALL).map((c) => c.iso2));
   const path = geoPath(projectionFor(continent, pool));
   const [[x0], [x1]] = path.bounds(pool);
   return { path, pool, width: x1 - x0 };

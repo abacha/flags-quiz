@@ -4,7 +4,7 @@ import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { merge } from 'topojson-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
-import { MAP_OBJECT, mapPool, topology } from '../../data/maps';
+import { MAP_ALL, MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { renderMap, type MapView } from './map';
 import { projectionFor } from './projection';
@@ -42,7 +42,7 @@ const pointer = (target: Element, type: string, pointerId: number, clientX: numb
 
 const poolCollection = (continent: ContinentKey): FeatureCollection => ({
   type: 'FeatureCollection',
-  features: mapPool(continent, 'general').map((c): Feature => ({
+  features: mapPool(continent, MAP_ALL).map((c): Feature => ({
     type: 'Feature',
     id: c.iso2,
     properties: {},
@@ -107,24 +107,24 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe('renderMap', () => {
   it.each(['africa', 'americas', 'asia', 'europe', 'oceania'] as const)('wraps no shape around the globe on %s', (continent) => {
-    expect(widestRing(renderMap(continent))).toBeLessThan((poolProjection(continent).scale() * 2 * Math.PI) / 2);
+    expect(widestRing(renderMap({ continent, level: MAP_ALL }))).toBeLessThan((poolProjection(continent).scale() * 2 * Math.PI) / 2);
   });
 
   it('keeps Antarctica on the world map', () => {
-    expect(lowestY(renderMap('world'))).toBeGreaterThan(poolProjection('world')([0, -70])![1]);
+    expect(lowestY(renderMap({ continent: 'world', level: MAP_ALL }))).toBeGreaterThan(poolProjection('world')([0, -70])![1]);
   });
 
   it('draws every pool country as tappable and calls onTap', () => {
     const onTap = vi.fn();
-    const view = renderMap('americas', onTap);
+    const view = renderMap({ continent: 'americas', level: MAP_ALL }, onTap);
     click(view.element.querySelector('path[data-iso2="br"]')!);
     expect(onTap).toHaveBeenCalledWith(country('br'));
-    expect(view.element.querySelectorAll('path[data-iso2]')).toHaveLength(mapPool('americas', 'general').length);
+    expect(view.element.querySelectorAll('path[data-iso2]')).toHaveLength(mapPool('americas', MAP_ALL).length);
   });
 
   it('accepts a tap that moved less than the slop', () => {
     const onTap = vi.fn();
-    const view = renderMap('americas', onTap);
+    const view = renderMap({ continent: 'americas', level: MAP_ALL }, onTap);
     const svg = layOut(view.element);
     pointer(svg, 'pointerdown', 1, 100, 100);
     pointer(svg, 'pointermove', 1, 104, 100);
@@ -135,7 +135,7 @@ describe('renderMap', () => {
 
   it('ignores a drag that ends over a country', () => {
     const onTap = vi.fn();
-    const view = renderMap('americas', onTap);
+    const view = renderMap({ continent: 'americas', level: MAP_ALL }, onTap);
     const svg = layOut(view.element);
     pointer(svg, 'pointerdown', 1, 100, 100);
     pointer(svg, 'pointermove', 1, 130, 100);
@@ -146,7 +146,7 @@ describe('renderMap', () => {
 
   it('ignores a pinch that ends over a country', () => {
     const onTap = vi.fn();
-    const view = renderMap('americas', onTap);
+    const view = renderMap({ continent: 'americas', level: MAP_ALL }, onTap);
     const svg = layOut(view.element);
     pointer(svg, 'pointerdown', 1, 200, 150);
     pointer(svg, 'pointerdown', 2, 300, 150);
@@ -158,7 +158,7 @@ describe('renderMap', () => {
   });
 
   it('pans on drag and zooms on pinch and wheel, never past 24×', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const viewBox = () => svg.getAttribute('viewBox')!.split(' ').map(Number);
     const [, , baseWidth] = viewBox();
@@ -180,7 +180,7 @@ describe('renderMap', () => {
   });
 
   it('keeps the pinched point under the fingers where the view is wider than the continent', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const [[west], [east]] = poolCollection('americas').features.reduce(
       ([[x0], [x1]], f) => {
@@ -202,7 +202,7 @@ describe('renderMap', () => {
 
   it('draws grey neighbours above the hit circles and ignores taps on them or the ocean', () => {
     const onTap = vi.fn();
-    const view = renderMap('asia', onTap);
+    const view = renderMap({ continent: 'asia', level: MAP_ALL }, onTap);
     const lastHit = [...view.element.querySelectorAll('circle.hit')].at(-1)!;
     const firstGrey = view.element.querySelector('path.context')!;
     expect(lastHit.compareDocumentPosition(firstGrey) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -212,7 +212,7 @@ describe('renderMap', () => {
   });
 
   it('does not tap grey neighbours or excluded entries', () => {
-    const view = renderMap('asia');
+    const view = renderMap({ continent: 'asia', level: MAP_ALL });
     expect(view.element.querySelector('[data-iso2="ru"]')).toBeNull();
     expect(view.element.querySelector('[data-iso2="mv"]')).toBeNull();
     const greys = view.element.querySelectorAll('path.context');
@@ -222,14 +222,14 @@ describe('renderMap', () => {
 
   it('reaches a small country through its hit circle', () => {
     const onTap = vi.fn();
-    const view = renderMap('europe', onTap);
-    expect(view.element.querySelectorAll('circle.hit')).toHaveLength(mapPool('europe', 'general').length);
+    const view = renderMap({ continent: 'europe', level: MAP_ALL }, onTap);
+    expect(view.element.querySelectorAll('circle.hit')).toHaveLength(mapPool('europe', MAP_ALL).length);
     click(view.element.querySelector('circle[data-iso2="mt"]')!);
     expect(onTap).toHaveBeenCalledWith(country('mt'));
   });
 
   it('keeps hit circles at 22 px on screen, capped by the nearest neighbour', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element, 800, 480);
     svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, clientX: 400, clientY: 240, cancelable: true }));
     const unitsPerPx = 1 / svg.getScreenCTM()!.a;
@@ -241,14 +241,14 @@ describe('renderMap', () => {
   });
 
   it('lets the real country shapes win over the hit circles', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const firstHit = view.element.querySelector('circle.hit')!;
     const firstCountry = view.element.querySelector('path.country')!;
     expect(firstHit.compareDocumentPosition(firstCountry) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('pans the Europe map east until all of Russia is in view', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element);
     for (let i = 0; i < 40; i++) {
       pointer(svg, 'pointerdown', 1, 400, 150);
@@ -261,7 +261,7 @@ describe('renderMap', () => {
 
   it('recovers from a press that was released outside the map', () => {
     const onTap = vi.fn();
-    const view = renderMap('americas', onTap);
+    const view = renderMap({ continent: 'americas', level: MAP_ALL }, onTap);
     const svg = layOut(view.element);
     const brazil = view.element.querySelector('path[data-iso2="br"]')!;
     svg.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 1, clientX: 100, clientY: 100, isPrimary: true, bubbles: true }));
@@ -272,7 +272,7 @@ describe('renderMap', () => {
   });
 
   it('keeps the pinched point under the fingers on a letterboxed map', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element, 390, 600);
     pointer(svg, 'pointerdown', 1, 150, 300);
     pointer(svg, 'pointerdown', 2, 230, 300);
@@ -284,7 +284,7 @@ describe('renderMap', () => {
   });
 
   it('pans by the distance the finger moved on a letterboxed map', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element, 390, 200);
     pointer(svg, 'pointerdown', 1, 150, 100);
     pointer(svg, 'pointerdown', 2, 250, 100);
@@ -296,7 +296,7 @@ describe('renderMap', () => {
   });
 
   it('sizes the hit circles, rings and labels in screen pixels on a letterboxed map', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element, 390, 200);
     view.paint('mt', 'highlight', 'Malta');
     pointer(svg, 'pointerdown', 1, 150, 100);
@@ -311,7 +311,7 @@ describe('renderMap', () => {
   });
 
   it('keeps its marks sized while the map is hidden', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element, 0, 0);
     view.paint('mt', 'highlight', 'Malta');
     svg.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, clientX: 0, clientY: 0, cancelable: true }));
@@ -321,7 +321,7 @@ describe('renderMap', () => {
   });
 
   it('ignores a wheel event without vertical movement', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element);
     svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
     const [, , zoomedWidth] = viewBoxOf(svg);
@@ -330,7 +330,7 @@ describe('renderMap', () => {
   });
 
   it('paints and labels a country', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     view.paint('cl', 'answered', 'Chile');
     expect(view.element.querySelector('path[data-iso2="cl"]')!.classList.contains('answered')).toBe(true);
     expect(view.element.querySelector('text.map-label')!.textContent).toBe('Chile');
@@ -345,7 +345,7 @@ describe('renderMap', () => {
   });
 
   it('opens on the whole continent shaped to the frame of the map', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element, 400, 200);
     const [, , width, height] = viewBoxOf(svg);
     expect(width / height).toBeCloseTo(2);
@@ -354,7 +354,7 @@ describe('renderMap', () => {
   });
 
   it('frames a focused country and its surroundings in the frame of the map', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const [, , fitWidth] = viewBoxOf(svg);
     view.focus(['cl']);
@@ -365,7 +365,7 @@ describe('renderMap', () => {
   });
 
   it('frames a small country with at least its surroundings', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const [, , fitWidth] = viewBoxOf(svg);
     view.focus(['sv']);
@@ -374,14 +374,14 @@ describe('renderMap', () => {
   });
 
   it('frames a large country whole', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     view.focus(['br']);
     expect(contains(svg, projectedBounds('americas', 'br').country)).toBe(true);
   });
 
   it('frames every focused country together', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     view.focus(['cl', 'mx']);
     expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
@@ -389,7 +389,7 @@ describe('renderMap', () => {
   });
 
   it('applies a focus asked while hidden once the map gets a size', () => {
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element, 0, 0);
     const before = viewBoxOf(svg);
     view.focus(['cl']);
@@ -410,7 +410,7 @@ describe('renderMap', () => {
 
   it('slides to a focus over animation frames', () => {
     const frames = queueFrames();
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const start = viewBoxOf(svg);
     view.focus(['cl'], { animate: true });
@@ -428,7 +428,7 @@ describe('renderMap', () => {
 
   it('stops the slide once a drag starts, sizing the marks for where it stopped', () => {
     const frames = queueFrames();
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     view.paint('cl', 'highlight', 'Chile');
     view.focus(['cl'], { animate: true });
@@ -442,7 +442,7 @@ describe('renderMap', () => {
 
   it('finishes the slide after a tap that did not move', () => {
     const frames = queueFrames();
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     view.paint('cl', 'highlight', 'Chile');
     view.focus(['cl'], { animate: true });
@@ -459,7 +459,7 @@ describe('renderMap', () => {
 
   it('re-frames a sliding focus when the map changes shape', () => {
     const frames = queueFrames();
-    const view = renderMap('americas');
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     view.focus(['cl'], { animate: true });
     frames.shift()!(performance.now() + 150);
@@ -473,7 +473,7 @@ describe('renderMap', () => {
   });
 
   it.each(['fj', 'ki', 'nz', 'us'])('frames %s on the world map without wrapping across the antimeridian', (iso2) => {
-    const view = renderMap('world');
+    const view = renderMap({ continent: 'world', level: MAP_ALL });
     const svg = layOut(view.element);
     const [, , fitWidth] = viewBoxOf(svg);
     view.focus([iso2]);
@@ -485,7 +485,7 @@ describe('renderMap', () => {
   });
 
   it('frames Russia on the world map without its far eastern tip wrapping round', () => {
-    const view = renderMap('world');
+    const view = renderMap({ continent: 'world', level: MAP_ALL });
     const svg = layOut(view.element);
     const [, , fitWidth] = viewBoxOf(svg);
     view.focus(['ru']);
@@ -493,24 +493,24 @@ describe('renderMap', () => {
   });
 
   it('sizes the hit circles for the focused view', () => {
-    const view = renderMap('europe');
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const svg = layOut(view.element);
     view.focus(['mt']);
     expect(Number(view.element.querySelector('circle.hit[data-iso2="mt"]')!.getAttribute('r'))).toBeCloseTo(22 / svg.getScreenCTM()!.a);
   });
 
   it('projects a continent once and reuses it for every later map of that continent', () => {
-    renderMap('oceania');
+    renderMap({ continent: 'oceania', level: MAP_ALL });
     const calls = vi.mocked(projectionFor).mock.calls.length;
-    renderMap('oceania');
+    renderMap({ continent: 'oceania', level: MAP_ALL });
     expect(vi.mocked(projectionFor).mock.calls).toHaveLength(calls);
   });
 
   it('keeps paints, marks, framing and taps per map when the same continent is drawn twice', () => {
     const firstTap = vi.fn();
     const secondTap = vi.fn();
-    const first = renderMap('europe', firstTap);
-    const second = renderMap('europe', secondTap);
+    const first = renderMap({ continent: 'europe', level: MAP_ALL }, firstTap);
+    const second = renderMap({ continent: 'europe', level: MAP_ALL }, secondTap);
     layOut(first.element);
     const secondSvg = layOut(second.element);
     const secondBox = viewBoxOf(secondSvg);
@@ -522,5 +522,35 @@ describe('renderMap', () => {
     expect(viewBoxOf(secondSvg)).toEqual(secondBox);
     expect(secondTap).toHaveBeenCalledWith(country('de'));
     expect(firstTap).not.toHaveBeenCalled();
+  });
+
+  describe('on a region', () => {
+    const westCoast = () => mapPool('africa', 'west-coast').map((c) => c.iso2);
+
+    it('greys out the countries of other regions and ignores taps on them', () => {
+      const onTap = vi.fn();
+      const view = renderMap({ continent: 'africa', level: 'west-coast' }, onTap);
+      expect([...view.element.querySelectorAll<SVGPathElement>('path.country')].map((p) => p.dataset.iso2).sort()).toEqual(westCoast().sort());
+      expect([...view.element.querySelectorAll<SVGCircleElement>('circle.hit')].map((c) => c.dataset.iso2).sort()).toEqual(westCoast().sort());
+      const nigeria = view.element.querySelector('path[data-iso2="ng"]')!;
+      expect(nigeria.classList.contains('context')).toBe(true);
+      click(nigeria);
+      expect(onTap).not.toHaveBeenCalled();
+      click(view.element.querySelector('path[data-iso2="sn"]')!);
+      expect(onTap).toHaveBeenCalledWith(country('sn'));
+    });
+
+    it('opens framed on the region, tighter than the whole continent', () => {
+      const whole = viewBoxOf(layOut(renderMap({ continent: 'africa', level: MAP_ALL }).element));
+      const view = renderMap({ continent: 'africa', level: 'west-coast' });
+      const svg = layOut(view.element);
+      const [, , width] = viewBoxOf(svg);
+      expect(width).toBeLessThan(whole[2] / 2);
+      for (const iso2 of westCoast()) {
+        const hit = view.element.querySelector(`circle.hit[data-iso2="${iso2}"]`)!;
+        const [cx, cy] = [Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))];
+        expect(contains(svg, [[cx, cy], [cx, cy]]), iso2).toBe(true);
+      }
+    });
   });
 });

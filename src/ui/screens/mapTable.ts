@@ -1,5 +1,5 @@
 import type { Country } from '../../data/countries';
-import { mapPool } from '../../data/maps';
+import { MAP_ALL, mapPool } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { onBack } from '../backButton';
 import { el } from '../dom';
@@ -9,11 +9,11 @@ import { namesToggle } from '../namesToggle';
 import type { Navigate } from '../navigation';
 
 export function renderMapTable(root: HTMLElement, navigate: Navigate, continent: ContinentKey): void {
-  const pool = mapPool(continent, 'general');
+  const pool = mapPool(continent, MAP_ALL);
   let namesShown = true;
   let tapped: Country | undefined;
 
-  const view = renderMap(continent, (country) => {
+  const view = renderMap({ continent, level: MAP_ALL }, (country) => {
     if (namesShown) return;
     if (tapped) view.paint(tapped.iso2, 'idle');
     tapped = country;
