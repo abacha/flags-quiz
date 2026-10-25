@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { countries, similarGroups, similarNames } from '../data/countries';
 import type { Answer } from './answer';
-import { crop, flagToNames, matchPairs, sortSimilar, sortSimilarNames, typeName } from './formats';
+import { crop, flagToNames, matchPairs, nameToFlags, sortSimilar, sortSimilarNames, typeName } from './formats';
 import { LEVEL_RULES, goalFor, poolFor } from './pool';
 import type { FormatContext, Question } from './question';
 import { seededRng } from './rng';
@@ -271,6 +271,16 @@ describe('Round', () => {
     }
     expect(recall / reviews).toBeGreaterThan(0.65);
     expect(recall / reviews).toBeLessThan(0.85);
+  });
+
+  it('draws a format by its own weight', () => {
+    let heavy = 0;
+    for (let seed = 1; seed <= 400; seed++) {
+      const round = new Round(easy, settings(1000), seededRng(seed), [{ ...nameToFlags, weight: 3 }, flagToNames]);
+      if (round.nextQuestion().format === 'nameToFlags') heavy++;
+    }
+    expect(heavy / 400).toBeGreaterThan(0.68);
+    expect(heavy / 400).toBeLessThan(0.82);
   });
 
   it('refuses a second answer to the same question', () => {

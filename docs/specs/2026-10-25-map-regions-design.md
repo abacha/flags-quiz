@@ -22,7 +22,7 @@ A round drills one region until its neighbours stop being confused, and a last l
 ## Non-goals
 
 - No change to the flag levels, which keep their tiers.
-- No new question format; Learn keeps `mapToNames`, `nameToMap`, `mapPairs`, `mapTrueFalse` and `mapTypeName`.
+- No new question format.
 
 ## Decided (Adriano, 2026-10-25)
 
@@ -31,6 +31,7 @@ A round drills one region until its neighbours stop being confused, and a last l
 - **Region map.** A region question and the region Quiz open framed on the region. Countries of other regions are drawn grey like the neighbours outside the continent, and a tap on them does nothing.
 - **Progress.** The Maps medals and Quiz records saved per difficulty are dropped; Maps progress starts from zero.
 - **Goal.** A region keeps the minimum goal of 15 correct answers, so a region of 8 countries asks each one about twice per round.
+- **Question mix.** A region round leaves out `mapPairs`, since its fourth link is free by elimination and the whole match counts as one answer, and draws "Onde fica X?" (`nameToMap`) at three times the weight of the other formats, which puts it at 53% to 65% of a region round. "Continente inteiro" and "Mundo inteiro" keep all five formats at their usual weights.
 
 ## Division
 
@@ -105,6 +106,7 @@ With "Continente inteiro" per continent and "Mundo inteiro", Maps has 36 levels:
 - `src/data/map-regions.json`: per continent, the ordered list of regions, each with a `key`, a `label` and its `iso2` list. A data test asserts every map country of the continent sits in exactly one region.
 - `src/data/maps.ts`: a map level is a region key or `all`; `mapPool(continent, level)` returns the region's countries, or the continent's whole map pool for `all`.
 - `src/ui/map/map.ts`: `renderMap` takes the level's countries as the playable set. Pool countries outside it get the `context` class and no hit circle, and a region view opens framed on the set.
+- `src/engine/mapFormats.ts`: `mapFormats(level)` returns the region set or the whole-continent set; a `Format` may carry a `weight`, which `Round` uses for a non-recall format in place of 1.
 - `src/engine/mapFormats.ts`, `src/ui/screens/mapGame.ts`, `mapQuiz.ts`, `mapResult.ts`, `mapQuizResult.ts`, `src/ui/navigation.ts`: the map screens carry a `level` in place of `difficulty`, and titles show the region label.
 - `src/mapRecords.ts`: medals and Quiz records keyed by continent and level, under new storage keys, so the per-difficulty Maps entries are no longer read.
 - `src/ui/screens/hub.ts`: the Mapas area renders the region cards and "Continente inteiro"; the tab check and the header counter count the region levels.

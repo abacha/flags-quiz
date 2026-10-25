@@ -4,7 +4,7 @@ import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { LEVEL_RULES, goalFor } from './pool';
 import { grade, type Answer } from './answer';
-import { MAP_FORMATS, mapContext, mapDifficulty, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
+import { mapContext, mapDifficulty, mapFormats, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 import { Round } from './round';
@@ -70,16 +70,40 @@ describe('map formats', () => {
   });
 
   it('marks only mapToNames, nameToMap and mapPairs as choice', () => {
-    expect(MAP_FORMATS.filter((f) => f.choice).map((f) => f.id)).toEqual(['mapToNames', 'nameToMap', 'mapPairs']);
-    expect(MAP_FORMATS.filter((f) => f.recall).map((f) => f.id)).toEqual(['mapTypeName']);
+    const formats = mapFormats(MAP_ALL);
+    expect(formats.filter((f) => f.choice).map((f) => f.id)).toEqual(['mapToNames', 'nameToMap', 'mapPairs']);
+    expect(formats.filter((f) => f.recall).map((f) => f.id)).toEqual(['mapTypeName']);
+  });
+
+  it('leaves mapPairs out of a region and keeps it on the whole continent', () => {
+    expect(mapFormats('west-coast').map((f) => f.id)).toEqual(['mapToNames', 'nameToMap', 'mapTrueFalse', 'mapTypeName']);
+    expect(mapFormats(MAP_ALL).map((f) => f.id)).toContain('mapPairs');
+  });
+
+  it('asks Onde fica X? in about half of a region round', () => {
+    const context = mapContext('africa', 'west-coast');
+    let whereIs = 0;
+    let total = 0;
+    for (let seed = 1; seed <= 100; seed++) {
+      const round = new Round(context, { correctToWin: 15, recallWeight: LEVEL_RULES.medium.recallWeight }, seededRng(seed), mapFormats('west-coast'));
+      while (round.status === 'playing') {
+        const q = round.nextQuestion();
+        if (q.format === 'nameToMap') whereIs++;
+        total++;
+        round.answer(rightAnswer(q));
+      }
+    }
+    expect(whereIs / total).toBeGreaterThan(0.5);
+    expect(whereIs / total).toBeLessThan(0.7);
   });
 
   it('introduces every country through a choice question in a map round', () => {
-    const round = new Round(ctx, { correctToWin: 200, recallWeight: 3 }, seededRng(7), MAP_FORMATS);
+    const formats = mapFormats(MAP_ALL);
+    const round = new Round(ctx, { correctToWin: 200, recallWeight: 3 }, seededRng(7), formats);
     const firstFormat = new Map<string, boolean>();
     for (let i = 0; i < 60; i++) {
       const q = round.nextQuestion();
-      if (!firstFormat.has(q.target.iso2)) firstFormat.set(q.target.iso2, MAP_FORMATS.find((f) => f.id === q.format)!.choice);
+      if (!firstFormat.has(q.target.iso2)) firstFormat.set(q.target.iso2, formats.find((f) => f.id === q.format)!.choice);
       round.answer(rightAnswer(q));
     }
     expect(firstFormat.size).toBeGreaterThan(0);
@@ -143,7 +167,7 @@ describe('a Learn round on every map level', () => {
           context,
           { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
           seededRng(seed),
-          MAP_FORMATS,
+          mapFormats(level),
         );
         while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
         expect(round.status).toBe('won');

@@ -56,7 +56,12 @@ export const mapTypeName: Format = {
   build: (target) => ({ format: 'mapTypeName', target }),
 };
 
-export const MAP_FORMATS: readonly Format[] = [mapToNames, nameToMap, mapPairs, mapTrueFalse, mapTypeName];
+const CONTINENT_FORMATS: readonly Format[] = [mapToNames, nameToMap, mapPairs, mapTrueFalse, mapTypeName];
+const REGION_FORMATS: readonly Format[] = [mapToNames, { ...nameToMap, weight: 3 }, mapTrueFalse, mapTypeName];
+
+export function mapFormats(level: MapLevel): readonly Format[] {
+  return level === MAP_ALL ? CONTINENT_FORMATS : REGION_FORMATS;
+}
 
 export function mapDifficulty(level: MapLevel): Difficulty {
   return level === MAP_ALL ? 'general' : 'medium';

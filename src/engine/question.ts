@@ -38,6 +38,7 @@ export interface Format {
   id: FormatId;
   recall: boolean;
   choice: boolean;
+  weight?: number;
   canTarget(target: Country, ctx: FormatContext): boolean;
   build(target: Country, ctx: FormatContext, rng: Rng): Question;
 }

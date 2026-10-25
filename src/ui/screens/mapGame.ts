@@ -1,6 +1,6 @@
 import { mapLevelLabel, type MapLevel } from '../../data/maps';
 import { LEVEL_RULES, goalFor, type ContinentKey } from '../../engine/pool';
-import { MAP_FORMATS, mapContext, mapDifficulty } from '../../engine/mapFormats';
+import { mapContext, mapDifficulty, mapFormats } from '../../engine/mapFormats';
 import { Round, STARTING_LIVES } from '../../engine/round';
 import { awardMapMedal } from '../../mapRecords';
 import { onBack } from '../backButton';
@@ -21,7 +21,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
     context,
     { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
     Math.random,
-    MAP_FORMATS,
+    mapFormats(level),
   );
   const stage = el('section', { className: 'stage' });
 

@@ -77,7 +77,7 @@ export class Round {
       targets = this.targets();
     }
     const target = pickOne(targets, this.rng);
-    const format = pickWeighted(this.formatsFor(target), (f) => (f.recall ? this.settings.recallWeight : 1), this.rng);
+    const format = pickWeighted(this.formatsFor(target), (f) => (f.recall ? this.settings.recallWeight : (f.weight ?? 1)), this.rng);
     this.current = format.build(target, this.contextFor(format), this.rng);
     for (const country of spentBy(this.current)) if (this.askedAt.has(country.iso2)) this.spent.add(country.iso2);
     this.askedAt.set(target.iso2, this.asked++);
