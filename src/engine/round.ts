@@ -106,7 +106,8 @@ export class Round {
 
   private isAvailable(country: Country): boolean {
     const askedAt = this.askedAt.get(country.iso2);
-    return !this.spent.has(country.iso2) && (askedAt === undefined || this.asked - askedAt > REVIEW_GAP);
+    const gap = Math.min(REVIEW_GAP, this.ctx.pool.length - 1);
+    return !this.spent.has(country.iso2) && (askedAt === undefined || this.asked - askedAt > gap);
   }
 
   private formatsFor(target: Country): Format[] {

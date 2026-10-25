@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
-import { MAP_ALL, mapPool, nearestCountries } from '../data/maps';
+import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
+import { CONTINENT_KEYS } from '../ui/labels';
+import { LEVEL_RULES, goalFor } from './pool';
 import { grade, type Answer } from './answer';
 import { MAP_FORMATS, mapContext, mapDifficulty, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
 import type { Question } from './question';
@@ -128,6 +130,26 @@ describe('map level rules', () => {
     expect(mapDifficulty('west-coast')).toBe('medium');
     expect(mapDifficulty(MAP_ALL)).toBe('general');
   });
+});
+
+describe('a Learn round on every map level', () => {
+  it.each(CONTINENT_KEYS.flatMap((continent) => mapLevels(continent).map((level) => [continent, level] as const)))(
+    'reaches the goal on %s %s without running out of countries to ask',
+    (continent, level) => {
+      const context = mapContext(continent, level);
+      const difficulty = mapDifficulty(level);
+      for (const seed of [1, 2, 3, 4, 5]) {
+        const round = new Round(
+          context,
+          { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
+          seededRng(seed),
+          MAP_FORMATS,
+        );
+        while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+        expect(round.status).toBe('won');
+      }
+    },
+  );
 });
 
 describe('grade a tap outside the level', () => {

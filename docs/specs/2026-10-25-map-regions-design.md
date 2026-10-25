@@ -97,6 +97,7 @@ With "Continente inteiro" per continent and "Mundo inteiro", Maps has 36 levels:
 
 - **Learn rules for a region:** the `recallWeight` of Médio (2). "Continente inteiro" and "Mundo inteiro" keep Geral's rules and goal.
 - **Distractors in a region:** the 8 nearest countries of the level's pool, as today; a region of 9 or fewer uses all its other countries.
+- **Review gap in a small region:** a country comes back after at most `pool size − 1` other questions, since a region of 5 cannot wait 5 questions; larger pools keep the gap of 5.
 - **"Onde fica X?" in a region** opens framed on the whole region, so the answer is not given away and the tap is between neighbours. "Continente inteiro" keeps the whole continent.
 
 ## Technical

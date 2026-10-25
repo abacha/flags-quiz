@@ -139,6 +139,21 @@ describe('Round', () => {
     }
   });
 
+  it('shortens the gap to every other country of a pool too small for it', () => {
+    const tiny: FormatContext = { ...easy, pool: easy.pool.slice(0, REVIEW_GAP) };
+    for (const seed of [41, 42, 43]) {
+      const round = new Round(tiny, settings(1000), seededRng(seed), [typeName, flagToNames]);
+      const lastAsked = new Map<string, number>();
+      for (let i = 0; i < 4 * tiny.pool.length; i++) {
+        const question = round.nextQuestion();
+        round.answer(rightAnswer(question));
+        const last = lastAsked.get(question.target.iso2);
+        if (last !== undefined) expect(i - last).toBeGreaterThanOrEqual(tiny.pool.length);
+        lastAsked.set(question.target.iso2, i);
+      }
+    }
+  });
+
   it('shows most of a small pool in a round of its goal', () => {
     const pool = poolFor(countries, 'oceania', 'easy');
     const ctx: FormatContext = { pool, world: countries, similarGroups, similarNames, similarDistractors: false };
