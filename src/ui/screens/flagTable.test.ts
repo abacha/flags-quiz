@@ -58,24 +58,23 @@ describe('renderFlagTable', () => {
     expect(back.compareDocumentPosition(root.querySelector('.solution-grid')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('hides the names when Nomes is unchecked and shows them again when checked', () => {
+  it('hides the names when the Nomes chip is switched off and shows them again when switched on', () => {
     const root = render('oceania');
-    document.body.append(root);
-    const toggle = root.querySelector<HTMLInputElement>('.table-head .names-toggle input')!;
+    const toggle = root.querySelector<HTMLButtonElement>('.table-head button.names-toggle')!;
     const grid = root.querySelector('.solution-grid')!;
-    expect(toggle.checked).toBe(true);
+    expect([toggle.textContent, toggle.getAttribute('aria-pressed'), toggle.classList.contains('on')]).toEqual(['Nomes', 'true', true]);
     expect(grid.classList.contains('hide-names')).toBe(false);
     toggle.click();
+    expect([toggle.getAttribute('aria-pressed'), toggle.classList.contains('on')]).toEqual(['false', false]);
     expect(grid.classList.contains('hide-names')).toBe(true);
     toggle.click();
     expect(grid.classList.contains('hide-names')).toBe(false);
-    root.remove();
   });
 
   it('still names a flag in the dialog with the names hidden', () => {
     const root = render('oceania');
     document.body.append(root);
-    root.querySelector<HTMLInputElement>('.names-toggle input')!.click();
+    root.querySelector<HTMLButtonElement>('.names-toggle')!.click();
     root.querySelector<HTMLButtonElement>('.flag-table-item')!.click();
     expect(root.querySelector('dialog')!.textContent).toContain('Austrália');
     root.remove();

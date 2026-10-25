@@ -13,7 +13,7 @@ describe('renderMapTable', () => {
 
   const labels = () => [...root.querySelectorAll('.map-label')].map((label) => label.textContent);
   const highlighted = () => [...root.querySelectorAll<SVGPathElement>('path.country.highlight')].map((shape) => shape.dataset.iso2);
-  const toggle = () => root.querySelector<HTMLInputElement>('.table-head .names-toggle input')!;
+  const toggle = () => root.querySelector<HTMLButtonElement>('.table-head button.names-toggle')!;
   const tap = (iso2: string) =>
     root.querySelector(`path[data-iso2="${iso2}"]`)!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
@@ -40,11 +40,11 @@ describe('renderMapTable', () => {
   });
 
   it('names every country of the continent on the map, and only those', () => {
-    expect(toggle().checked).toBe(true);
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
     expect(labels().sort()).toEqual(pool.map((c) => c.name).sort());
   });
 
-  it('clears the names when Nomes is unchecked and puts them back when checked', () => {
+  it('clears the names when the Nomes chip is switched off and puts them back when switched on', () => {
     toggle().click();
     expect(labels()).toEqual([]);
     toggle().click();

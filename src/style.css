@@ -499,7 +499,7 @@ input::placeholder { text-overflow: ellipsis; }
 .table-head h1 { margin: 0; white-space: nowrap; }
 .table-head .detail { white-space: nowrap; }
 .table-actions { display: flex; align-items: baseline; gap: 12px; margin-left: auto; }
-.names-toggle { display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+.names-toggle { background: none; box-shadow: inset 0 0 0 2px var(--accent-line); }
 .hide-names figcaption { display: none; }
 
 .map-table { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding-bottom: 16px; }
