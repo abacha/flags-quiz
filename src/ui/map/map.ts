@@ -11,6 +11,7 @@ import { frame, keepInside, panBy, shapeTo, zoomAt, type ViewBox } from './viewB
 export const MAX_ZOOM = 24;
 export const MIN_HIT_PX = 22;
 export const TAP_SLOP_PX = 8;
+export const OUTLINE_BELOW_PX = 6;
 const RING_PX = 14;
 const LABEL_PX = 13;
 const WHEEL_STEP = 1.2;
@@ -207,7 +208,11 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
   const marks = new Map<string, Marks>();
 
   function sizeMarks() {
-    for (const hit of hits.values()) hit.circle.setAttribute('r', String(Math.min(hit.cap, MIN_HIT_PX * unitsPerPx)));
+    for (const hit of hits.values()) {
+      const radius = Math.min(hit.cap, MIN_HIT_PX * unitsPerPx);
+      hit.circle.setAttribute('r', String(radius));
+      hit.circle.classList.toggle('tiny', hit.size < OUTLINE_BELOW_PX * unitsPerPx);
+    }
     for (const [iso2, { ring, label }] of marks) {
       ring?.setAttribute('r', String(Math.max(RING_PX * unitsPerPx, hits.get(iso2)!.size)));
       label?.setAttribute('font-size', String(LABEL_PX * unitsPerPx));
@@ -353,11 +358,13 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
   const view: MapView = {
     element: el('div', { className: 'map' }, [svg]),
     paint(iso2, state, label) {
-      const shape = shapes.get(iso2)!;
-      shape.classList.remove('highlight', 'answered', 'missed');
-      if (state !== 'idle') shape.classList.add(state);
+      const hit = hits.get(iso2)!;
+      for (const node of [shapes.get(iso2)!, hit.circle]) {
+        node.classList.remove('highlight', 'answered', 'missed');
+        if (state !== 'idle') node.classList.add(state);
+      }
       unmark(iso2);
-      const [cx, cy] = hits.get(iso2)!.center;
+      const [cx, cy] = hit.center;
       const mark: Marks = {};
       if (state === 'highlight') {
         mark.ring = svgEl('circle', { class: 'map-ring', cx, cy, 'data-mark': iso2 });
@@ -372,7 +379,7 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
       sizeMarks();
     },
     clear() {
-      for (const shape of shapes.values()) shape.classList.remove('highlight', 'answered', 'missed');
+      for (const node of [...shapes.values(), ...[...hits.values()].map((hit) => hit.circle)]) node.classList.remove('highlight', 'answered', 'missed');
       for (const iso2 of [...marks.keys()]) unmark(iso2);
     },
     focus(iso2s, options) {

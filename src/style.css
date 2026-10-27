@@ -659,6 +659,10 @@ input::placeholder { text-overflow: ellipsis; }
 .map .country.answered { fill: var(--success); }
 .map .country.missed { fill: var(--wrong); }
 .map .hit { fill: transparent; pointer-events: all; cursor: pointer; }
+.map .hit.tiny { stroke: var(--muted); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.map .hit.tiny.highlight { stroke: var(--accent); }
+.map .hit.tiny.answered { stroke: var(--success); }
+.map .hit.tiny.missed { stroke: var(--wrong); }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
 .question > .map, .feedback > .map { min-width: 0; width: 100%; }
 .question > .map, .feedback > .map, .quiz-screen > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }

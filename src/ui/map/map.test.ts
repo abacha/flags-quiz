@@ -240,6 +240,31 @@ describe('renderMap', () => {
     expect(radius('ru')).toBeLessThanOrEqual(22 * unitsPerPx);
   });
 
+  it('outlines a country drawn smaller than its hit circle until it is zoomed in', () => {
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
+    const svg = layOut(view.element);
+    const hit = view.element.querySelector('circle.hit[data-iso2="lu"]')!;
+    const outlined = (iso2: string) => view.element.querySelector(`circle.hit[data-iso2="${iso2}"]`)!.classList.contains('tiny');
+    expect(outlined('lu')).toBe(true);
+    expect(outlined('fr')).toBe(false);
+    const { x, y } = new DOMPoint(Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))).matrixTransform(svg.getScreenCTM()!);
+    for (let i = 0; i < 20; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: x, clientY: y, cancelable: true }));
+    expect(outlined('lu')).toBe(false);
+  });
+
+  it('paints the outline of a small country with its state', () => {
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
+    layOut(view.element);
+    const outline = view.element.querySelector('circle.hit[data-iso2="mt"]')!;
+    view.paint('mt', 'answered', 'Malta');
+    expect(outline.classList.contains('answered')).toBe(true);
+    view.paint('mt', 'missed');
+    expect(outline.classList.contains('answered')).toBe(false);
+    expect(outline.classList.contains('missed')).toBe(true);
+    view.clear();
+    expect(outline.classList.contains('missed')).toBe(false);
+  });
+
   it('lets the real country shapes win over the hit circles', () => {
     const view = renderMap({ continent: 'europe', level: MAP_ALL });
     const firstHit = view.element.querySelector('circle.hit')!;
