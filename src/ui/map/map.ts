@@ -76,6 +76,14 @@ const viewBoxOf = ([[x0, y0], [x1, y1]]: [Point, Point]): ViewBox => ({ x: x0, y
 
 const distance = ([ax, ay]: Point, [bx, by]: Point) => Math.hypot(ax - bx, ay - by);
 
+function unionOf(boxes: ViewBox[]): ViewBox {
+  const x0 = Math.min(...boxes.map((b) => b.x));
+  const y0 = Math.min(...boxes.map((b) => b.y));
+  const x1 = Math.max(...boxes.map((b) => b.x + b.width));
+  const y1 = Math.max(...boxes.map((b) => b.y + b.height));
+  return viewBoxOf([[x0, y0], [x1, y1]]);
+}
+
 const centre = (box: ViewBox): Point => [box.x + box.width / 2, box.y + box.height / 2];
 
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
@@ -141,22 +149,19 @@ function buildContinentMap(continent: ContinentKey): ContinentMap {
     for (const other of hits.values()) if (other !== hit) hit.cap = Math.min(hit.cap, distance(hit.center, other.center) / 2);
   }
 
-  const surroundings = new Map<string, ViewBox>();
+  const surroundings = new Map(
+    [...pool.keys()].map((iso2) => {
+      const circle = geoCircle().center(centroidOf(iso2)).radius(SURROUNDINGS_DEGREES).precision(1)();
+      return [iso2, nearSideBounds([...units.get(iso2)!.coordinates.flat(2), ...circle.coordinates.flat()], hits.get(iso2)!.center[0])];
+    }),
+  );
   return {
     pool,
     continentFit: viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures))),
-    bounds: viewBoxOf(path.bounds(poolFeatures)),
+    bounds: unionOf([viewBoxOf(path.bounds(poolFeatures)), ...surroundings.values()]),
     countryLayer,
     hits,
-    surroundings(iso2) {
-      let box = surroundings.get(iso2);
-      if (!box) {
-        const circle = geoCircle().center(centroidOf(iso2)).radius(SURROUNDINGS_DEGREES).precision(1)();
-        box = nearSideBounds([...units.get(iso2)!.coordinates.flat(2), ...circle.coordinates.flat()], hits.get(iso2)!.center[0]);
-        surroundings.set(iso2, box);
-      }
-      return box;
-    },
+    surroundings: (iso2) => surroundings.get(iso2)!,
   };
 }
 
@@ -212,12 +217,7 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
   const screenUnitsPerPx = () => 1 / svg.getScreenCTM()!.a;
 
   function framing(iso2s: readonly string[]): ViewBox {
-    const boxes = iso2s.map(surroundings);
-    const x0 = Math.min(...boxes.map((b) => b.x));
-    const y0 = Math.min(...boxes.map((b) => b.y));
-    const x1 = Math.max(...boxes.map((b) => b.x + b.width));
-    const y1 = Math.max(...boxes.map((b) => b.y + b.height));
-    return frame(viewBoxOf([[x0, y0], [x1, y1]]), aspect, fit, MAX_ZOOM, bounds);
+    return frame(unionOf(iso2s.map(surroundings)), aspect, fit, MAX_ZOOM, bounds);
   }
 
   function reshape(next: number) {

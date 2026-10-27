@@ -373,6 +373,13 @@ describe('renderMap', () => {
     expect(contains(svg, projectedBounds('americas', 'sv').surroundings)).toBe(true);
   });
 
+  it('frames a small country on the edge of the continent with its surroundings', () => {
+    const view = renderMap({ continent: 'oceania', level: MAP_ALL });
+    const svg = layOut(view.element);
+    view.focus(['cx']);
+    expect(contains(svg, projectedBounds('oceania', 'cx').surroundings)).toBe(true);
+  });
+
   it('frames a large country whole', () => {
     const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
