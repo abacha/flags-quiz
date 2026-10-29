@@ -89,4 +89,41 @@ describe('renderQuizResult', () => {
     pressDeviceBack();
     expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
   });
+
+  describe('on the world quiz', () => {
+    const c = (iso2: string) => countries.find((country) => country.iso2 === iso2)!;
+    const worldRoot = (overrides: Partial<Extract<Screen, { name: 'quizResult' }>>, screens: Screen[] = []) =>
+      render({ continent: 'world', difficulty: 'easy', finished: true, ...overrides }, screens);
+    const bars = (root: HTMLElement) => [...root.querySelectorAll('.continent-bar')].map((bar) => bar.querySelector('.continent-name')!.textContent);
+
+    it('shows the continents answered without a mistake as mastered and the others weakest first', () => {
+      const root = worldRoot({ missed: [c('br'), c('ar'), c('fr')] });
+      const chips = [...root.querySelectorAll('.mastered .tag')].map((tag) => tag.textContent);
+      expect(chips).toEqual(expect.arrayContaining([expect.stringMatching(/^✓ África \d+\/\d+$/), expect.stringMatching(/^✓ Ásia /)]));
+      expect(bars(root)).toEqual(['Américas', 'Europa']);
+    });
+
+    it('shows each continent left to study with its count and percentage', () => {
+      const root = worldRoot({ missed: [c('br')] });
+      const bar = root.querySelector('.continent-bar')!;
+      expect(bar.querySelector('.continent-score')!.textContent).toMatch(/^\d+\/\d+ · \d+%$/);
+    });
+
+    it('opens Aprender of the weakest continent at the same level', () => {
+      const screens: Screen[] = [];
+      const root = worldRoot({ difficulty: 'general', missed: [c('br')] }, screens);
+      [...root.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === 'Estudar Américas →')!.click();
+      expect(screens).toEqual([{ name: 'game', continent: 'americas', difficulty: 'general' }]);
+    });
+
+    it('offers no study button when every continent is mastered', () => {
+      const root = worldRoot({});
+      expect(root.querySelectorAll('.continent-bar')).toHaveLength(0);
+      expect([...root.querySelectorAll('button')].some((b) => b.textContent!.startsWith('Estudar'))).toBe(false);
+    });
+  });
+
+  it('shows no continent breakdown on a continent quiz', () => {
+    expect(render({ finished: true, missed: [fiji] }).querySelector('.continent-report')).toBeNull();
+  });
 });

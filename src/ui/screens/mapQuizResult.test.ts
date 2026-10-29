@@ -102,4 +102,15 @@ describe('renderMapQuizResult', () => {
     const { headings } = render({ unanswered: [tonga], missed: [samoa] });
     expect(headings()).toEqual(['Países que você errou']);
   });
+
+  it('shows the continent breakdown on the world quiz and opens the weakest continent on Início', () => {
+    const { root, screens, button } = render({ continent: 'world', level: MAP_ALL, unanswered: [tonga, samoa] });
+    expect(root.querySelector('.continent-bar .continent-name')!.textContent).toBe('Oceania');
+    button('Estudar Oceania →').click();
+    expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);
+  });
+
+  it('shows no continent breakdown on a continent quiz', () => {
+    expect(render({ missed: [tonga] }).root.querySelector('.continent-report')).toBeNull();
+  });
 });
