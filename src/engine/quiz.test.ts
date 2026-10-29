@@ -167,4 +167,10 @@ describe('Quiz', () => {
   it('refuses an empty pool', () => {
     expect(() => new Quiz([], seededRng(12))).toThrow('at least one country');
   });
+
+  it('lays the grid out in the order it is given', () => {
+    const quiz = new Quiz(four, seededRng(1), (pool) => [...pool].reverse());
+    expect(quiz.flags).toEqual([...four].reverse());
+    expect(quiz.current).toBe(four[3]);
+  });
 });

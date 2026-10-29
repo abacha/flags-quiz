@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { countries } from './countries';
 import { geoDistance } from 'd3-geo';
-import { MAP_ALL, MAP_OBJECT, centroidOf, mapExcluded, mapLevelLabel, mapLevels, mapPool, nearestCountries, topology } from './maps';
+import { MAP_ALL, MAP_OBJECT, centroidOf, mapExcluded, mapLevelLabel, mapLevels, mapPool, nearestCountries, proximityOrder, topology } from './maps';
+import { seededRng } from '../engine/rng';
 import { poolFor } from '../engine/pool';
 
 const topologyIds = (): string[] =>
@@ -123,6 +124,28 @@ describe('maps data', () => {
       expect(lon).toBeGreaterThan(-10);
       expect(lat).toBeGreaterThan(36);
       expect(geoDistance([lon, lat], [-8, 39.5])).toBeLessThan(0.05);
+    });
+  });
+
+  describe('proximity order', () => {
+    const africa = mapPool('africa', MAP_ALL);
+
+    it('lays every country of the pool out once', () => {
+      const order = proximityOrder(africa, seededRng(1));
+      expect(order).toHaveLength(africa.length);
+      expect(new Set(order)).toEqual(new Set(africa));
+    });
+
+    it('follows each country with the nearest one not yet laid out', () => {
+      const order = proximityOrder(africa, seededRng(1));
+      for (let i = 1; i < order.length; i++) {
+        expect(order[i], order[i - 1].iso2).toBe(nearestCountries(order[i - 1], order.slice(i), 1)[0]);
+      }
+    });
+
+    it('starts on a random country', () => {
+      const starts = new Set([1, 2, 3, 4, 5].map((seed) => proximityOrder(africa, seededRng(seed))[0]));
+      expect(starts.size).toBeGreaterThan(1);
     });
   });
 });

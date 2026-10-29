@@ -1,6 +1,6 @@
 import { countries, type Country } from '../../data/countries';
 import { poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { Quiz } from '../../engine/quiz';
+import { Quiz, type QuizOrder } from '../../engine/quiz';
 import { saveQuizOutcome, type NewRecords, type QuizOutcome, type RecordStore } from '../../quizRecords';
 import { el } from '../dom';
 import { onBack } from '../backButton';
@@ -28,6 +28,7 @@ export interface QuizResult {
 
 export interface QuizSpec {
   pool: readonly Country[];
+  order?: QuizOrder;
   title: string;
   figure?: (country: Country) => HTMLElement;
   board: (quiz: Quiz, pick: (country: Country) => void) => QuizBoard;
@@ -87,7 +88,7 @@ function flagGrid(quiz: Quiz, pick: (country: Country) => void): QuizBoard {
 }
 
 export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): void {
-  const quiz = new Quiz(spec.pool, Math.random);
+  const quiz = new Quiz(spec.pool, Math.random, spec.order);
   const startedAt = performance.now();
   const elapsed = () => performance.now() - startedAt;
 

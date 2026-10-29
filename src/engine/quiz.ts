@@ -4,6 +4,7 @@ import { shuffle, type Rng } from './rng';
 
 export type QuizStatus = 'playing' | 'finished' | 'ended';
 export type FlagState = 'open' | 'missed' | 'answered';
+export type QuizOrder = (pool: readonly Country[], rng: Rng) => Country[];
 
 export class Quiz {
   readonly flags: readonly Country[];
@@ -12,9 +13,9 @@ export class Quiz {
   private currentIndex: number | null = 0;
   private endedEarly = false;
 
-  constructor(pool: readonly Country[], rng: Rng) {
+  constructor(pool: readonly Country[], rng: Rng, order: QuizOrder = shuffle) {
     if (pool.length === 0) throw new Error('Quiz needs at least one country');
-    this.flags = shuffle(pool, rng);
+    this.flags = order(pool, rng);
   }
 
   get total(): number {
