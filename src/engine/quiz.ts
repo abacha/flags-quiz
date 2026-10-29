@@ -4,18 +4,23 @@ import { shuffle, type Rng } from './rng';
 
 export type QuizStatus = 'playing' | 'finished' | 'ended';
 export type FlagState = 'open' | 'missed' | 'answered';
-export type QuizOrder = (pool: readonly Country[], rng: Rng) => Country[];
+export type Nearest = (from: Country, candidates: readonly Country[]) => Country;
 
 export class Quiz {
   readonly flags: readonly Country[];
   private readonly answered = new Set<string>();
   private readonly errorCounts = new Map<string, number>();
+  private readonly skipped = new Set<string>();
   private currentIndex: number | null = 0;
   private endedEarly = false;
 
-  constructor(pool: readonly Country[], rng: Rng, order: QuizOrder = shuffle) {
+  constructor(
+    pool: readonly Country[],
+    rng: Rng,
+    private readonly nearest?: Nearest,
+  ) {
     if (pool.length === 0) throw new Error('Quiz needs at least one country');
-    this.flags = order(pool, rng);
+    this.flags = shuffle(pool, rng);
   }
 
   get total(): number {
@@ -70,7 +75,8 @@ export class Quiz {
     const flag = this.current;
     if (acceptsTypedName(flag, text)) {
       this.answered.add(flag.iso2);
-      this.currentIndex = this.nextUnansweredAfter(this.flags.indexOf(flag));
+      this.skipped.clear();
+      this.currentIndex = this.nextFrom(flag);
       return true;
     }
     this.errorCounts.set(flag.iso2, (this.errorCounts.get(flag.iso2) ?? 0) + 1);
@@ -78,14 +84,24 @@ export class Quiz {
   }
 
   skip(): void {
-    const from = this.flags.indexOf(this.current);
-    this.currentIndex = this.nextUnansweredAfter(from) ?? from;
+    const from = this.current;
+    this.skipped.add(from.iso2);
+    this.currentIndex = this.nextFrom(from) ?? this.flags.indexOf(from);
   }
 
   end(): void {
     if (this.status !== 'playing') throw new Error(`Quiz is ${this.status}`);
     this.endedEarly = true;
     this.currentIndex = null;
+  }
+
+  private nextFrom(from: Country): number | null {
+    if (!this.nearest) return this.nextUnansweredAfter(this.flags.indexOf(from));
+    const candidates = this.unanswered.filter((c) => c !== from);
+    if (candidates.length === 0) return null;
+    const fresh = candidates.filter((c) => !this.skipped.has(c.iso2));
+    if (fresh.length === 0) this.skipped.clear();
+    return this.flags.indexOf(this.nearest(from, fresh.length > 0 ? fresh : candidates));
   }
 
   private nextUnansweredAfter(from: number): number | null {

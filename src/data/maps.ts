@@ -3,7 +3,6 @@ import { merge } from 'topojson-client';
 import type { Polygon as GeoPolygon } from 'geojson';
 import type { MultiPolygon, Polygon, Topology } from 'topojson-specification';
 import { poolFor, type ContinentKey } from '../engine/pool';
-import { pickOne, type Rng } from '../engine/rng';
 import { countries, type Country } from './countries';
 import mapExcludedJson from './map-excluded.json';
 import mapRegionsJson from './map-regions.json';
@@ -88,15 +87,4 @@ export function nearestCountries(target: Country, pool: readonly Country[], coun
     .sort((a, b) => a.distance - b.distance)
     .slice(0, count)
     .map(({ country }) => country);
-}
-
-export function proximityOrder(pool: readonly Country[], rng: Rng): Country[] {
-  const order = [pickOne(pool, rng)];
-  let rest = pool.filter((c) => c !== order[0]);
-  while (rest.length > 0) {
-    const [next] = nearestCountries(order.at(-1)!, rest, 1);
-    order.push(next);
-    rest = rest.filter((c) => c !== next);
-  }
-  return order;
 }

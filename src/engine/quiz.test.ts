@@ -168,9 +168,59 @@ describe('Quiz', () => {
     expect(() => new Quiz([], seededRng(12))).toThrow('at least one country');
   });
 
-  it('lays the grid out in the order it is given', () => {
-    const quiz = new Quiz(four, seededRng(1), (pool) => [...pool].reverse());
-    expect(quiz.flags).toEqual([...four].reverse());
-    expect(quiz.current).toBe(four[3]);
+  describe('moving to the nearest country', () => {
+    const [a, b, c, d] = four;
+    const position = new Map([a, b, c, d].map((country, i) => [country, [0, 1, 3, 10][i]]));
+    const nearest = (from: Country, candidates: readonly Country[]) =>
+      candidates.reduce((best, country) =>
+        Math.abs(position.get(country)! - position.get(from)!) < Math.abs(position.get(best)! - position.get(from)!) ? country : best,
+      );
+    const lineQuiz = () => new Quiz(four, seededRng(1), nearest);
+
+    it('moves to the nearest unanswered country after a right answer', () => {
+      const quiz = lineQuiz();
+      quiz.select(d.iso2);
+      quiz.answer(d.name);
+      expect(quiz.current).toBe(c);
+      quiz.select(a.iso2);
+      quiz.answer(a.name);
+      expect(quiz.current).toBe(b);
+    });
+
+    it('skips to the nearest country not skipped since the last right answer', () => {
+      const quiz = lineQuiz();
+      quiz.select(b.iso2);
+      quiz.skip();
+      expect(quiz.current).toBe(a);
+      quiz.skip();
+      expect(quiz.current).toBe(c);
+      quiz.skip();
+      expect(quiz.current).toBe(d);
+    });
+
+    it('skips to the nearest country again once every other one was skipped', () => {
+      const quiz = lineQuiz();
+      quiz.select(b.iso2);
+      for (let i = 0; i < 4; i++) quiz.skip();
+      expect(quiz.current).toBe(c);
+    });
+
+    it('forgets the skipped countries after a right answer', () => {
+      const quiz = lineQuiz();
+      quiz.select(b.iso2);
+      quiz.skip();
+      quiz.answer(a.name);
+      expect(quiz.current).toBe(b);
+    });
+
+    it('keeps the last unanswered country current when skipping it', () => {
+      const quiz = lineQuiz();
+      for (const country of [a, b, c]) {
+        quiz.select(country.iso2);
+        quiz.answer(country.name);
+      }
+      quiz.skip();
+      expect(quiz.current).toBe(d);
+    });
   });
 });

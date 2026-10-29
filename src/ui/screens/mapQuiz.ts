@@ -1,5 +1,5 @@
 import type { Country } from '../../data/countries';
-import { mapLevelLabel, mapPool, proximityOrder, type MapLevel, type MapScope } from '../../data/maps';
+import { mapLevelLabel, mapPool, nearestCountries, type MapLevel, type MapScope } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import type { Quiz } from '../../engine/quiz';
 import { saveMapQuizOutcome } from '../../mapRecords';
@@ -12,7 +12,7 @@ export function renderMapQuiz(root: HTMLElement, navigate: Navigate, continent: 
   const pool = mapPool(continent, level);
   runQuiz(root, navigate, {
     pool,
-    order: proximityOrder,
+    nearest: (from, candidates) => nearestCountries(from, candidates, 1)[0],
     title: `Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`,
     board: (quiz, pick) => mapBoard({ continent, level }, quiz, pick),
     save: (store, outcome) => saveMapQuizOutcome(store, continent, level, outcome),
