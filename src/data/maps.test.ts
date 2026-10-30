@@ -19,6 +19,15 @@ describe('maps data', () => {
     for (const key of CONTINENT_KEYS) for (const c of mapPool(key, MAP_ALL)) expect(mapExcluded).not.toContain(c.iso2);
   });
 
+  it('outlines the small Caribbean islands in enough detail to show their shape', () => {
+    const pointsOf = (iso2: string): number => {
+      const geometry = topology.objects[MAP_OBJECT].geometries.find((g) => g.id === iso2)!;
+      const arcs = geometry.type === 'Polygon' ? geometry.arcs.flat() : geometry.arcs.flat(2);
+      return arcs.reduce((sum, arc) => sum + topology.arcs[arc < 0 ? ~arc : arc].length, 0);
+    };
+    for (const iso2 of ['bb', 'lc', 'gd', 'dm', 'kn', 'mq', 'tt']) expect(pointsOf(iso2), iso2).toBeGreaterThanOrEqual(30);
+  });
+
   it('asks the four UK nations and not the United Kingdom', () => {
     const europe = mapPool('europe', MAP_ALL).map((c) => c.iso2);
     expect(europe).toEqual(expect.arrayContaining(['gb-eng', 'gb-sct', 'gb-wls', 'gb-nir']));
