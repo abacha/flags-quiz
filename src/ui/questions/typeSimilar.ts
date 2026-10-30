@@ -1,6 +1,7 @@
 import type { Country } from '../../data/countries';
 import { el } from '../dom';
 import { flagImg } from '../flag';
+import { typoMessage } from './typoMessage';
 import type { Submit } from './render';
 
 export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLElement {
@@ -15,6 +16,7 @@ export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLEle
       placeholder: 'Nome',
     }),
   }));
+  const message = typoMessage();
   const form = el('form', { className: 'type-form' }, [
     el('div', { className: 'type-grid' }, fields.map(({ country, input }) => el('label', { className: 'type-item' }, [flagImg(country), input]))),
     el('button', { className: 'primary', type: 'submit' }, ['Responder']),
@@ -27,8 +29,10 @@ export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLEle
       blanks[0].input.focus();
       return;
     }
-    submit({ kind: 'texts', texts: Object.fromEntries(fields.map(({ country, input }) => [country.iso2, input.value])) });
+    const typos = submit({ kind: 'texts', texts: Object.fromEntries(fields.map(({ country, input }) => [country.iso2, input.value])) });
+    fields.forEach(({ country, input }) => input.classList.toggle('typo', typos.includes(country)));
+    message.hidden = typos.length === 0;
   };
   queueMicrotask(() => fields[0].input.focus());
-  return el('div', { className: 'question' }, [el('h2', {}, ['Bandeiras parecidas: escreva o nome de cada uma']), form]);
+  return el('div', { className: 'question' }, [el('h2', {}, ['Bandeiras parecidas: escreva o nome de cada uma']), form, message]);
 }

@@ -2,16 +2,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Answer } from '../../engine/answer';
 import { goalFor } from '../../engine/pool';
+import { seededRng } from '../../engine/rng';
 import { mapPool } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import { listenForBack, settleBack } from '../backButton';
 import type { Navigate, Screen } from '../navigation';
 import { renderMapGame } from './mapGame';
 
-const asked: { question: Question; submit: (answer: Answer) => void }[] = [];
+const asked: { question: Question; submit: (answer: Answer) => unknown }[] = [];
 
 vi.mock('../questions/render', () => ({
-  renderQuestion: (question: Question, submit: (answer: Answer) => void) => {
+  renderQuestion: (question: Question, submit: (answer: Answer) => unknown) => {
     asked.push({ question, submit });
     return document.createElement('div');
   },
@@ -83,6 +84,19 @@ describe('renderMapGame', () => {
   afterEach(() => {
     root.remove();
     vi.restoreAllMocks();
+  });
+
+  it('keeps the map name question open, with no feedback and every life, on a typo', () => {
+    vi.spyOn(Math, 'random').mockImplementation(seededRng(2));
+    asked.length = 0;
+    root.replaceChildren();
+    renderMapGame(root, navigate, 'americas', 'central-america');
+    while (asked[asked.length - 1].question.format !== 'mapTypeName') answerCurrent(correctAnswer);
+    const { question, submit } = asked[asked.length - 1];
+    if (question.format !== 'mapTypeName') throw new Error('Expected a mapTypeName question');
+    expect(submit({ kind: 'text', text: `${question.target.name}x` })).toEqual([question.target]);
+    expect(root.querySelector('.feedback')).toBeNull();
+    expect(root.querySelectorAll('.heart.lost')).toHaveLength(0);
   });
 
   it('shows the map label, three lives, the correct answers out of the goal and an empty bar', () => {

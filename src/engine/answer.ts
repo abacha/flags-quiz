@@ -15,6 +15,7 @@ const SHORT_NAME_LENGTH = 5;
 export interface Grade {
   correct: boolean;
   missed: Country[];
+  typos: Country[];
 }
 
 export function normalizeName(text: string): string {
@@ -40,12 +41,15 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'mapTrueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
-    case 'mapTypeName':
-      return targetGrade(acceptsTypedName(question.target, expectKind(answer, 'text').text), question.target);
+    case 'mapTypeName': {
+      const verdict = judgeTypedName(question.target, expectKind(answer, 'text').text);
+      if (verdict === 'typo') return { correct: false, missed: [], typos: [question.target] };
+      return targetGrade(verdict === 'right', question.target);
+    }
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;
-      if (chosen === question.intruder.iso2) return { correct: true, missed: [] };
-      return { correct: false, missed: question.options.filter((c) => c.iso2 === chosen) };
+      if (chosen === question.intruder.iso2) return { correct: true, missed: [], typos: [] };
+      return { correct: false, missed: question.options.filter((c) => c.iso2 === chosen), typos: [] };
     }
     case 'matchPairs':
     case 'mapPairs':
@@ -53,18 +57,21 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'sortSimilarNames': {
       const { links } = expectKind(answer, 'links');
       const missed = question.countries.filter((c) => links[c.iso2] !== c.iso2);
-      return { correct: missed.length === 0, missed };
+      return { correct: missed.length === 0, missed, typos: [] };
     }
     case 'typeSimilar': {
       const { texts } = expectKind(answer, 'texts');
-      const missed = question.countries.filter((c) => !acceptsTypedName(c, texts[c.iso2] ?? ''));
-      return { correct: missed.length === 0, missed };
+      const verdicts = question.countries.map((c) => ({ country: c, verdict: judgeTypedName(c, texts[c.iso2] ?? '') }));
+      const missed = verdicts.filter(({ verdict }) => verdict === 'wrong').map(({ country }) => country);
+      if (missed.length > 0) return { correct: false, missed, typos: [] };
+      const typos = verdicts.filter(({ verdict }) => verdict === 'typo').map(({ country }) => country);
+      return { correct: typos.length === 0, missed: [], typos };
     }
   }
 }
 
 function targetGrade(correct: boolean, target: Country): Grade {
-  return { correct, missed: correct ? [] : [target] };
+  return { correct, missed: correct ? [] : [target], typos: [] };
 }
 
 export function acceptsTypedName(country: Country, text: string): boolean {

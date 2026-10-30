@@ -1,4 +1,5 @@
 import type { Answer } from '../../engine/answer';
+import type { Country } from '../../data/countries';
 import type { Question } from '../../engine/question';
 import type { MapScope } from '../../data/maps';
 import { CONTINENT_FROM } from '../labels';
@@ -9,7 +10,7 @@ import { renderTrueFalse } from './trueFalse';
 import { renderTypeName } from './typeName';
 import { renderTypeSimilar } from './typeSimilar';
 
-export type Submit = (answer: Answer) => void;
+export type Submit = (answer: Answer) => Country[];
 
 export function renderQuestion(question: Question, submit: Submit, scope?: MapScope): HTMLElement {
   switch (question.format) {

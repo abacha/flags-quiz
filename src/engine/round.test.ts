@@ -283,6 +283,21 @@ describe('Round', () => {
     expect(heavy / 400).toBeLessThan(0.82);
   });
 
+  it('charges nothing for a typo and lets the same question be answered again', () => {
+    const round = new Round(easy, settings(1000, 1000), seededRng(14), [flagToNames, typeName]);
+    let question = round.nextQuestion();
+    while (question.format !== 'typeName') {
+      round.answer(rightAnswer(question));
+      question = round.nextQuestion();
+    }
+    const before = round.correct;
+    const typo = round.answer({ kind: 'text', text: `${question.target.name}x` });
+    expect(typo.typos).toEqual([question.target]);
+    expect([round.lives, round.correct, round.missed]).toEqual([STARTING_LIVES, before, []]);
+    expect(round.answer(rightAnswer(question)).correct).toBe(true);
+    expect([round.lives, round.correct]).toEqual([STARTING_LIVES, before + 1]);
+  });
+
   it('refuses a second answer to the same question', () => {
     const round = new Round(easy, settings(12), seededRng(14));
     const question = round.nextQuestion();

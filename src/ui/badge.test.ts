@@ -33,7 +33,7 @@ describe('badge', () => {
 
   it('shows the badge in the feedback of a wrong answer', () => {
     const question = typeName.build(byIso('ky'), ctx, seededRng(1));
-    const feedback = renderFeedback(question, { correct: false, missed: [byIso('ky')] }, () => {});
+    const feedback = renderFeedback(question, { correct: false, missed: [byIso('ky')], typos: [] }, () => {});
     expect(feedback.querySelector('.badge')?.textContent).toBe('Território');
   });
 
@@ -42,7 +42,7 @@ describe('badge', () => {
       for (const target of pool) {
         if (!format.canTarget(target, ctx)) continue;
         const question = format.build(target, ctx, seededRng(1));
-        expect(renderQuestion(question, () => {}).querySelector('.badge')).toBeNull();
+        expect(renderQuestion(question, () => []).querySelector('.badge')).toBeNull();
       }
     }
   });

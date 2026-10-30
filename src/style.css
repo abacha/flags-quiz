@@ -395,6 +395,8 @@ input::placeholder { text-overflow: ellipsis; }
 }
 
 .quiz-message { margin: 0; color: var(--wrong); font-weight: 600; }
+.type-message { margin: 10px 0 0; color: var(--wrong); font-weight: 600; }
+.type-form input.typo { border-color: var(--wrong); }
 /* kept in flow (not display: none) so hiding it never resizes the dock and desyncs the grid's scroll position */
 .quiz-message[hidden] { display: block; visibility: hidden; }
 

@@ -43,20 +43,20 @@ describe('the initial view of a map question', () => {
       { format: 'mapTypeName', target: sv },
     ];
     for (const question of questions) {
-      const rendered = renderMapQuestion(question, AMERICAS, () => {});
+      const rendered = renderMapQuestion(question, AMERICAS, () => []);
       expect(shows(rendered, 'sv')).toBe(true);
       expect(showsAll(rendered)).toBe(false);
     }
   });
 
   it('opens mapPairs on its four countries', () => {
-    const rendered = renderMapQuestion({ format: 'mapPairs', target: br, countries: [br, ar, cl, pe] }, AMERICAS, () => {});
+    const rendered = renderMapQuestion({ format: 'mapPairs', target: br, countries: [br, ar, cl, pe] }, AMERICAS, () => []);
     for (const iso2 of ['br', 'ar', 'cl', 'pe']) expect(shows(rendered, iso2)).toBe(true);
     expect(showsAll(rendered)).toBe(false);
   });
 
   it('opens nameToMap on the whole continent', () => {
-    expect(showsAll(renderMapQuestion({ format: 'nameToMap', target: sv }, AMERICAS, () => {}))).toBe(true);
+    expect(showsAll(renderMapQuestion({ format: 'nameToMap', target: sv }, AMERICAS, () => []))).toBe(true);
   });
 
   it('opens the solution map on what it shows', () => {
@@ -120,7 +120,7 @@ describe('renderMapQuestion', () => {
   });
 
   it('submits the typed name in mapTypeName', () => {
-    const submit = vi.fn();
+    const submit = vi.fn(() => []);
     const rendered = renderMapQuestion({ format: 'mapTypeName', target: br }, AMERICAS, submit);
     expect(rendered.querySelector('h2')!.textContent).toBe('Escreva o nome deste país');
     rendered.querySelector('input')!.value = 'Brasil';
@@ -147,7 +147,7 @@ describe('renderFeedback with a solution', () => {
   it('shows the given solution instead of the flag card on a wrong answer', () => {
     const question: Question = { format: 'nameToMap', target: br };
     const solution = mapSolution(question, AMERICAS);
-    const feedback = renderFeedback(question, { correct: false, missed: [br] }, () => {}, solution);
+    const feedback = renderFeedback(question, { correct: false, missed: [br], typos: [] }, () => {}, solution);
     expect(feedback.contains(solution)).toBe(true);
     expect(feedback.querySelector('.solution-card')).toBeNull();
   });
@@ -155,20 +155,20 @@ describe('renderFeedback with a solution', () => {
 
 describe('renderQuestion with a map question', () => {
   it('delegates to the map renderer with the continent', () => {
-    const rendered = renderQuestion({ format: 'nameToMap', target: br }, () => {}, AMERICAS);
+    const rendered = renderQuestion({ format: 'nameToMap', target: br }, () => [], AMERICAS);
     expect(rendered.querySelector('path[data-iso2="br"]')).not.toBeNull();
   });
 });
 
 describe('renderPairs', () => {
   it('shows the flag pairs unchanged without a face', () => {
-    const rendered = renderPairs('Ligue', [br, ar], () => {});
+    const rendered = renderPairs('Ligue', [br, ar], () => []);
     expect(rendered.querySelectorAll('.pair-flag img')).toHaveLength(2);
   });
 
   it('asks Onde fica X on the region map, with the other regions grey', () => {
     const sn = countries.find((c) => c.iso2 === 'sn')!;
-    const rendered = renderQuestion({ format: 'nameToMap', target: sn }, () => {}, { continent: 'africa', level: 'west-coast' });
+    const rendered = renderQuestion({ format: 'nameToMap', target: sn }, () => [], { continent: 'africa', level: 'west-coast' });
     expect(rendered.querySelector('path[data-iso2="ng"]')!.classList.contains('context')).toBe(true);
     expect(rendered.querySelector('path[data-iso2="gm"]')!.classList.contains('country')).toBe(true);
   });

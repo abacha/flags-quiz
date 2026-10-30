@@ -1,7 +1,7 @@
 # Flags Quiz — Forgive typos in typed names
 
 Date: 2026-10-30
-Status: approved
+Status: implemented
 
 ## Reasoning
 
@@ -54,7 +54,7 @@ The rule below treats an answer as a typo only when it names no country and sits
 
 ## Checklist
 
-- [ ] `judgeTypedName` with tests covering the examples above, ties, short names and aliases.
-- [ ] Typo outcome in `grade()` for the three typed formats, with tests, including the mixed `typeSimilar` cases.
-- [ ] `Round.answer` and `Quiz.answer` charge nothing on a typo, with tests.
-- [ ] Screens show "Confira a grafia" and keep the text, with tests.
+- [x] `judgeTypedName` with tests covering the examples above, ties, short names and aliases.
+- [x] Typo outcome in `grade()` for the three typed formats, with tests, including the mixed `typeSimilar` cases.
+- [x] `Round.answer` and `Quiz.answer` charge nothing on a typo, with tests.
+- [x] Screens show "Confira a grafia" and keep the text, with tests.

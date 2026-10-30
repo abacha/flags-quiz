@@ -87,6 +87,7 @@ export class Round {
   answer(answer: Answer): Grade {
     if (!this.current) throw new Error('No question to answer');
     const result = grade(this.current, answer);
+    if (result.typos.length > 0) return result;
     this.current = null;
     if (result.correct) {
       this.correct++;

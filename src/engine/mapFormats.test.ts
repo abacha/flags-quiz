@@ -117,7 +117,7 @@ describe('grade map questions', () => {
   it('grades a tap on the target as right and on a neighbour as wrong', () => {
     const q: Question = { format: 'nameToMap', target: fiji };
     expect(grade(q, { kind: 'choice', iso2: 'fj' }).correct).toBe(true);
-    expect(grade(q, { kind: 'choice', iso2: 'to' })).toEqual({ correct: false, missed: [fiji] });
+    expect(grade(q, { kind: 'choice', iso2: 'to' })).toEqual({ correct: false, missed: [fiji], typos: [] });
   });
 
   it('grades a name choice in mapToNames against the target', () => {
@@ -131,6 +131,7 @@ describe('grade map questions', () => {
     expect(grade({ format: 'mapTrueFalse', target: fiji, shown: c('to') }, { kind: 'yesNo', yes: true })).toEqual({
       correct: false,
       missed: [fiji],
+      typos: [],
     });
   });
 
@@ -145,7 +146,7 @@ describe('grade map questions', () => {
     const q: Question = { format: 'mapPairs', target: fiji, countries: countriesShown };
     expect(grade(q, rightAnswer(q)).correct).toBe(true);
     const swapped: Answer = { kind: 'links', links: { fj: 'to', to: 'fj', ws: 'ws', vu: 'vu' } };
-    expect(grade(q, swapped)).toEqual({ correct: false, missed: [fiji, c('to')] });
+    expect(grade(q, swapped)).toEqual({ correct: false, missed: [fiji, c('to')], typos: [] });
   });
 });
 
@@ -183,7 +184,7 @@ describe('grade a tap outside the level', () => {
     const outside = c('gt');
     expect(level.pool).not.toContain(outside);
     const q = { format: 'nameToMap', target } as const;
-    expect(grade(q, { kind: 'choice', iso2: outside.iso2 })).toEqual({ correct: false, missed: [target] });
+    expect(grade(q, { kind: 'choice', iso2: outside.iso2 })).toEqual({ correct: false, missed: [target], typos: [] });
   });
 
   describe('regional distractors', () => {

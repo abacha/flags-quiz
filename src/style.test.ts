@@ -78,4 +78,9 @@ describe('style.css', () => {
   it('hides the flag captions under a grid with the names toggled off', () => {
     expect(declared('.hide-names figcaption', 'display')).toContain('none');
   });
+
+  it('marks a misspelled field and its message in the wrong-answer colour', () => {
+    expect(declared('.type-form input.typo', 'border-color')).toContain('var(--wrong)');
+    expect(declared('.type-message', 'color')).toContain('var(--wrong)');
+  });
 });

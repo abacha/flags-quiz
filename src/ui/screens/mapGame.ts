@@ -77,8 +77,9 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
     const questionEl = renderQuestion(
       question,
       (answer) => {
-        questionEl.inert = true;
         const result = round.answer(answer);
+        if (result.typos.length > 0) return result.typos;
+        questionEl.inert = true;
         updateHud();
         const feedback = renderFeedback(
           question,
@@ -88,6 +89,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
         );
         stage.append(feedback);
         feedback.querySelector('button')?.focus();
+        return [];
       },
       { continent, level },
     );
