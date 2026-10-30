@@ -117,6 +117,15 @@ describe('renderMapQuiz', () => {
     expect(document.activeElement).toBe(input());
   });
 
+  it('asks to check the spelling on a typo and keeps the country highlighted', () => {
+    const first = highlighted();
+    type(`${first.name}x`);
+    expect(message().hidden).toBe(false);
+    expect(message().textContent).toBe('Confira a grafia');
+    expect(highlighted()).toBe(first);
+    expect(hud()).toContain('0 pts');
+  });
+
   it('shows Errado, tente de novo on a wrong name and keeps the country highlighted', () => {
     const first = highlighted();
     type('nenhum país');

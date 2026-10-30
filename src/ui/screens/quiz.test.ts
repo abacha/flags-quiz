@@ -107,6 +107,26 @@ describe('renderQuiz', () => {
     expect(document.activeElement).toBe(input());
   });
 
+  it('asks to check the spelling on a typo, keeping the text and the score', () => {
+    const first = currentCell();
+    const typo = `${cellCountry(first).name}x`;
+    type(typo);
+    expect(message().hidden).toBe(false);
+    expect(message().textContent).toBe('Confira a grafia');
+    expect(input().value).toBe(typo);
+    expect(first.classList.contains('missed')).toBe(false);
+    expect(currentCell()).toBe(first);
+    expect(hud()).toContain('0 pts');
+    type('nenhum país');
+    expect(message().textContent).toBe('Errado, tente de novo');
+  });
+
+  it('hides the spelling message when another flag is tapped', () => {
+    type(`${cellCountry(currentCell()).name}x`);
+    cells()[1].click();
+    expect(message().hidden).toBe(true);
+  });
+
   it('marks a wrong answer as missed, keeps the flag current and keeps its name hidden', () => {
     const first = cells()[0];
     type('nenhum país');

@@ -173,12 +173,13 @@ export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): 
       input.value = '';
       return;
     }
-    const right = quiz.answer(input.value);
-    input.value = '';
+    const verdict = quiz.answer(input.value);
+    if (verdict !== 'typo') input.value = '';
     if (quiz.status !== 'playing') return finish();
-    message.hidden = right;
+    message.textContent = verdict === 'typo' ? 'Confira a grafia' : 'Errado, tente de novo';
+    message.hidden = verdict === 'right';
     paint();
-    if (right) board.reveal(quiz.current);
+    if (verdict === 'right') board.reveal(quiz.current);
     input.focus();
   };
 

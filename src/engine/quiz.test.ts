@@ -4,6 +4,7 @@ import { poolFor } from './pool';
 import { Quiz } from './quiz';
 import { seededRng } from './rng';
 
+const c = (code: string) => countries.find((country) => country.iso2 === code)!;
 const easy = poolFor(countries, 'africa', 'easy');
 const three = easy.slice(0, 3);
 const four = easy.slice(0, 4);
@@ -23,7 +24,7 @@ describe('Quiz', () => {
     const asked: Country[] = [];
     while (quiz.status === 'playing') {
       asked.push(quiz.current);
-      expect(quiz.answer(quiz.current.name)).toBe(true);
+      expect(quiz.answer(quiz.current.name)).toBe('right');
     }
     expect(asked).toEqual(quiz.flags);
     expect(quiz.status).toBe('finished');
@@ -31,11 +32,28 @@ describe('Quiz', () => {
     expect(quiz.unanswered).toEqual([]);
   });
 
+  it('keeps the flag current and open, without an error, on a typo', () => {
+    const quiz = new Quiz([c('ar'), c('br'), c('cl')], seededRng(2));
+    quiz.select('ar');
+    expect(quiz.answer('Agrentina')).toBe('typo');
+    expect(quiz.current).toBe(c('ar'));
+    expect(quiz.stateOf('ar')).toBe('open');
+    expect([quiz.errors, quiz.score, quiz.answeredCount]).toEqual([0, 0, 0]);
+  });
+
+  it('keeps playing after a typo on the last open flag', () => {
+    const quiz = new Quiz([c('ar'), c('br')], seededRng(2));
+    quiz.select('br');
+    quiz.answer('Brasil');
+    expect(quiz.answer('Agrentina')).toBe('typo');
+    expect(quiz.status).toBe('playing');
+  });
+
   it('keeps the flag current, counts an error and marks it missed on a wrong answer', () => {
     const quiz = new Quiz(three, seededRng(2));
     const flag = quiz.current;
-    expect(quiz.answer('nenhum país')).toBe(false);
-    expect(quiz.answer('outro')).toBe(false);
+    expect(quiz.answer('nenhum país')).toBe('wrong');
+    expect(quiz.answer('outro')).toBe('wrong');
     expect(quiz.current).toBe(flag);
     expect([quiz.errors, quiz.score, quiz.answeredCount]).toEqual([2, -2, 0]);
     expect(quiz.missed).toEqual([flag]);
@@ -45,7 +63,7 @@ describe('Quiz', () => {
   it('accepts aliases and ignores accents and case', () => {
     const cd = countries.find((c) => c.iso2 === 'cd')!;
     const quiz = new Quiz([cd], seededRng(3));
-    expect(quiz.answer('  rdc ')).toBe(true);
+    expect(quiz.answer('  rdc ')).toBe('right');
     expect(quiz.status).toBe('finished');
   });
 
@@ -54,7 +72,7 @@ describe('Quiz', () => {
     const [first, second, third] = quiz.flags;
     quiz.skip();
     expect(quiz.current).toBe(second);
-    expect(quiz.answer(second.name)).toBe(true);
+    expect(quiz.answer(second.name)).toBe('right');
     expect(quiz.current).toBe(third);
     quiz.skip();
     expect(quiz.current).toBe(first);

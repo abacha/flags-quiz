@@ -1,5 +1,5 @@
 import type { Country } from '../data/countries';
-import { acceptsTypedName } from './answer';
+import { judgeTypedName, type TypedVerdict } from './answer';
 import { shuffle, type Rng } from './rng';
 
 export type QuizStatus = 'playing' | 'finished' | 'ended';
@@ -71,16 +71,17 @@ export class Quiz {
     this.currentIndex = this.flags.indexOf(country);
   }
 
-  answer(text: string): boolean {
+  answer(text: string): TypedVerdict {
     const flag = this.current;
-    if (acceptsTypedName(flag, text)) {
+    const verdict = judgeTypedName(flag, text);
+    if (verdict === 'right') {
       this.answered.add(flag.iso2);
       this.skipped.clear();
       this.currentIndex = this.nextFrom(flag);
-      return true;
+    } else if (verdict === 'wrong') {
+      this.errorCounts.set(flag.iso2, (this.errorCounts.get(flag.iso2) ?? 0) + 1);
     }
-    this.errorCounts.set(flag.iso2, (this.errorCounts.get(flag.iso2) ?? 0) + 1);
-    return false;
+    return verdict;
   }
 
   skip(): void {
