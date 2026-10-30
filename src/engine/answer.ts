@@ -1,4 +1,4 @@
-import type { Country } from '../data/countries';
+import { countries, type Country } from '../data/countries';
 import type { Question } from './question';
 
 export type Answer =
@@ -7,6 +7,10 @@ export type Answer =
   | { kind: 'text'; text: string }
   | { kind: 'links'; links: Record<string, string> }
   | { kind: 'texts'; texts: Record<string, string> };
+
+export type TypedVerdict = 'right' | 'typo' | 'wrong';
+
+const SHORT_NAME_LENGTH = 5;
 
 export interface Grade {
   correct: boolean;
@@ -65,6 +69,36 @@ function targetGrade(correct: boolean, target: Country): Grade {
 
 export function acceptsTypedName(country: Country, text: string): boolean {
   return [country.name, ...country.aliases].map(normalizeName).includes(normalizeName(text));
+}
+
+const typedNames = new Map(countries.map((c) => [c, [c.name, ...c.aliases].map(normalizeName)]));
+
+export function judgeTypedName(country: Country, text: string): TypedVerdict {
+  if (acceptsTypedName(country, text)) return 'right';
+  const typed = normalizeName(text);
+  const others = countries.filter((c) => c !== country);
+  if (others.some((c) => typedNames.get(c)!.includes(typed))) return 'wrong';
+  const reach = (name: string) => (name.length <= SHORT_NAME_LENGTH ? 1 : 2);
+  const distance = Math.min(
+    ...typedNames.get(country)!.map((name) => {
+      const edits = editDistance(typed, name);
+      return edits <= reach(name) ? edits : Infinity;
+    }),
+  );
+  const closestOther = Math.min(...others.flatMap((c) => typedNames.get(c)!.map((name) => editDistance(typed, name))));
+  return distance < closestOther ? 'typo' : 'wrong';
+}
+
+function editDistance(a: string, b: string): number {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+  }
+  return d[a.length][b.length];
 }
 
 function expectKind<K extends Answer['kind']>(answer: Answer, kind: K): Extract<Answer, { kind: K }> {

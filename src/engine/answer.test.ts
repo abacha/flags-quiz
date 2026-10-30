@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
-import { grade, normalizeName } from './answer';
+import { grade, judgeTypedName, normalizeName } from './answer';
 import type { Question } from './question';
 
 const c = (code: string) => countries.find((country) => country.iso2 === code)!;
@@ -8,6 +8,42 @@ const c = (code: string) => countries.find((country) => country.iso2 === code)!;
 describe('normalizeName', () => {
   it('lowercases, strips accents, turns hyphens into spaces and collapses whitespace', () => {
     expect(normalizeName('  São   Tomé-e-Príncipe ')).toBe('sao tome e principe');
+  });
+});
+
+describe('judgeTypedName', () => {
+  it('judges the name or an alias right', () => {
+    expect(judgeTypedName(c('ar'), 'Argentina')).toBe('right');
+  });
+
+  it('forgives swapped letters, accents and case', () => {
+    expect(judgeTypedName(c('ar'), 'agrentína')).toBe('typo');
+  });
+
+  it('judges another country wrong even one letter away', () => {
+    expect(judgeTypedName(c('au'), 'Austria')).toBe('wrong');
+    expect(judgeTypedName(c('ne'), 'Nigeria')).toBe('wrong');
+  });
+
+  it('forgives a slip that is closer to the target than to its look-alike', () => {
+    expect(judgeTypedName(c('au'), 'Australa')).toBe('typo');
+  });
+
+  it('judges an alias of another country wrong', () => {
+    expect(judgeTypedName(c('uy'), 'UAE')).toBe('wrong');
+  });
+
+  it('forgives one edit on a short name and no more', () => {
+    expect(judgeTypedName(c('pe'), 'Pery')).toBe('typo');
+    expect(judgeTypedName(c('pe'), 'Pxry')).toBe('wrong');
+  });
+
+  it('judges a far-off name wrong', () => {
+    expect(judgeTypedName(c('ar'), 'Brasilia')).toBe('wrong');
+  });
+
+  it('judges a tie with another country wrong', () => {
+    expect(judgeTypedName(c('ml'), 'Malia')).toBe('wrong');
   });
 });
 
