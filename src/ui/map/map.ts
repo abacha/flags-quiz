@@ -6,7 +6,7 @@ import { MAP_ALL, MAP_OBJECT, centroidOf, mapPool, topology, type MapScope } fro
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
-import { frame, keepInside, panBy, shapeTo, zoomAt, type ViewBox } from './viewBox';
+import { frame, keepInside, narrowTo, panBy, shapeTo, zoomAt, type ViewBox } from './viewBox';
 
 export const MAX_ZOOM = 64;
 export const MIN_HIT_PX = 22;
@@ -102,6 +102,7 @@ interface ContinentMap {
   bounds: ViewBox;
   countryLayer: SVGGElement;
   hits: Map<string, CountryHit>;
+  outline(iso2: string): ViewBox;
   surroundings(iso2: string): ViewBox;
 }
 
@@ -162,6 +163,7 @@ function buildContinentMap(continent: ContinentKey): ContinentMap {
     bounds: unionOf([viewBoxOf(path.bounds(poolFeatures)), ...surroundings.values()]),
     countryLayer,
     hits,
+    outline: (iso2) => nearSideBounds(units.get(iso2)!.coordinates.flat(2), hits.get(iso2)!.center[0]),
     surroundings: (iso2) => surroundings.get(iso2)!,
   };
 }
@@ -178,7 +180,7 @@ function continentMap(continent: ContinentKey): ContinentMap {
 export function renderMap({ continent, level }: MapScope, onTap?: (country: Country) => void): MapView {
   const shared = continentMap(continent);
   const playable = new Set(mapPool(continent, level).map((c) => c.iso2));
-  const { pool, continentFit, bounds, surroundings } = shared;
+  const { pool, continentFit, bounds, outline, surroundings } = shared;
   let fit = continentFit;
   let box = fit;
   let unitsPerPx = 0;
@@ -250,7 +252,8 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
 
   function slideTo(iso2s: readonly string[]) {
     const from = box;
-    const target = framing(iso2s);
+    const closest = frame(unionOf(iso2s.map(outline)), aspect, fit, MAX_ZOOM, bounds);
+    const target = narrowTo(framing(iso2s), Math.max(box.width, closest.width), bounds);
     const startedAt = performance.now();
     const step = (now: number) => {
       const t = Math.min(Math.max((now - startedAt) / SLIDE_MS, 0), 1);

@@ -35,6 +35,11 @@ export function frame(target: ViewBox, aspect: number, fit: ViewBox, maxZoom: nu
   return keepInside(around(target, width, width / aspect), bounds);
 }
 
+export function narrowTo(box: ViewBox, width: number, bounds: ViewBox): ViewBox {
+  if (width >= box.width) return box;
+  return keepInside(around(box, width, (width * box.height) / box.width), bounds);
+}
+
 export function zoomAt(box: ViewBox, factor: number, anchor: [number, number], fit: ViewBox, maxZoom: number, bounds: ViewBox): ViewBox {
   const width = clamp(box.width / factor, fit.width / maxZoom, fit.width);
   const scale = width / box.width;

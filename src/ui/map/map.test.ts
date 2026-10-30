@@ -458,6 +458,31 @@ describe('renderMap', () => {
     expect(viewBoxOf(svg)[2]).toBeLessThan(halfway[2]);
   });
 
+  const zoomedInOn = (iso2: string) => {
+    const frames = queueFrames();
+    const view = renderMap({ continent: 'americas', level: MAP_ALL });
+    const svg = layOut(view.element);
+    view.focus([iso2]);
+    for (let i = 0; i < 40; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
+    return { frames, view, svg, zoomedWidth: viewBoxOf(svg)[2]! };
+  };
+
+  it('keeps a closer zoom when sliding to the next country', () => {
+    const { frames, view, svg, zoomedWidth } = zoomedInOn('lc');
+    view.focus(['vc'], { animate: true });
+    while (frames.length) frames.shift()!(performance.now() + 1000);
+    expect(viewBoxOf(svg)[2]).toBeCloseTo(zoomedWidth);
+    expect(contains(svg, projectedBounds('americas', 'vc').country)).toBe(true);
+  });
+
+  it('zooms out from a closer zoom only as far as the next country needs', () => {
+    const { frames, view, svg, zoomedWidth } = zoomedInOn('lc');
+    view.focus(['ve'], { animate: true });
+    while (frames.length) frames.shift()!(performance.now() + 1000);
+    expect(contains(svg, projectedBounds('americas', 've').country)).toBe(true);
+    expect(viewBoxOf(svg)[2]).toBeGreaterThan(zoomedWidth);
+  });
+
   it('stops the slide once a drag starts, sizing the marks for where it stopped', () => {
     const frames = queueFrames();
     const view = renderMap({ continent: 'americas', level: MAP_ALL });

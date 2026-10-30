@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { frame, panBy, shapeTo, zoomAt } from './viewBox';
+import { frame, narrowTo, panBy, shapeTo, zoomAt } from './viewBox';
 
 const base = { x: 0, y: 0, width: 1000, height: 600 };
 const wide = { x: 0, y: 0, width: 3000, height: 600 };
@@ -89,5 +89,19 @@ describe('a view wider than the map', () => {
   it('pans only as far as the map stays in view', () => {
     expect(panBy(widened, 1000, 0, base).x).toBe(0);
     expect(panBy(widened, -1000, 0, base).x).toBe(-1000);
+  });
+});
+
+describe('narrowTo', () => {
+  it('keeps the box when it is already as narrow as asked', () => {
+    expect(narrowTo({ x: 100, y: 100, width: 200, height: 120 }, 500, base)).toEqual({ x: 100, y: 100, width: 200, height: 120 });
+  });
+
+  it('narrows around the centre of the box, keeping its shape', () => {
+    expect(narrowTo({ x: 100, y: 100, width: 400, height: 240 }, 100, base)).toEqual({ x: 250, y: 190, width: 100, height: 60 });
+  });
+
+  it('stays inside the bounds', () => {
+    expect(narrowTo({ x: -200, y: 0, width: 400, height: 240 }, 100, base).x).toBe(0);
   });
 });
