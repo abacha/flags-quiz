@@ -157,7 +157,7 @@ describe('renderMap', () => {
     expect(onTap).not.toHaveBeenCalled();
   });
 
-  it('pans on drag and zooms on pinch and wheel, never past 24×', () => {
+  it('pans on drag and zooms on pinch and wheel, never past 64×', () => {
     const view = renderMap({ continent: 'americas', level: MAP_ALL });
     const svg = layOut(view.element);
     const viewBox = () => svg.getAttribute('viewBox')!.split(' ').map(Number);
@@ -176,7 +176,7 @@ describe('renderMap', () => {
     expect(viewBox()[1]).toBeCloseTo(y! + 10 * unitsPerPx);
     pointer(svg, 'pointerup', 1, 250, 90);
     for (let i = 0; i < 40; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: 250, clientY: 150, cancelable: true }));
-    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 24);
+    expect(viewBox()[2]).toBeCloseTo(baseWidth! / 64);
   });
 
   it('keeps the pinched point under the fingers where the view is wider than the continent', () => {

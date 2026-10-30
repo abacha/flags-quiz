@@ -8,7 +8,7 @@ import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
 import { frame, keepInside, panBy, shapeTo, zoomAt, type ViewBox } from './viewBox';
 
-export const MAX_ZOOM = 24;
+export const MAX_ZOOM = 64;
 export const MIN_HIT_PX = 22;
 export const TAP_SLOP_PX = 8;
 export const OUTLINE_BELOW_PX = 6;
