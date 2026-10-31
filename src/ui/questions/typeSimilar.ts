@@ -1,20 +1,14 @@
 import type { Country } from '../../data/countries';
 import { el } from '../dom';
 import { flagImg } from '../flag';
+import { answerInput } from './answerInput';
 import { typoMessage } from './typoMessage';
 import type { Submit } from './render';
 
 export function renderTypeSimilar(countries: Country[], submit: Submit): HTMLElement {
   const fields = countries.map((country) => ({
     country,
-    input: el('input', {
-      type: 'text',
-      required: true,
-      autocomplete: 'off',
-      autocapitalize: 'off',
-      spellcheck: false,
-      placeholder: 'Nome',
-    }),
+    input: answerInput('Resposta'),
   }));
   const message = typoMessage();
   const form = el('form', { className: 'type-form' }, [

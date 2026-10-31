@@ -31,7 +31,7 @@ describe('prompts stay neutral between countries and territories', () => {
     const question = typeName.build(byIso('ky'), ctx, seededRng(1));
     const rendered = renderQuestion(question, () => []);
     expect(rendered.querySelector('h2')?.textContent).toBe('Escreva o nome desta bandeira');
-    expect(rendered.querySelector('input')?.placeholder).toBe('Nome');
+    expect(rendered.querySelector('input')?.placeholder).toBe('Resposta');
   });
 
   it('uses the neutral placeholder for every input of typeSimilar', () => {
@@ -39,7 +39,7 @@ describe('prompts stay neutral between countries and territories', () => {
     const question = typeSimilar.build(target, ctx, seededRng(1));
     const rendered = renderQuestion(question, () => []);
     const placeholders = [...rendered.querySelectorAll('input')].map((input) => input.placeholder);
-    expect(placeholders).toEqual(placeholders.map(() => 'Nome'));
+    expect(placeholders).toEqual(placeholders.map(() => 'Resposta'));
     expect(placeholders.length).toBeGreaterThan(0);
   });
 

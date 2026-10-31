@@ -6,6 +6,7 @@ import { saveQuizOutcome, type NewRecords, type QuizOutcome, type RecordStore } 
 import { el } from '../dom';
 import { onBack } from '../backButton';
 import { flagImg } from '../flag';
+import { answerInput } from '../questions/answerInput';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { formatTime } from '../time';
@@ -136,14 +137,7 @@ export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): 
 
   const figure = spec.figure ? el('div', { className: 'figure' }) : null;
   const message = el('p', { className: 'quiz-message', hidden: true }, ['Errado, tente de novo']);
-  const input = el('input', {
-    type: 'text',
-    required: true,
-    autocomplete: 'off',
-    autocapitalize: 'off',
-    spellcheck: false,
-    placeholder: spec.placeholder ?? 'Nome',
-  });
+  const input = answerInput(spec.placeholder ?? 'Resposta');
   const skip = el('button', { className: 'secondary', type: 'button' }, ['Pular']);
   const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder']), skip]);
 

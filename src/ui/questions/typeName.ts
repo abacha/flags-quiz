@@ -1,16 +1,10 @@
 import { el } from '../dom';
+import { answerInput } from './answerInput';
 import { typoMessage } from './typoMessage';
 import type { Submit } from './render';
 
-export function renderTypeName(prompt: string, figure: HTMLElement, submit: Submit, placeholder = 'Nome'): HTMLElement {
-  const input = el('input', {
-    type: 'text',
-    required: true,
-    autocomplete: 'off',
-    autocapitalize: 'off',
-    spellcheck: false,
-    placeholder,
-  });
+export function renderTypeName(prompt: string, figure: HTMLElement, submit: Submit, placeholder = 'Resposta'): HTMLElement {
+  const input = answerInput(placeholder);
   const message = typoMessage();
   const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder'])]);
   form.onsubmit = (event) => {
