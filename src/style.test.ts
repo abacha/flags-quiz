@@ -34,6 +34,11 @@ describe('style.css', () => {
     },
   );
 
+  it('replaces the browser tap highlight with a press of the button itself', () => {
+    expect(declaredInSource('html', '-webkit-tap-highlight-color')).toContain('transparent');
+    expect(declaredInSource('button:active:not(:disabled)', 'transform')).toContain('scale(0.96)');
+  });
+
   it('keeps a long press on a button from selecting its text', () => {
     expect(declaredInSource('button', 'user-select')).toContain('none');
     expect(declaredInSource('button', '-webkit-user-select')).toContain('none');
@@ -64,9 +69,7 @@ describe('style.css', () => {
     expect(declared('.map', 'touch-action')).toContain('none');
   });
 
-  it('never flashes the tapped shape bounding box on a mobile tap', () => {
-    expect(declaredInSource('.map', '-webkit-tap-highlight-color')).toContain('transparent');
-    expect(declaredInSource('.map *', '-webkit-tap-highlight-color')).toContain('transparent');
+  it('never outlines the tapped map shape', () => {
     expect(declared('.map svg:focus', 'outline-style')).toContain('none');
     expect(declared('.map path:focus', 'outline-style')).toContain('none');
   });
