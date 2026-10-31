@@ -1,6 +1,7 @@
 import './style.css';
 import { loadContinent } from './continentChoice';
 import { listenForBack, settleBack } from './ui/backButton';
+import { clickOnLongPress } from './ui/longPress';
 import type { Screen } from './ui/navigation';
 import { renderCapitalGame } from './ui/screens/capitalGame';
 import { renderCapitalQuiz } from './ui/screens/capitalQuiz';
@@ -37,6 +38,7 @@ document.addEventListener(
   },
   { capture: true },
 );
+clickOnLongPress(document);
 
 function navigate(screen: Screen): void {
   app.replaceChildren();
