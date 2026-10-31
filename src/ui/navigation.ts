@@ -8,6 +8,7 @@ export type Screen =
   | { name: 'hub'; continent: ContinentKey }
   | { name: 'flagTable'; continent: ContinentKey }
   | { name: 'mapTable'; continent: ContinentKey }
+  | { name: 'capitalTable'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
   | { name: 'mapGame'; continent: ContinentKey; level: MapLevel }
