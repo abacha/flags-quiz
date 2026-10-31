@@ -28,7 +28,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'capitalQuizResult' }
 
 const cardsUnder = (root: HTMLElement, heading: string) => {
   const h2 = [...root.querySelectorAll('h2')].find((h) => h.textContent === heading);
-  return h2 ? [...h2.nextElementSibling!.querySelectorAll('.solution-card')].map((card) => card.textContent) : null;
+  return h2
+    ? [...h2.nextElementSibling!.querySelectorAll('.solution-card')].map(
+        (card) => `${card.querySelector('.solution-name')!.textContent} · ${card.querySelector('.solution-capital')!.textContent}`,
+      )
+    : null;
 };
 
 describe('renderCapitalQuizResult', () => {

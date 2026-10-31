@@ -28,7 +28,7 @@ function flagAndName(country: Country): HTMLElement {
 }
 
 export function capitalCard(country: Country): HTMLElement {
-  return solutionCard(country, `${country.name} · ${capitalLabel(country)}`);
+  return solutionCard(country, country.name, capitalLabel(country));
 }
 
 export function capitalSolution(question: Question): HTMLElement {

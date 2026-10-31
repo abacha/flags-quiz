@@ -63,7 +63,7 @@ describe('renderCapitalGame', () => {
   it('shows the capital card on a right answer too', () => {
     const { question, submit } = asked[0];
     submit(rightAnswer(question));
-    expect(root.querySelector('.feedback.right .solution-card')!.textContent).toContain(' · ');
+    expect(root.querySelector('.feedback.right .solution-card .solution-capital')!.textContent).not.toBe('');
   });
 
   it('awards a medal under the capital key and opens the capital result on a win', () => {

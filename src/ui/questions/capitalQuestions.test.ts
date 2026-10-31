@@ -76,8 +76,11 @@ describe('renderCapitalQuestion', () => {
 });
 
 describe('capital solutions', () => {
-  it('captions the card with the country and every capital', () => {
-    expect(capitalCard(bo).querySelector('.solution-name')!.textContent).toBe('Bolívia · Sucre / La Paz');
+  it('captions the card with every capital first and the country under it', () => {
+    const caption = capitalCard(bo).querySelector('figcaption')!;
+    expect(caption.firstElementChild!.className).toBe('solution-capital');
+    expect(caption.querySelector('.solution-capital')!.textContent).toBe('Sucre / La Paz');
+    expect(caption.querySelector('.solution-name')!.textContent).toBe('Bolívia');
   });
 
   it('shows one card for a single target and one per country for capitalPairs', () => {

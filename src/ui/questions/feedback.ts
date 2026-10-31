@@ -6,10 +6,15 @@ import { el } from '../dom';
 import { flagImg } from '../flag';
 import { CONTINENT_FROM } from '../labels';
 
-export function solutionCard(country: Country, caption = country.name): HTMLElement {
+export function solutionCard(country: Country, caption = country.name, capital?: string): HTMLElement {
   return el('figure', { className: 'solution-card' }, [
     el('span', { className: 'flag-box' }, [flagImg(country)]),
-    el('figcaption', {}, [el('span', { className: 'solution-name' }, [caption]), ' ', statusBadge(country)]),
+    el('figcaption', {}, [
+      ...(capital ? [el('span', { className: 'solution-capital' }, [capital])] : []),
+      el('span', { className: 'solution-name' }, [caption]),
+      ' ',
+      statusBadge(country),
+    ]),
   ]);
 }
 

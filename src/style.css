@@ -351,6 +351,9 @@ input::placeholder { text-overflow: ellipsis; }
   overflow-wrap: anywhere;
 }
 
+.solution-capital { display: block; font-weight: 700; overflow-wrap: anywhere; }
+.solution-capital + .solution-name { min-height: 0; font-size: 0.8rem; color: var(--muted); }
+
 .solution-card .badge { display: block; width: fit-content; margin-top: 4px; }
 
 @media (min-width: 560px) {

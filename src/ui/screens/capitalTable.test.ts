@@ -22,7 +22,8 @@ describe('renderCapitalTable', () => {
     const pool = capitalPool('africa', 'general').sort((a, b) => a.name.localeCompare(b.name, 'pt'));
     expect(root.querySelector('h1')!.textContent).toBe('África');
     expect(root.querySelector('.table-head .detail')!.textContent).toBe(`${pool.length} capitais`);
-    expect([...root.querySelectorAll('.solution-name')].map((c) => c.textContent)).toEqual(pool.map((c) => `${c.name} · ${capitalLabel(c)}`));
+    expect([...root.querySelectorAll('.solution-name')].map((c) => c.textContent)).toEqual(pool.map((c) => c.name));
+    expect([...root.querySelectorAll('.solution-capital')].map((c) => c.textContent)).toEqual(pool.map(capitalLabel));
   });
 
   it('goes back to the hub on the same continent on Voltar', () => {
