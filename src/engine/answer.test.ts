@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../data/countries';
-import { grade, judgeTypedName, normalizeName } from './answer';
+import { grade, judgeTypedCapital, judgeTypedName, normalizeName } from './answer';
 import type { Question } from './question';
 
 const c = (code: string) => countries.find((country) => country.iso2 === code)!;
@@ -8,6 +8,33 @@ const c = (code: string) => countries.find((country) => country.iso2 === code)!;
 describe('normalizeName', () => {
   it('lowercases, strips accents, turns hyphens into spaces and collapses whitespace', () => {
     expect(normalizeName('  São   Tomé-e-Príncipe ')).toBe('sao tome e principe');
+  });
+});
+
+describe('judgeTypedCapital', () => {
+  it('judges any capital of the country right', () => {
+    expect(judgeTypedCapital(c('bo'), 'La Paz')).toBe('right');
+    expect(judgeTypedCapital(c('bo'), 'sucre')).toBe('right');
+  });
+
+  it('judges a country whose capital shares its name right', () => {
+    expect(judgeTypedCapital(c('gt'), 'Guatemala')).toBe('right');
+  });
+
+  it('forgives a slip in the capital', () => {
+    expect(judgeTypedCapital(c('fr'), 'Pariss')).toBe('typo');
+    expect(judgeTypedCapital(c('pe'), 'Lina')).toBe('typo');
+  });
+
+  it('judges the capital of another country wrong', () => {
+    expect(judgeTypedCapital(c('vc'), 'Kingston')).toBe('wrong');
+    expect(judgeTypedCapital(c('gp'), 'Basseterre')).toBe('wrong');
+    expect(judgeTypedCapital(c('pe'), 'Lomé')).toBe('wrong');
+    expect(judgeTypedCapital(c('ps'), 'Jerusalém')).toBe('wrong');
+  });
+
+  it('judges the country name wrong when it is not the capital', () => {
+    expect(judgeTypedCapital(c('br'), 'Brasil')).toBe('wrong');
   });
 });
 

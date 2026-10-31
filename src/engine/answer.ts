@@ -1,3 +1,4 @@
+import { capitalsExcluded, capitalsOf } from '../data/capitals';
 import { countries, type Country } from '../data/countries';
 import type { Question } from './question';
 
@@ -79,20 +80,35 @@ export function acceptsTypedName(country: Country, text: string): boolean {
 }
 
 const typedNames = new Map(countries.map((c) => [c, [c.name, ...c.aliases].map(normalizeName)]));
+const typedCapitals = new Map(
+  countries.filter((c) => !capitalsExcluded.includes(c.iso2)).map((c) => [c, capitalsOf(c).flatMap((capital) => [capital.name, ...capital.aliases]).map(normalizeName)]),
+);
 
 export function judgeTypedName(country: Country, text: string): TypedVerdict {
-  if (acceptsTypedName(country, text)) return 'right';
+  return judgeTyped(country, text, typedNames);
+}
+
+export function judgeTypedCapital(country: Country, text: string): TypedVerdict {
   const typed = normalizeName(text);
-  const others = countries.filter((c) => c !== country);
-  if (others.some((c) => typedNames.get(c)!.includes(typed))) return 'wrong';
+  if (typedCapitals.get(country)!.includes(typed)) return 'right';
+  // Naming the country is a knowledge error, not a slip.
+  if ([...typedNames.values()].some((names) => names.includes(typed))) return 'wrong';
+  return judgeTyped(country, text, typedCapitals);
+}
+
+function judgeTyped(target: Country, text: string, names: Map<Country, string[]>): TypedVerdict {
+  const typed = normalizeName(text);
+  if (names.get(target)!.includes(typed)) return 'right';
+  const others = [...names.keys()].filter((c) => c !== target);
+  if (others.some((c) => names.get(c)!.includes(typed))) return 'wrong';
   const reach = (name: string) => (name.length <= SHORT_NAME_LENGTH ? 1 : 2);
   const distance = Math.min(
-    ...typedNames.get(country)!.map((name) => {
+    ...names.get(target)!.map((name) => {
       const edits = editDistance(typed, name);
       return edits <= reach(name) ? edits : Infinity;
     }),
   );
-  const closestOther = Math.min(...others.flatMap((c) => typedNames.get(c)!.map((name) => editDistance(typed, name))));
+  const closestOther = Math.min(...others.flatMap((c) => names.get(c)!.map((name) => editDistance(typed, name))));
   return distance < closestOther ? 'typo' : 'wrong';
 }
 
