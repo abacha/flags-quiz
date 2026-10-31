@@ -1,0 +1,3362 @@
+{
+  "ad": {
+    "capitals": [
+      {
+        "name": "Andorra-a-Velha",
+        "aliases": [
+          "Andorra la Vella",
+          "Andorra"
+        ]
+      }
+    ],
+    "coords": [
+      1.52,
+      42.51
+    ]
+  },
+  "ae": {
+    "capitals": [
+      {
+        "name": "Abu Dhabi",
+        "aliases": [
+          "Abu Dabi",
+          "Abu Zabi"
+        ]
+      }
+    ],
+    "coords": [
+      54.4,
+      24.45
+    ]
+  },
+  "af": {
+    "capitals": [
+      {
+        "name": "Cabul",
+        "aliases": [
+          "Kabul"
+        ]
+      }
+    ],
+    "coords": [
+      69.17,
+      34.53
+    ]
+  },
+  "ag": {
+    "capitals": [
+      {
+        "name": "Saint John's",
+        "aliases": [
+          "St. John's",
+          "São João"
+        ]
+      }
+    ],
+    "coords": [
+      -61.85,
+      17.12
+    ]
+  },
+  "ai": {
+    "capitals": [
+      {
+        "name": "The Valley",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -63.05,
+      18.22
+    ]
+  },
+  "al": {
+    "capitals": [
+      {
+        "name": "Tirana",
+        "aliases": [
+          "Tiranë"
+        ]
+      }
+    ],
+    "coords": [
+      19.82,
+      41.33
+    ]
+  },
+  "am": {
+    "capitals": [
+      {
+        "name": "Erevã",
+        "aliases": [
+          "Erevan",
+          "Yerevan",
+          "Ierevan"
+        ]
+      }
+    ],
+    "coords": [
+      44.51,
+      40.18
+    ]
+  },
+  "ao": {
+    "capitals": [
+      {
+        "name": "Luanda",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      13.23,
+      -8.84
+    ]
+  },
+  "ar": {
+    "capitals": [
+      {
+        "name": "Buenos Aires",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -58.38,
+      -34.6
+    ]
+  },
+  "as": {
+    "capitals": [
+      {
+        "name": "Pago Pago",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -170.7,
+      -14.28
+    ]
+  },
+  "at": {
+    "capitals": [
+      {
+        "name": "Viena",
+        "aliases": [
+          "Vienna",
+          "Wien"
+        ]
+      }
+    ],
+    "coords": [
+      16.37,
+      48.21
+    ]
+  },
+  "au": {
+    "capitals": [
+      {
+        "name": "Camberra",
+        "aliases": [
+          "Canberra"
+        ]
+      }
+    ],
+    "coords": [
+      149.13,
+      -35.29
+    ]
+  },
+  "aw": {
+    "capitals": [
+      {
+        "name": "Oranjestad",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -70.04,
+      12.52
+    ]
+  },
+  "ax": {
+    "capitals": [
+      {
+        "name": "Mariehamn",
+        "aliases": [
+          "Maarianhamina"
+        ]
+      }
+    ],
+    "coords": [
+      19.94,
+      60.1
+    ]
+  },
+  "az": {
+    "capitals": [
+      {
+        "name": "Baku",
+        "aliases": [
+          "Bacu"
+        ]
+      }
+    ],
+    "coords": [
+      49.84,
+      40.37
+    ]
+  },
+  "ba": {
+    "capitals": [
+      {
+        "name": "Sarajevo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      18.41,
+      43.86
+    ]
+  },
+  "bb": {
+    "capitals": [
+      {
+        "name": "Bridgetown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -59.62,
+      13.1
+    ]
+  },
+  "bd": {
+    "capitals": [
+      {
+        "name": "Daca",
+        "aliases": [
+          "Dhaka",
+          "Dacca"
+        ]
+      }
+    ],
+    "coords": [
+      90.39,
+      23.73
+    ]
+  },
+  "be": {
+    "capitals": [
+      {
+        "name": "Bruxelas",
+        "aliases": [
+          "Brussels",
+          "Bruxelles",
+          "Brussel"
+        ]
+      }
+    ],
+    "coords": [
+      4.35,
+      50.85
+    ]
+  },
+  "bf": {
+    "capitals": [
+      {
+        "name": "Uagadugu",
+        "aliases": [
+          "Ouagadougou"
+        ]
+      }
+    ],
+    "coords": [
+      -1.53,
+      12.37
+    ]
+  },
+  "bg": {
+    "capitals": [
+      {
+        "name": "Sófia",
+        "aliases": [
+          "Sofia"
+        ]
+      }
+    ],
+    "coords": [
+      23.32,
+      42.7
+    ]
+  },
+  "bh": {
+    "capitals": [
+      {
+        "name": "Manama",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      50.58,
+      26.22
+    ]
+  },
+  "bi": {
+    "capitals": [
+      {
+        "name": "Gitega",
+        "aliases": [
+          "Guitega"
+        ]
+      }
+    ],
+    "coords": [
+      29.93,
+      -3.43
+    ]
+  },
+  "bj": {
+    "capitals": [
+      {
+        "name": "Porto Novo",
+        "aliases": []
+      },
+      {
+        "name": "Cotonu",
+        "aliases": [
+          "Cotonou"
+        ]
+      }
+    ],
+    "coords": [
+      2.62,
+      6.48
+    ]
+  },
+  "bl": {
+    "capitals": [
+      {
+        "name": "Gustávia",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -62.85,
+      17.9
+    ]
+  },
+  "bm": {
+    "capitals": [
+      {
+        "name": "Hamilton",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -64.78,
+      32.3
+    ]
+  },
+  "bn": {
+    "capitals": [
+      {
+        "name": "Bandar Seri Begawan",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      114.92,
+      4.92
+    ]
+  },
+  "bo": {
+    "capitals": [
+      {
+        "name": "Sucre",
+        "aliases": []
+      },
+      {
+        "name": "La Paz",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -65.26,
+      -19.05
+    ]
+  },
+  "bq": {
+    "capitals": [
+      {
+        "name": "Kralendijk",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -68.27,
+      12.15
+    ]
+  },
+  "br": {
+    "capitals": [
+      {
+        "name": "Brasília",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -47.88,
+      -15.79
+    ]
+  },
+  "bs": {
+    "capitals": [
+      {
+        "name": "Nassau",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -77.34,
+      25.08
+    ]
+  },
+  "bt": {
+    "capitals": [
+      {
+        "name": "Thimbu",
+        "aliases": [
+          "Thimphu",
+          "Timbu"
+        ]
+      }
+    ],
+    "coords": [
+      89.63,
+      27.47
+    ]
+  },
+  "bw": {
+    "capitals": [
+      {
+        "name": "Gaborone",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      25.91,
+      -24.66
+    ]
+  },
+  "by": {
+    "capitals": [
+      {
+        "name": "Minsk",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      27.56,
+      53.9
+    ]
+  },
+  "bz": {
+    "capitals": [
+      {
+        "name": "Belmopan",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -88.77,
+      17.25
+    ]
+  },
+  "ca": {
+    "capitals": [
+      {
+        "name": "Ottawa",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -75.69,
+      45.42
+    ]
+  },
+  "cc": {
+    "capitals": [
+      {
+        "name": "West Island",
+        "aliases": [
+          "Ilha Ocidental"
+        ]
+      }
+    ],
+    "coords": [
+      96.83,
+      -12.19
+    ]
+  },
+  "cd": {
+    "capitals": [
+      {
+        "name": "Kinshasa",
+        "aliases": [
+          "Quinxassa"
+        ]
+      }
+    ],
+    "coords": [
+      15.31,
+      -4.32
+    ]
+  },
+  "cf": {
+    "capitals": [
+      {
+        "name": "Bangui",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      18.56,
+      4.37
+    ]
+  },
+  "cg": {
+    "capitals": [
+      {
+        "name": "Brazzaville",
+        "aliases": [
+          "Brazavile"
+        ]
+      }
+    ],
+    "coords": [
+      15.27,
+      -4.27
+    ]
+  },
+  "ch": {
+    "capitals": [
+      {
+        "name": "Berna",
+        "aliases": [
+          "Bern",
+          "Berne"
+        ]
+      }
+    ],
+    "coords": [
+      7.45,
+      46.95
+    ]
+  },
+  "ci": {
+    "capitals": [
+      {
+        "name": "Yamoussoukro",
+        "aliases": [
+          "Iamussucro"
+        ]
+      },
+      {
+        "name": "Abidjã",
+        "aliases": [
+          "Abidjan"
+        ]
+      }
+    ],
+    "coords": [
+      -5.27,
+      6.82
+    ]
+  },
+  "ck": {
+    "capitals": [
+      {
+        "name": "Avarua",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -159.77,
+      -21.21
+    ]
+  },
+  "cl": {
+    "capitals": [
+      {
+        "name": "Santiago",
+        "aliases": [
+          "Santiago do Chile",
+          "Santiago de Chile"
+        ]
+      }
+    ],
+    "coords": [
+      -70.65,
+      -33.44
+    ]
+  },
+  "cm": {
+    "capitals": [
+      {
+        "name": "Iaundé",
+        "aliases": [
+          "Yaoundé"
+        ]
+      }
+    ],
+    "coords": [
+      11.52,
+      3.86
+    ]
+  },
+  "cn": {
+    "capitals": [
+      {
+        "name": "Pequim",
+        "aliases": [
+          "Beijing",
+          "Peking"
+        ]
+      }
+    ],
+    "coords": [
+      116.41,
+      39.9
+    ]
+  },
+  "co": {
+    "capitals": [
+      {
+        "name": "Bogotá",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -74.08,
+      4.61
+    ]
+  },
+  "cr": {
+    "capitals": [
+      {
+        "name": "San José",
+        "aliases": [
+          "São José"
+        ]
+      }
+    ],
+    "coords": [
+      -84.08,
+      9.93
+    ]
+  },
+  "cu": {
+    "capitals": [
+      {
+        "name": "Havana",
+        "aliases": [
+          "La Habana"
+        ]
+      }
+    ],
+    "coords": [
+      -82.36,
+      23.14
+    ]
+  },
+  "cv": {
+    "capitals": [
+      {
+        "name": "Praia",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -23.51,
+      14.92
+    ]
+  },
+  "cw": {
+    "capitals": [
+      {
+        "name": "Willemstad",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -68.94,
+      12.11
+    ]
+  },
+  "cx": {
+    "capitals": [
+      {
+        "name": "Flying Fish Cove",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      105.68,
+      -10.42
+    ]
+  },
+  "cy": {
+    "capitals": [
+      {
+        "name": "Nicósia",
+        "aliases": [
+          "Nicosia",
+          "Lefkosia"
+        ]
+      }
+    ],
+    "coords": [
+      33.37,
+      35.17
+    ]
+  },
+  "cz": {
+    "capitals": [
+      {
+        "name": "Praga",
+        "aliases": [
+          "Prague",
+          "Praha"
+        ]
+      }
+    ],
+    "coords": [
+      14.42,
+      50.09
+    ]
+  },
+  "de": {
+    "capitals": [
+      {
+        "name": "Berlim",
+        "aliases": [
+          "Berlin"
+        ]
+      }
+    ],
+    "coords": [
+      13.38,
+      52.52
+    ]
+  },
+  "dj": {
+    "capitals": [
+      {
+        "name": "Djibuti",
+        "aliases": [
+          "Djibouti",
+          "Jibuti"
+        ]
+      }
+    ],
+    "coords": [
+      43.15,
+      11.6
+    ]
+  },
+  "dk": {
+    "capitals": [
+      {
+        "name": "Copenhague",
+        "aliases": [
+          "Copenhagen",
+          "Copenhaga",
+          "København"
+        ]
+      }
+    ],
+    "coords": [
+      12.57,
+      55.68
+    ]
+  },
+  "dm": {
+    "capitals": [
+      {
+        "name": "Roseau",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -61.38,
+      15.3
+    ]
+  },
+  "do": {
+    "capitals": [
+      {
+        "name": "Santo Domingo",
+        "aliases": [
+          "São Domingos"
+        ]
+      }
+    ],
+    "coords": [
+      -69.94,
+      18.46
+    ]
+  },
+  "dz": {
+    "capitals": [
+      {
+        "name": "Argel",
+        "aliases": [
+          "Algiers",
+          "Alger"
+        ]
+      }
+    ],
+    "coords": [
+      3.06,
+      36.78
+    ]
+  },
+  "ec": {
+    "capitals": [
+      {
+        "name": "Quito",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -78.51,
+      -0.22
+    ]
+  },
+  "ee": {
+    "capitals": [
+      {
+        "name": "Tallinn",
+        "aliases": [
+          "Talin"
+        ]
+      }
+    ],
+    "coords": [
+      24.75,
+      59.44
+    ]
+  },
+  "eg": {
+    "capitals": [
+      {
+        "name": "Cairo",
+        "aliases": [
+          "O Cairo"
+        ]
+      }
+    ],
+    "coords": [
+      31.24,
+      30.04
+    ]
+  },
+  "eh": {
+    "capitals": [
+      {
+        "name": "El Aaiún",
+        "aliases": [
+          "Laayoune",
+          "Laâyoune",
+          "El Aaiun",
+          "Aaiún"
+        ]
+      }
+    ],
+    "coords": [
+      -13.2,
+      27.15
+    ]
+  },
+  "er": {
+    "capitals": [
+      {
+        "name": "Asmara",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      38.92,
+      15.33
+    ]
+  },
+  "es": {
+    "capitals": [
+      {
+        "name": "Madri",
+        "aliases": [
+          "Madrid"
+        ]
+      }
+    ],
+    "coords": [
+      -3.7,
+      40.42
+    ]
+  },
+  "et": {
+    "capitals": [
+      {
+        "name": "Adis Abeba",
+        "aliases": [
+          "Addis Ababa",
+          "Addis Abeba"
+        ]
+      }
+    ],
+    "coords": [
+      38.75,
+      9.04
+    ]
+  },
+  "fi": {
+    "capitals": [
+      {
+        "name": "Helsinque",
+        "aliases": [
+          "Helsinki",
+          "Helsínquia"
+        ]
+      }
+    ],
+    "coords": [
+      24.94,
+      60.17
+    ]
+  },
+  "fj": {
+    "capitals": [
+      {
+        "name": "Suva",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      178.43,
+      -18.13
+    ]
+  },
+  "fk": {
+    "capitals": [
+      {
+        "name": "Stanley",
+        "aliases": [
+          "Port Stanley",
+          "Porto Stanley"
+        ]
+      }
+    ],
+    "coords": [
+      -57.85,
+      -51.69
+    ]
+  },
+  "fm": {
+    "capitals": [
+      {
+        "name": "Palikir",
+        "aliases": [
+          "Paliquir"
+        ]
+      }
+    ],
+    "coords": [
+      158.19,
+      6.92
+    ]
+  },
+  "fo": {
+    "capitals": [
+      {
+        "name": "Tórshavn",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -6.77,
+      62.01
+    ]
+  },
+  "fr": {
+    "capitals": [
+      {
+        "name": "Paris",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      2.35,
+      48.86
+    ]
+  },
+  "ga": {
+    "capitals": [
+      {
+        "name": "Libreville",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      9.44,
+      0.41
+    ]
+  },
+  "gb-eng": {
+    "capitals": [
+      {
+        "name": "Londres",
+        "aliases": [
+          "London"
+        ]
+      }
+    ],
+    "coords": [
+      -0.13,
+      51.51
+    ]
+  },
+  "gb-nir": {
+    "capitals": [
+      {
+        "name": "Belfast",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -5.93,
+      54.6
+    ]
+  },
+  "gb-sct": {
+    "capitals": [
+      {
+        "name": "Edimburgo",
+        "aliases": [
+          "Edinburgh"
+        ]
+      }
+    ],
+    "coords": [
+      -3.19,
+      55.95
+    ]
+  },
+  "gb-wls": {
+    "capitals": [
+      {
+        "name": "Cardiff",
+        "aliases": [
+          "Caerdydd"
+        ]
+      }
+    ],
+    "coords": [
+      -3.18,
+      51.48
+    ]
+  },
+  "gd": {
+    "capitals": [
+      {
+        "name": "Saint George's",
+        "aliases": [
+          "St. George's",
+          "São Jorge"
+        ]
+      }
+    ],
+    "coords": [
+      -61.75,
+      12.05
+    ]
+  },
+  "ge": {
+    "capitals": [
+      {
+        "name": "Tbilisi",
+        "aliases": [
+          "Tiblíssi",
+          "Tbilissi"
+        ]
+      }
+    ],
+    "coords": [
+      44.79,
+      41.72
+    ]
+  },
+  "gf": {
+    "capitals": [
+      {
+        "name": "Caiena",
+        "aliases": [
+          "Cayenne"
+        ]
+      }
+    ],
+    "coords": [
+      -52.34,
+      4.94
+    ]
+  },
+  "gg": {
+    "capitals": [
+      {
+        "name": "Saint Peter Port",
+        "aliases": [
+          "St. Peter Port",
+          "Porto de São Pedro"
+        ]
+      }
+    ],
+    "coords": [
+      -2.55,
+      49.46
+    ]
+  },
+  "gh": {
+    "capitals": [
+      {
+        "name": "Acra",
+        "aliases": [
+          "Accra"
+        ]
+      }
+    ],
+    "coords": [
+      -0.2,
+      5.56
+    ]
+  },
+  "gi": {
+    "capitals": [
+      {
+        "name": "Gibraltar",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -5.35,
+      36.14
+    ]
+  },
+  "gl": {
+    "capitals": [
+      {
+        "name": "Nuuk",
+        "aliases": [
+          "Godthåb"
+        ]
+      }
+    ],
+    "coords": [
+      -51.73,
+      64.17
+    ]
+  },
+  "gm": {
+    "capitals": [
+      {
+        "name": "Banjul",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -16.58,
+      13.45
+    ]
+  },
+  "gn": {
+    "capitals": [
+      {
+        "name": "Conacri",
+        "aliases": [
+          "Conakry"
+        ]
+      }
+    ],
+    "coords": [
+      -13.71,
+      9.51
+    ]
+  },
+  "gp": {
+    "capitals": [
+      {
+        "name": "Basse-Terre",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -61.73,
+      16.0
+    ]
+  },
+  "gq": {
+    "capitals": [
+      {
+        "name": "Cidade da Paz",
+        "aliases": [
+          "Ciudad de la Paz",
+          "Oyala"
+        ]
+      },
+      {
+        "name": "Malabo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      10.82,
+      1.59
+    ]
+  },
+  "gr": {
+    "capitals": [
+      {
+        "name": "Atenas",
+        "aliases": [
+          "Athens",
+          "Athina"
+        ]
+      }
+    ],
+    "coords": [
+      23.73,
+      37.98
+    ]
+  },
+  "gt": {
+    "capitals": [
+      {
+        "name": "Cidade da Guatemala",
+        "aliases": [
+          "Guatemala",
+          "Guatemala City",
+          "Ciudad de Guatemala"
+        ]
+      }
+    ],
+    "coords": [
+      -90.51,
+      14.64
+    ]
+  },
+  "gu": {
+    "capitals": [
+      {
+        "name": "Hagåtña",
+        "aliases": [
+          "Agaña",
+          "Aganha",
+          "Hagatna"
+        ]
+      }
+    ],
+    "coords": [
+      144.75,
+      13.48
+    ]
+  },
+  "gw": {
+    "capitals": [
+      {
+        "name": "Bissau",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -15.58,
+      11.86
+    ]
+  },
+  "gy": {
+    "capitals": [
+      {
+        "name": "Georgetown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -58.15,
+      6.81
+    ]
+  },
+  "hk": {
+    "capitals": [
+      {
+        "name": "Hong Kong",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      114.16,
+      22.28
+    ]
+  },
+  "hn": {
+    "capitals": [
+      {
+        "name": "Tegucigalpa",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -87.2,
+      14.11
+    ]
+  },
+  "hr": {
+    "capitals": [
+      {
+        "name": "Zagreb",
+        "aliases": [
+          "Zagrebe"
+        ]
+      }
+    ],
+    "coords": [
+      15.98,
+      45.81
+    ]
+  },
+  "ht": {
+    "capitals": [
+      {
+        "name": "Porto Príncipe",
+        "aliases": [
+          "Port-au-Prince"
+        ]
+      }
+    ],
+    "coords": [
+      -72.34,
+      18.55
+    ]
+  },
+  "hu": {
+    "capitals": [
+      {
+        "name": "Budapeste",
+        "aliases": [
+          "Budapest"
+        ]
+      }
+    ],
+    "coords": [
+      19.04,
+      47.5
+    ]
+  },
+  "id": {
+    "capitals": [
+      {
+        "name": "Jacarta",
+        "aliases": [
+          "Jakarta"
+        ]
+      }
+    ],
+    "coords": [
+      106.83,
+      -6.18
+    ]
+  },
+  "ie": {
+    "capitals": [
+      {
+        "name": "Dublin",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -6.26,
+      53.35
+    ]
+  },
+  "il": {
+    "capitals": [
+      {
+        "name": "Jerusalém",
+        "aliases": [
+          "Jerusalem"
+        ]
+      }
+    ],
+    "coords": [
+      35.23,
+      31.78
+    ]
+  },
+  "im": {
+    "capitals": [
+      {
+        "name": "Douglas",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -4.48,
+      54.15
+    ]
+  },
+  "in": {
+    "capitals": [
+      {
+        "name": "Nova Délhi",
+        "aliases": [
+          "Nova Deli",
+          "New Delhi"
+        ]
+      }
+    ],
+    "coords": [
+      77.21,
+      28.61
+    ]
+  },
+  "iq": {
+    "capitals": [
+      {
+        "name": "Bagdá",
+        "aliases": [
+          "Baghdad",
+          "Bagdad"
+        ]
+      }
+    ],
+    "coords": [
+      44.37,
+      33.32
+    ]
+  },
+  "ir": {
+    "capitals": [
+      {
+        "name": "Teerã",
+        "aliases": [
+          "Tehran",
+          "Teerão",
+          "Teheran"
+        ]
+      }
+    ],
+    "coords": [
+      51.39,
+      35.69
+    ]
+  },
+  "is": {
+    "capitals": [
+      {
+        "name": "Reykjavík",
+        "aliases": [
+          "Reiquiavique"
+        ]
+      }
+    ],
+    "coords": [
+      -21.93,
+      64.15
+    ]
+  },
+  "it": {
+    "capitals": [
+      {
+        "name": "Roma",
+        "aliases": [
+          "Rome"
+        ]
+      }
+    ],
+    "coords": [
+      12.48,
+      41.89
+    ]
+  },
+  "je": {
+    "capitals": [
+      {
+        "name": "Saint Helier",
+        "aliases": [
+          "St. Helier"
+        ]
+      }
+    ],
+    "coords": [
+      -2.11,
+      49.19
+    ]
+  },
+  "jm": {
+    "capitals": [
+      {
+        "name": "Kingston",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -76.79,
+      17.97
+    ]
+  },
+  "jo": {
+    "capitals": [
+      {
+        "name": "Amã",
+        "aliases": [
+          "Amman"
+        ]
+      }
+    ],
+    "coords": [
+      35.93,
+      31.93
+    ]
+  },
+  "jp": {
+    "capitals": [
+      {
+        "name": "Tóquio",
+        "aliases": [
+          "Tokyo"
+        ]
+      }
+    ],
+    "coords": [
+      139.69,
+      35.69
+    ]
+  },
+  "ke": {
+    "capitals": [
+      {
+        "name": "Nairóbi",
+        "aliases": [
+          "Nairobi"
+        ]
+      }
+    ],
+    "coords": [
+      36.82,
+      -1.29
+    ]
+  },
+  "kg": {
+    "capitals": [
+      {
+        "name": "Bishkek",
+        "aliases": [
+          "Bisqueque"
+        ]
+      }
+    ],
+    "coords": [
+      74.57,
+      42.87
+    ]
+  },
+  "kh": {
+    "capitals": [
+      {
+        "name": "Phnom Penh",
+        "aliases": [
+          "Pnom Pen"
+        ]
+      }
+    ],
+    "coords": [
+      104.92,
+      11.57
+    ]
+  },
+  "ki": {
+    "capitals": [
+      {
+        "name": "Tarawa do Sul",
+        "aliases": [
+          "South Tarawa",
+          "Tarawa",
+          "Taraua do Sul"
+        ]
+      }
+    ],
+    "coords": [
+      172.97,
+      1.33
+    ]
+  },
+  "km": {
+    "capitals": [
+      {
+        "name": "Moroni",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      43.25,
+      -11.7
+    ]
+  },
+  "kn": {
+    "capitals": [
+      {
+        "name": "Basseterre",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -62.73,
+      17.3
+    ]
+  },
+  "kp": {
+    "capitals": [
+      {
+        "name": "Pyongyang",
+        "aliases": [
+          "Pionguiangue"
+        ]
+      }
+    ],
+    "coords": [
+      125.75,
+      39.02
+    ]
+  },
+  "kr": {
+    "capitals": [
+      {
+        "name": "Seul",
+        "aliases": [
+          "Seoul"
+        ]
+      }
+    ],
+    "coords": [
+      126.99,
+      37.56
+    ]
+  },
+  "kw": {
+    "capitals": [
+      {
+        "name": "Cidade do Kuwait",
+        "aliases": [
+          "Kuwait",
+          "Kuwait City",
+          "Cidade do Kuait",
+          "Kuait"
+        ]
+      }
+    ],
+    "coords": [
+      47.98,
+      29.38
+    ]
+  },
+  "ky": {
+    "capitals": [
+      {
+        "name": "George Town",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -81.38,
+      19.3
+    ]
+  },
+  "kz": {
+    "capitals": [
+      {
+        "name": "Astana",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      71.43,
+      51.13
+    ]
+  },
+  "la": {
+    "capitals": [
+      {
+        "name": "Vientiane",
+        "aliases": [
+          "Vienciana"
+        ]
+      }
+    ],
+    "coords": [
+      102.63,
+      17.98
+    ]
+  },
+  "lb": {
+    "capitals": [
+      {
+        "name": "Beirute",
+        "aliases": [
+          "Beirut"
+        ]
+      }
+    ],
+    "coords": [
+      35.51,
+      33.89
+    ]
+  },
+  "lc": {
+    "capitals": [
+      {
+        "name": "Castries",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -60.99,
+      14.01
+    ]
+  },
+  "li": {
+    "capitals": [
+      {
+        "name": "Vaduz",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      9.52,
+      47.14
+    ]
+  },
+  "lk": {
+    "capitals": [
+      {
+        "name": "Sri Jayawardenepura Kotte",
+        "aliases": [
+          "Kotte",
+          "Seri Jaiavardenapura-Cota"
+        ]
+      },
+      {
+        "name": "Colombo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      79.92,
+      6.9
+    ]
+  },
+  "lr": {
+    "capitals": [
+      {
+        "name": "Monróvia",
+        "aliases": [
+          "Monrovia"
+        ]
+      }
+    ],
+    "coords": [
+      -10.8,
+      6.31
+    ]
+  },
+  "ls": {
+    "capitals": [
+      {
+        "name": "Maseru",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      27.48,
+      -29.31
+    ]
+  },
+  "lt": {
+    "capitals": [
+      {
+        "name": "Vilnius",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      25.28,
+      54.69
+    ]
+  },
+  "lu": {
+    "capitals": [
+      {
+        "name": "Luxemburgo",
+        "aliases": [
+          "Luxembourg"
+        ]
+      }
+    ],
+    "coords": [
+      6.13,
+      49.61
+    ]
+  },
+  "lv": {
+    "capitals": [
+      {
+        "name": "Riga",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      24.11,
+      56.95
+    ]
+  },
+  "ly": {
+    "capitals": [
+      {
+        "name": "Trípoli",
+        "aliases": [
+          "Tripoli"
+        ]
+      }
+    ],
+    "coords": [
+      13.19,
+      32.89
+    ]
+  },
+  "ma": {
+    "capitals": [
+      {
+        "name": "Rabat",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -6.84,
+      34.02
+    ]
+  },
+  "mc": {
+    "capitals": [
+      {
+        "name": "Mônaco",
+        "aliases": [
+          "Monaco",
+          "Mónaco"
+        ]
+      }
+    ],
+    "coords": [
+      7.42,
+      43.73
+    ]
+  },
+  "md": {
+    "capitals": [
+      {
+        "name": "Chisinau",
+        "aliases": [
+          "Chișinău",
+          "Quixinau",
+          "Kishinev"
+        ]
+      }
+    ],
+    "coords": [
+      28.84,
+      47.02
+    ]
+  },
+  "me": {
+    "capitals": [
+      {
+        "name": "Podgorica",
+        "aliases": [
+          "Podgoritza"
+        ]
+      }
+    ],
+    "coords": [
+      19.26,
+      42.44
+    ]
+  },
+  "mg": {
+    "capitals": [
+      {
+        "name": "Antananarivo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      47.52,
+      -18.91
+    ]
+  },
+  "mh": {
+    "capitals": [
+      {
+        "name": "Majuro",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      171.38,
+      7.09
+    ]
+  },
+  "mk": {
+    "capitals": [
+      {
+        "name": "Skopje",
+        "aliases": [
+          "Escópia"
+        ]
+      }
+    ],
+    "coords": [
+      21.43,
+      42.0
+    ]
+  },
+  "ml": {
+    "capitals": [
+      {
+        "name": "Bamako",
+        "aliases": [
+          "Bamaco"
+        ]
+      }
+    ],
+    "coords": [
+      -7.99,
+      12.65
+    ]
+  },
+  "mm": {
+    "capitals": [
+      {
+        "name": "Naypyidaw",
+        "aliases": [
+          "Nepiedó",
+          "Nay Pyi Taw"
+        ]
+      }
+    ],
+    "coords": [
+      96.11,
+      19.75
+    ]
+  },
+  "mn": {
+    "capitals": [
+      {
+        "name": "Ulan Bator",
+        "aliases": [
+          "Ulã Bator",
+          "Ulaanbaatar"
+        ]
+      }
+    ],
+    "coords": [
+      106.91,
+      47.92
+    ]
+  },
+  "mo": {
+    "capitals": [
+      {
+        "name": "Macau",
+        "aliases": [
+          "Macao"
+        ]
+      }
+    ],
+    "coords": [
+      113.54,
+      22.19
+    ]
+  },
+  "mp": {
+    "capitals": [
+      {
+        "name": "Saipan",
+        "aliases": [
+          "Saipã"
+        ]
+      }
+    ],
+    "coords": [
+      145.75,
+      15.21
+    ]
+  },
+  "mq": {
+    "capitals": [
+      {
+        "name": "Fort-de-France",
+        "aliases": [
+          "Forte da França"
+        ]
+      }
+    ],
+    "coords": [
+      -61.07,
+      14.6
+    ]
+  },
+  "mr": {
+    "capitals": [
+      {
+        "name": "Nouakchott",
+        "aliases": [
+          "Nuakchott"
+        ]
+      }
+    ],
+    "coords": [
+      -15.98,
+      18.09
+    ]
+  },
+  "ms": {
+    "capitals": [
+      {
+        "name": "Plymouth",
+        "aliases": []
+      },
+      {
+        "name": "Brades",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -62.22,
+      16.71
+    ]
+  },
+  "mt": {
+    "capitals": [
+      {
+        "name": "Valletta",
+        "aliases": [
+          "Valeta"
+        ]
+      }
+    ],
+    "coords": [
+      14.51,
+      35.9
+    ]
+  },
+  "mu": {
+    "capitals": [
+      {
+        "name": "Port Louis",
+        "aliases": [
+          "Porto Luís"
+        ]
+      }
+    ],
+    "coords": [
+      57.5,
+      -20.16
+    ]
+  },
+  "mv": {
+    "capitals": [
+      {
+        "name": "Malé",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      73.51,
+      4.17
+    ]
+  },
+  "mw": {
+    "capitals": [
+      {
+        "name": "Lilongwe",
+        "aliases": [
+          "Lilongué"
+        ]
+      }
+    ],
+    "coords": [
+      33.77,
+      -13.99
+    ]
+  },
+  "mx": {
+    "capitals": [
+      {
+        "name": "Cidade do México",
+        "aliases": [
+          "México",
+          "Mexico City",
+          "Ciudad de México"
+        ]
+      }
+    ],
+    "coords": [
+      -99.14,
+      19.35
+    ]
+  },
+  "my": {
+    "capitals": [
+      {
+        "name": "Kuala Lumpur",
+        "aliases": []
+      },
+      {
+        "name": "Putrajaya",
+        "aliases": [
+          "Putrajaia"
+        ]
+      }
+    ],
+    "coords": [
+      101.7,
+      3.15
+    ]
+  },
+  "mz": {
+    "capitals": [
+      {
+        "name": "Maputo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      32.57,
+      -25.97
+    ]
+  },
+  "na": {
+    "capitals": [
+      {
+        "name": "Windhoek",
+        "aliases": [
+          "Vinduque"
+        ]
+      }
+    ],
+    "coords": [
+      17.08,
+      -22.57
+    ]
+  },
+  "nc": {
+    "capitals": [
+      {
+        "name": "Nouméa",
+        "aliases": [
+          "Numeá"
+        ]
+      }
+    ],
+    "coords": [
+      166.45,
+      -22.27
+    ]
+  },
+  "ne": {
+    "capitals": [
+      {
+        "name": "Niamey",
+        "aliases": [
+          "Niamei"
+        ]
+      }
+    ],
+    "coords": [
+      2.12,
+      13.52
+    ]
+  },
+  "ng": {
+    "capitals": [
+      {
+        "name": "Abuja",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      7.49,
+      9.06
+    ]
+  },
+  "ni": {
+    "capitals": [
+      {
+        "name": "Manágua",
+        "aliases": [
+          "Managua"
+        ]
+      }
+    ],
+    "coords": [
+      -86.27,
+      12.15
+    ]
+  },
+  "nl": {
+    "capitals": [
+      {
+        "name": "Amsterdã",
+        "aliases": [
+          "Amsterdam",
+          "Amesterdão"
+        ]
+      },
+      {
+        "name": "Haia",
+        "aliases": [
+          "The Hague",
+          "Den Haag"
+        ]
+      }
+    ],
+    "coords": [
+      4.88,
+      52.37
+    ]
+  },
+  "no": {
+    "capitals": [
+      {
+        "name": "Oslo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      10.74,
+      59.91
+    ]
+  },
+  "np": {
+    "capitals": [
+      {
+        "name": "Katmandu",
+        "aliases": [
+          "Catmandu",
+          "Kathmandu"
+        ]
+      }
+    ],
+    "coords": [
+      85.32,
+      27.71
+    ]
+  },
+  "nr": {
+    "capitals": [
+      {
+        "name": "Yaren",
+        "aliases": [
+          "Iarém"
+        ]
+      }
+    ],
+    "coords": [
+      166.92,
+      -0.55
+    ]
+  },
+  "nu": {
+    "capitals": [
+      {
+        "name": "Alofi",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -169.92,
+      -19.06
+    ]
+  },
+  "nz": {
+    "capitals": [
+      {
+        "name": "Wellington",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      174.78,
+      -41.29
+    ]
+  },
+  "om": {
+    "capitals": [
+      {
+        "name": "Mascate",
+        "aliases": [
+          "Muscat"
+        ]
+      }
+    ],
+    "coords": [
+      58.59,
+      23.61
+    ]
+  },
+  "pa": {
+    "capitals": [
+      {
+        "name": "Cidade do Panamá",
+        "aliases": [
+          "Panamá",
+          "Panama City",
+          "Ciudad de Panamá"
+        ]
+      }
+    ],
+    "coords": [
+      -79.53,
+      8.97
+    ]
+  },
+  "pe": {
+    "capitals": [
+      {
+        "name": "Lima",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -77.04,
+      -12.06
+    ]
+  },
+  "pf": {
+    "capitals": [
+      {
+        "name": "Papeete",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -149.57,
+      -17.54
+    ]
+  },
+  "pg": {
+    "capitals": [
+      {
+        "name": "Port Moresby",
+        "aliases": [
+          "Porto Moresby"
+        ]
+      }
+    ],
+    "coords": [
+      147.15,
+      -9.48
+    ]
+  },
+  "ph": {
+    "capitals": [
+      {
+        "name": "Manila",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      120.98,
+      14.6
+    ]
+  },
+  "pk": {
+    "capitals": [
+      {
+        "name": "Islamabad",
+        "aliases": [
+          "Islamabade"
+        ]
+      }
+    ],
+    "coords": [
+      73.04,
+      33.7
+    ]
+  },
+  "pl": {
+    "capitals": [
+      {
+        "name": "Varsóvia",
+        "aliases": [
+          "Warsaw",
+          "Warszawa"
+        ]
+      }
+    ],
+    "coords": [
+      21.01,
+      52.23
+    ]
+  },
+  "pm": {
+    "capitals": [
+      {
+        "name": "Saint-Pierre",
+        "aliases": [
+          "São Pedro"
+        ]
+      }
+    ],
+    "coords": [
+      -56.18,
+      46.78
+    ]
+  },
+  "pn": {
+    "capitals": [
+      {
+        "name": "Adamstown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -130.1,
+      -25.07
+    ]
+  },
+  "pr": {
+    "capitals": [
+      {
+        "name": "San Juan",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -66.12,
+      18.47
+    ]
+  },
+  "ps": {
+    "capitals": [
+      {
+        "name": "Ramallah",
+        "aliases": [
+          "Ramala"
+        ]
+      }
+    ],
+    "coords": [
+      35.2,
+      31.9
+    ]
+  },
+  "pt": {
+    "capitals": [
+      {
+        "name": "Lisboa",
+        "aliases": [
+          "Lisbon"
+        ]
+      }
+    ],
+    "coords": [
+      -9.14,
+      38.71
+    ]
+  },
+  "pw": {
+    "capitals": [
+      {
+        "name": "Ngerulmud",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      134.62,
+      7.5
+    ]
+  },
+  "py": {
+    "capitals": [
+      {
+        "name": "Assunção",
+        "aliases": [
+          "Asunción"
+        ]
+      }
+    ],
+    "coords": [
+      -57.63,
+      -25.28
+    ]
+  },
+  "qa": {
+    "capitals": [
+      {
+        "name": "Doha",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      51.53,
+      25.29
+    ]
+  },
+  "re": {
+    "capitals": [
+      {
+        "name": "Saint-Denis",
+        "aliases": [
+          "São Dinis"
+        ]
+      }
+    ],
+    "coords": [
+      55.45,
+      -20.88
+    ]
+  },
+  "ro": {
+    "capitals": [
+      {
+        "name": "Bucareste",
+        "aliases": [
+          "Bucharest",
+          "București"
+        ]
+      }
+    ],
+    "coords": [
+      26.1,
+      44.41
+    ]
+  },
+  "rs": {
+    "capitals": [
+      {
+        "name": "Belgrado",
+        "aliases": [
+          "Belgrade",
+          "Beograd"
+        ]
+      }
+    ],
+    "coords": [
+      20.46,
+      44.82
+    ]
+  },
+  "ru": {
+    "capitals": [
+      {
+        "name": "Moscou",
+        "aliases": [
+          "Moscow",
+          "Moscovo",
+          "Moskva"
+        ]
+      }
+    ],
+    "coords": [
+      37.62,
+      55.75
+    ]
+  },
+  "rw": {
+    "capitals": [
+      {
+        "name": "Kigali",
+        "aliases": [
+          "Quigali"
+        ]
+      }
+    ],
+    "coords": [
+      30.11,
+      -1.95
+    ]
+  },
+  "sa": {
+    "capitals": [
+      {
+        "name": "Riad",
+        "aliases": [
+          "Riade",
+          "Riyadh"
+        ]
+      }
+    ],
+    "coords": [
+      46.72,
+      24.64
+    ]
+  },
+  "sb": {
+    "capitals": [
+      {
+        "name": "Honiara",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      159.95,
+      -9.43
+    ]
+  },
+  "sc": {
+    "capitals": [
+      {
+        "name": "Vitória",
+        "aliases": [
+          "Victoria"
+        ]
+      }
+    ],
+    "coords": [
+      55.45,
+      -4.62
+    ]
+  },
+  "sd": {
+    "capitals": [
+      {
+        "name": "Cartum",
+        "aliases": [
+          "Khartoum"
+        ]
+      }
+    ],
+    "coords": [
+      32.53,
+      15.6
+    ]
+  },
+  "se": {
+    "capitals": [
+      {
+        "name": "Estocolmo",
+        "aliases": [
+          "Stockholm"
+        ]
+      }
+    ],
+    "coords": [
+      18.07,
+      59.33
+    ]
+  },
+  "sg": {
+    "capitals": [
+      {
+        "name": "Singapura",
+        "aliases": [
+          "Singapore"
+        ]
+      }
+    ],
+    "coords": [
+      103.8,
+      1.3
+    ]
+  },
+  "sh": {
+    "capitals": [
+      {
+        "name": "Jamestown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -5.72,
+      -15.93
+    ]
+  },
+  "si": {
+    "capitals": [
+      {
+        "name": "Liubliana",
+        "aliases": [
+          "Ljubljana"
+        ]
+      }
+    ],
+    "coords": [
+      14.51,
+      46.05
+    ]
+  },
+  "sk": {
+    "capitals": [
+      {
+        "name": "Bratislava",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      17.11,
+      48.15
+    ]
+  },
+  "sl": {
+    "capitals": [
+      {
+        "name": "Freetown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -13.24,
+      8.49
+    ]
+  },
+  "sm": {
+    "capitals": [
+      {
+        "name": "San Marino",
+        "aliases": [
+          "São Marinho"
+        ]
+      }
+    ],
+    "coords": [
+      12.45,
+      43.93
+    ]
+  },
+  "sn": {
+    "capitals": [
+      {
+        "name": "Dacar",
+        "aliases": [
+          "Dakar"
+        ]
+      }
+    ],
+    "coords": [
+      -17.43,
+      14.67
+    ]
+  },
+  "so": {
+    "capitals": [
+      {
+        "name": "Mogadíscio",
+        "aliases": [
+          "Mogadishu",
+          "Mogadixo"
+        ]
+      }
+    ],
+    "coords": [
+      45.34,
+      2.04
+    ]
+  },
+  "sr": {
+    "capitals": [
+      {
+        "name": "Paramaribo",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -55.17,
+      5.87
+    ]
+  },
+  "ss": {
+    "capitals": [
+      {
+        "name": "Juba",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      31.58,
+      4.85
+    ]
+  },
+  "st": {
+    "capitals": [
+      {
+        "name": "São Tomé",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      6.73,
+      0.34
+    ]
+  },
+  "sv": {
+    "capitals": [
+      {
+        "name": "San Salvador",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -89.19,
+      13.7
+    ]
+  },
+  "sx": {
+    "capitals": [
+      {
+        "name": "Philipsburg",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -63.04,
+      18.02
+    ]
+  },
+  "sy": {
+    "capitals": [
+      {
+        "name": "Damasco",
+        "aliases": [
+          "Damascus"
+        ]
+      }
+    ],
+    "coords": [
+      36.29,
+      33.51
+    ]
+  },
+  "sz": {
+    "capitals": [
+      {
+        "name": "Mbabane",
+        "aliases": [
+          "Mebabane"
+        ]
+      },
+      {
+        "name": "Lobamba",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      31.13,
+      -26.32
+    ]
+  },
+  "tc": {
+    "capitals": [
+      {
+        "name": "Cockburn Town",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -71.14,
+      21.46
+    ]
+  },
+  "td": {
+    "capitals": [
+      {
+        "name": "N'Djamena",
+        "aliases": [
+          "Ndjamena",
+          "Jamena"
+        ]
+      }
+    ],
+    "coords": [
+      15.05,
+      12.11
+    ]
+  },
+  "tf": {
+    "capitals": [
+      {
+        "name": "Port-aux-Français",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      70.22,
+      -49.35
+    ]
+  },
+  "tg": {
+    "capitals": [
+      {
+        "name": "Lomé",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      1.22,
+      6.13
+    ]
+  },
+  "th": {
+    "capitals": [
+      {
+        "name": "Bangkok",
+        "aliases": [
+          "Banguecoque",
+          "Bancoque"
+        ]
+      }
+    ],
+    "coords": [
+      100.52,
+      13.75
+    ]
+  },
+  "tj": {
+    "capitals": [
+      {
+        "name": "Duchambe",
+        "aliases": [
+          "Dushanbe",
+          "Duxambé"
+        ]
+      }
+    ],
+    "coords": [
+      68.79,
+      38.57
+    ]
+  },
+  "tl": {
+    "capitals": [
+      {
+        "name": "Díli",
+        "aliases": [
+          "Dili"
+        ]
+      }
+    ],
+    "coords": [
+      125.58,
+      -8.55
+    ]
+  },
+  "tm": {
+    "capitals": [
+      {
+        "name": "Asgabate",
+        "aliases": [
+          "Ashgabat",
+          "Asgabade",
+          "Ashkhabad"
+        ]
+      }
+    ],
+    "coords": [
+      58.38,
+      37.95
+    ]
+  },
+  "tn": {
+    "capitals": [
+      {
+        "name": "Túnis",
+        "aliases": [
+          "Tunis",
+          "Tunes"
+        ]
+      }
+    ],
+    "coords": [
+      10.18,
+      36.8
+    ]
+  },
+  "to": {
+    "capitals": [
+      {
+        "name": "Nukualofa",
+        "aliases": [
+          "Nuku'alofa",
+          "Nucualofa"
+        ]
+      }
+    ],
+    "coords": [
+      -175.2,
+      -21.13
+    ]
+  },
+  "tr": {
+    "capitals": [
+      {
+        "name": "Ancara",
+        "aliases": [
+          "Ankara"
+        ]
+      }
+    ],
+    "coords": [
+      32.84,
+      39.94
+    ]
+  },
+  "tt": {
+    "capitals": [
+      {
+        "name": "Port of Spain",
+        "aliases": [
+          "Porto de Espanha"
+        ]
+      }
+    ],
+    "coords": [
+      -61.52,
+      10.67
+    ]
+  },
+  "tv": {
+    "capitals": [
+      {
+        "name": "Funafuti",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      179.12,
+      -8.5
+    ]
+  },
+  "tw": {
+    "capitals": [
+      {
+        "name": "Taipé",
+        "aliases": [
+          "Taipei"
+        ]
+      }
+    ],
+    "coords": [
+      121.56,
+      25.04
+    ]
+  },
+  "tz": {
+    "capitals": [
+      {
+        "name": "Dodoma",
+        "aliases": []
+      },
+      {
+        "name": "Dar es Salaam",
+        "aliases": [
+          "Dar es Salam"
+        ]
+      }
+    ],
+    "coords": [
+      35.75,
+      -6.18
+    ]
+  },
+  "ua": {
+    "capitals": [
+      {
+        "name": "Kiev",
+        "aliases": [
+          "Kyiv",
+          "Kiiv"
+        ]
+      }
+    ],
+    "coords": [
+      30.52,
+      50.45
+    ]
+  },
+  "ug": {
+    "capitals": [
+      {
+        "name": "Kampala",
+        "aliases": [
+          "Campala"
+        ]
+      }
+    ],
+    "coords": [
+      32.58,
+      0.31
+    ]
+  },
+  "us": {
+    "capitals": [
+      {
+        "name": "Washington",
+        "aliases": [
+          "Washington, D.C.",
+          "Washington DC"
+        ]
+      }
+    ],
+    "coords": [
+      -77.04,
+      38.9
+    ]
+  },
+  "uy": {
+    "capitals": [
+      {
+        "name": "Montevidéu",
+        "aliases": [
+          "Montevideo"
+        ]
+      }
+    ],
+    "coords": [
+      -56.19,
+      -34.91
+    ]
+  },
+  "uz": {
+    "capitals": [
+      {
+        "name": "Tashkent",
+        "aliases": [
+          "Tasquente"
+        ]
+      }
+    ],
+    "coords": [
+      69.28,
+      41.31
+    ]
+  },
+  "va": {
+    "capitals": [
+      {
+        "name": "Cidade do Vaticano",
+        "aliases": [
+          "Vaticano",
+          "Vatican City"
+        ]
+      }
+    ],
+    "coords": [
+      12.45,
+      41.9
+    ]
+  },
+  "vc": {
+    "capitals": [
+      {
+        "name": "Kingstown",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -61.23,
+      13.16
+    ]
+  },
+  "ve": {
+    "capitals": [
+      {
+        "name": "Caracas",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -66.91,
+      10.51
+    ]
+  },
+  "vg": {
+    "capitals": [
+      {
+        "name": "Road Town",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -64.62,
+      18.43
+    ]
+  },
+  "vi": {
+    "capitals": [
+      {
+        "name": "Charlotte Amalie",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -64.95,
+      18.35
+    ]
+  },
+  "vn": {
+    "capitals": [
+      {
+        "name": "Hanói",
+        "aliases": [
+          "Hanoi"
+        ]
+      }
+    ],
+    "coords": [
+      105.84,
+      21.02
+    ]
+  },
+  "vu": {
+    "capitals": [
+      {
+        "name": "Port Vila",
+        "aliases": [
+          "Porto Vila"
+        ]
+      }
+    ],
+    "coords": [
+      168.32,
+      -17.73
+    ]
+  },
+  "wf": {
+    "capitals": [
+      {
+        "name": "Mata-Utu",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -176.17,
+      -13.28
+    ]
+  },
+  "ws": {
+    "capitals": [
+      {
+        "name": "Apia",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      -171.83,
+      -13.83
+    ]
+  },
+  "xk": {
+    "capitals": [
+      {
+        "name": "Pristina",
+        "aliases": [
+          "Prishtina",
+          "Priština"
+        ]
+      }
+    ],
+    "coords": [
+      21.17,
+      42.67
+    ]
+  },
+  "ye": {
+    "capitals": [
+      {
+        "name": "Saná",
+        "aliases": [
+          "Sanaa",
+          "Sana"
+        ]
+      },
+      {
+        "name": "Áden",
+        "aliases": [
+          "Aden"
+        ]
+      }
+    ],
+    "coords": [
+      44.2,
+      15.35
+    ]
+  },
+  "yt": {
+    "capitals": [
+      {
+        "name": "Mamoudzou",
+        "aliases": [
+          "Mamudzu"
+        ]
+      }
+    ],
+    "coords": [
+      45.23,
+      -12.78
+    ]
+  },
+  "za": {
+    "capitals": [
+      {
+        "name": "Pretória",
+        "aliases": [
+          "Pretoria"
+        ]
+      },
+      {
+        "name": "Cidade do Cabo",
+        "aliases": [
+          "Cape Town",
+          "Kaapstad"
+        ]
+      },
+      {
+        "name": "Bloemfontein",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      28.19,
+      -25.75
+    ]
+  },
+  "zm": {
+    "capitals": [
+      {
+        "name": "Lusaka",
+        "aliases": [
+          "Lusaca"
+        ]
+      }
+    ],
+    "coords": [
+      28.28,
+      -15.42
+    ]
+  },
+  "zw": {
+    "capitals": [
+      {
+        "name": "Harare",
+        "aliases": []
+      }
+    ],
+    "coords": [
+      31.05,
+      -17.83
+    ]
+  }
+}
