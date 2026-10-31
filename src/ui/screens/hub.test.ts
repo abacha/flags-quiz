@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { capitalPool } from '../../data/capitals';
 import { countries } from '../../data/countries';
 import { MAP_ALL, mapLevels, mapPool } from '../../data/maps';
 import { mapDifficulty } from '../../engine/mapFormats';
@@ -171,6 +172,7 @@ describe('renderHub', () => {
       expect(areas().map((b) => [b.textContent, b.getAttribute('aria-pressed')])).toEqual([
         ['Bandeiras', 'true'],
         ['Mapas', 'false'],
+        ['Capitais', 'false'],
       ]);
       expect(root.querySelectorAll('.level-card')).toHaveLength(4);
       expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
@@ -183,7 +185,7 @@ describe('renderHub', () => {
       expect(screens).toEqual([]);
       expect(root.firstElementChild).toBe(main);
       expect(localStorage.getItem('flags-quiz:area')).toBe('maps');
-      expect(areas().map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'true']);
+      expect(areas().map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'true', 'false']);
       expect(cardTitles()).toEqual(['Ilhas Britânicas e Atlântico Norte', 'Nórdicos e Bálticos', 'Ocidental', 'Central', 'Bálcãs', 'Leste', 'Continente inteiro']);
       expect(card('Bálcãs').querySelector('.meta')!.textContent).toBe(`${mapPool('europe', 'balkans').length} países`);
       expect(card('Continente inteiro').querySelector('.meta')!.textContent).toBe(`${mapPool('europe', MAP_ALL).length} países`);
@@ -261,6 +263,55 @@ describe('renderHub', () => {
         { name: 'mapGame', continent: 'oceania', level: 'micronesia' },
         { name: 'mapQuiz', continent: 'oceania', level: MAP_ALL },
       ]);
+    });
+  });
+
+  describe('Capitais area', () => {
+    beforeEach(() => {
+      localStorage.setItem('flags-quiz:area', 'capitals');
+    });
+
+    const area = (label: string) => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')].find((b) => b.textContent === label)!;
+    const cardTitles = () => [...root.querySelectorAll('.level-card h2')].map((h) => h.textContent);
+    const capitalGoal = (continent: ContinentKey, difficulty: Difficulty) => goalFor(difficulty, capitalPool(continent, difficulty).length);
+
+    it('shows the four difficulty cards with the capital counts and medal goals, and the empty progress', () => {
+      render('africa');
+      expect(area('Capitais').getAttribute('aria-pressed')).toBe('true');
+      expect(cardTitles()).toEqual(['Fácil', 'Médio', 'Difícil', 'Geral']);
+      expect(card('Fácil').querySelector('.meta')!.textContent).toBe(`${capitalPool('africa', 'easy').length} países`);
+      expect(tags('Geral')).toEqual([
+        [`🏅 meta ${capitalGoal('africa', 'general')}`, false],
+        ['Quiz —', false],
+      ]);
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('0/24 capitais');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 0/4', 'África 0/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
+    });
+
+    it('counts a completed capital quiz in the pill and in its tab', () => {
+      localStorage.setItem('flags-quiz:capital-quiz-records', JSON.stringify({ africa: { easy: { bestScore: 10, bestTimeMs: 90000, completed: true } } }));
+      render('africa');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('1/24 capitais');
+      expect(tab('África').textContent).toBe('África 1/4');
+      expect(tags('Fácil')[1]).toEqual(['✓ Quiz 01:30', true]);
+    });
+
+    it('starts the capital Learn and Quiz on the chosen continent and the difficulty of the card', () => {
+      render('africa');
+      button(card('Médio'), 'Aprender').click();
+      button(card('Difícil'), 'Quiz').click();
+      expect(screens).toEqual([
+        { name: 'capitalGame', continent: 'africa', difficulty: 'medium' },
+        { name: 'capitalQuiz', continent: 'africa', difficulty: 'hard' },
+      ]);
+    });
+
+    it('links to the capital table of the chosen continent', () => {
+      render('africa');
+      const link = root.querySelector<HTMLButtonElement>('.see-all')!;
+      expect(link.textContent).toBe(`Ver as ${capitalPool('africa', 'general').length} capitais da África →`);
+      link.click();
+      expect(screens).toEqual([{ name: 'capitalTable', continent: 'africa' }]);
     });
   });
 });

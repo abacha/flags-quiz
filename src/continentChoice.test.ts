@@ -40,4 +40,10 @@ describe('continent choice', () => {
     store.data.set('flags-quiz:area', 'atlantis');
     expect(loadArea(store)).toBe('flags');
   });
+
+  it('remembers the capitals area', () => {
+    const store = memoryStore();
+    saveArea(store, 'capitals');
+    expect(loadArea(store)).toBe('capitals');
+  });
 });

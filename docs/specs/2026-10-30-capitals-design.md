@@ -1,7 +1,7 @@
 # Flags Quiz — Capitals area
 
 Date: 2026-10-30
-Status: approved
+Status: implemented
 
 ## Reasoning
 

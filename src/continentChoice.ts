@@ -14,12 +14,15 @@ export function saveContinent(store: ContinentStore, continent: ContinentKey): v
   store.setItem(STORAGE_KEY, continent);
 }
 
-export type Area = 'flags' | 'maps';
+export type Area = 'flags' | 'maps' | 'capitals';
+
+const AREAS: readonly Area[] = ['flags', 'maps', 'capitals'];
 
 const AREA_STORAGE_KEY = 'flags-quiz:area';
 
 export function loadArea(store: ContinentStore): Area {
-  return store.getItem(AREA_STORAGE_KEY) === 'maps' ? 'maps' : 'flags';
+  const stored = store.getItem(AREA_STORAGE_KEY);
+  return AREAS.find((area) => area === stored) ?? 'flags';
 }
 
 export function saveArea(store: ContinentStore, area: Area): void {

@@ -1,9 +1,11 @@
 import { loadArea, saveArea, saveContinent, type Area } from '../../continentChoice';
 import { countries, type Country } from '../../data/countries';
+import { capitalPool } from '../../data/capitals';
 import { MAP_ALL, mapLevelLabel, mapLevels, mapPool, type MapLevel } from '../../data/maps';
 import { mapDifficulty } from '../../engine/mapFormats';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Medal } from '../../engine/round';
+import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
 import { loadMedals, medalOf, type Medals } from '../../progress';
 import { isCompleted, loadQuizRecords, quizRecord, type QuizRecord, type QuizRecords } from '../../quizRecords';
@@ -13,15 +15,22 @@ import { CONTINENT_FROM, CONTINENT_KEYS, CONTINENT_LABEL, DIFFICULTIES, DIFFICUL
 import type { Navigate, Screen } from '../navigation';
 import { formatTime } from '../time';
 
-const AREA_LABEL: Record<Area, string> = { flags: 'Bandeiras', maps: 'Mapas' };
+const AREA_LABEL: Record<Area, string> = { flags: 'Bandeiras', maps: 'Mapas', capitals: 'Capitais' };
+const PILL_UNIT: Record<Area, string> = { flags: 'quizzes', maps: 'mapas', capitals: 'capitais' };
 
 export function renderHub(root: HTMLElement, navigate: Navigate, initial: ContinentKey): void {
   const medals = loadMedals(localStorage);
   const records = loadQuizRecords(localStorage);
   const mapMedals = loadMapMedals(localStorage);
   const mapRecords = loadMapQuizRecords(localStorage);
-  const saved: Record<Area, Saved> = { flags: { medals, records }, maps: { medals: mapMedals, records: mapRecords } };
-  const levelsOf = (continent: ContinentKey): readonly string[] => (area === 'flags' ? DIFFICULTIES : mapLevels(continent));
+  const capitalMedals = loadCapitalMedals(localStorage);
+  const capitalRecords = loadCapitalQuizRecords(localStorage);
+  const saved: Record<Area, Saved> = {
+    flags: { medals, records },
+    maps: { medals: mapMedals, records: mapRecords },
+    capitals: { medals: capitalMedals, records: capitalRecords },
+  };
+  const levelsOf = (continent: ContinentKey): readonly string[] => (area === 'maps' ? mapLevels(continent) : DIFFICULTIES);
   const completedIn = (continent: ContinentKey) => levelsOf(continent).filter((level) => isCompleted(quizRecord(saved[area].records, continent, level))).length;
   const completed = () => CONTINENT_KEYS.reduce((sum, continent) => sum + completedIn(continent), 0);
   const total = () => CONTINENT_KEYS.reduce((sum, continent) => sum + levelsOf(continent).length, 0);
@@ -39,14 +48,14 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   };
 
   const tabCount = (key: ContinentKey) => {
-    if (area === 'flags') return [' ', el('small', {}, [`${completedIn(key)}/${DIFFICULTIES.length}`])];
+    if (area !== 'maps') return [' ', el('small', {}, [`${completedIn(key)}/${DIFFICULTIES.length}`])];
     return completedIn(key) === levelsOf(key).length ? [' ', el('small', {}, ['✓'])] : [];
   };
 
   const render = () => {
     press(areas, area);
     press(tabs, continent);
-    pill.textContent = `${completed()}/${total()} ${area === 'flags' ? 'quizzes' : 'mapas'}`;
+    pill.textContent = `${completed()}/${total()} ${PILL_UNIT[area]}`;
     for (const [key, tab] of tabs) tab.replaceChildren(CONTINENT_LABEL[key], ...tabCount(key));
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (area === 'maps') {
@@ -54,6 +63,15 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
         ...mapLevels(continent).map((level) => levelCard(navigate, mapLevelCard(continent, level, mapMedals, mapRecords))),
         el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'mapTable', continent }) }, [
           `Ver o mapa dos ${mapPool(continent, MAP_ALL).length} países ${CONTINENT_FROM[continent]} →`,
+        ]),
+      );
+      return;
+    }
+    if (area === 'capitals') {
+      levels.replaceChildren(
+        ...DIFFICULTIES.map((difficulty) => levelCard(navigate, capitalLevelCard(continent, difficulty, capitalMedals, capitalRecords))),
+        el('button', { className: 'see-all', type: 'button', onclick: () => navigate({ name: 'capitalTable', continent }) }, [
+          `Ver as ${capitalPool(continent, 'general').length} capitais ${CONTINENT_FROM[continent]} →`,
         ]),
       );
       return;
@@ -79,7 +97,7 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   };
 
   const areas = new Map(
-    (['flags', 'maps'] as const).map((key) => [
+    (['flags', 'maps', 'capitals'] as const).map((key) => [
       key,
       el('button', { type: 'button', onclick: () => chooseArea(key) }, [AREA_LABEL[key]]),
     ]),
@@ -129,6 +147,19 @@ function flagLevelCard(continent: ContinentKey, difficulty: Difficulty, medals: 
     goal: goalFor(difficulty, pool.length),
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'game' : 'quiz', continent, difficulty }),
+  };
+}
+
+function capitalLevelCard(continent: ContinentKey, difficulty: Difficulty, medals: Medals, records: QuizRecords): LevelCard {
+  const pool = capitalPool(continent, difficulty);
+  return {
+    title: DIFFICULTY_LABEL[difficulty],
+    count: `${pool.length} países`,
+    thumbs: [],
+    medal: medalOf(medals, continent, difficulty),
+    goal: goalFor(difficulty, pool.length),
+    record: quizRecord(records, continent, difficulty),
+    play: (mode) => ({ name: mode === 'learn' ? 'capitalGame' : 'capitalQuiz', continent, difficulty }),
   };
 }
 
