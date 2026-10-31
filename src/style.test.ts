@@ -34,6 +34,12 @@ describe('style.css', () => {
     },
   );
 
+  it('keeps a long press on a button from selecting its text', () => {
+    expect(declaredInSource('button', 'user-select')).toContain('none');
+    expect(declaredInSource('button', '-webkit-user-select')).toContain('none');
+    expect(declaredInSource('button', '-webkit-touch-callout')).toContain('none');
+  });
+
   it('truncates the answer field placeholder instead of wrapping it', () => {
     expect(declared('input::placeholder', 'text-overflow')).toContain('ellipsis');
   });
