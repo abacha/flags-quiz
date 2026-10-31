@@ -50,6 +50,12 @@ function wrongAnswer(q: Question): Answer {
     case 'mapTrueFalse':
     case 'mapTypeName':
     case 'mapPairs':
+    case 'countryToCapitals':
+    case 'capitalToCountries':
+    case 'capitalPairs':
+    case 'capitalTrueFalse':
+    case 'typeCapital':
+    case 'typeCapitalCountry':
       throw new Error(`Flag rounds never ask ${q.format}`);
     default:
       return { kind: 'choice', iso2: q.options.find((c) => c !== q.target)!.iso2 };

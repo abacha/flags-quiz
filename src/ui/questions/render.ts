@@ -42,5 +42,12 @@ export function renderQuestion(question: Question, submit: Submit, scope?: MapSc
     case 'mapTypeName':
       if (!scope) throw new Error(`The ${question.format} question needs a map scope`);
       return renderMapQuestion(question, scope, submit);
+    case 'countryToCapitals':
+    case 'capitalToCountries':
+    case 'capitalPairs':
+    case 'capitalTrueFalse':
+    case 'typeCapital':
+    case 'typeCapitalCountry':
+      throw new Error('Capital questions are rendered in Task 4');
   }
 }

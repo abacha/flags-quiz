@@ -22,7 +22,13 @@ export type Question =
   | { format: 'nameToMap'; target: Country }
   | { format: 'mapPairs'; target: Country; countries: Country[] }
   | { format: 'mapTrueFalse'; target: Country; shown: Country }
-  | { format: 'mapTypeName'; target: Country };
+  | { format: 'mapTypeName'; target: Country }
+  | { format: 'countryToCapitals'; target: Country; options: Country[] }
+  | { format: 'capitalToCountries'; target: Country; options: Country[] }
+  | { format: 'capitalPairs'; target: Country; countries: Country[] }
+  | { format: 'capitalTrueFalse'; target: Country; shown: Country }
+  | { format: 'typeCapital'; target: Country }
+  | { format: 'typeCapitalCountry'; target: Country };
 
 export type FormatId = Question['format'];
 

@@ -37,13 +37,19 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'crop':
     case 'mapToNames':
     case 'nameToMap':
+    case 'countryToCapitals':
+    case 'capitalToCountries':
       return targetGrade(expectKind(answer, 'choice').iso2 === question.target.iso2, question.target);
     case 'trueFalse':
     case 'mapTrueFalse':
+    case 'capitalTrueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
-    case 'mapTypeName': {
-      const verdict = judgeTypedName(question.target, expectKind(answer, 'text').text);
+    case 'mapTypeName':
+    case 'typeCapital':
+    case 'typeCapitalCountry': {
+      const judge = question.format === 'typeCapital' ? judgeTypedCapital : judgeTypedName;
+      const verdict = judge(question.target, expectKind(answer, 'text').text);
       if (verdict === 'typo') return { correct: false, missed: [], typos: [question.target] };
       return targetGrade(verdict === 'right', question.target);
     }
@@ -54,6 +60,7 @@ export function grade(question: Question, answer: Answer): Grade {
     }
     case 'matchPairs':
     case 'mapPairs':
+    case 'capitalPairs':
     case 'sortSimilar':
     case 'sortSimilarNames': {
       const { links } = expectKind(answer, 'links');
