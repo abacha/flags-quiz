@@ -25,8 +25,12 @@ Quiz highlights one country at a time on the map: type its name, tap another cou
 The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.
 
 Capitais asks for the capital of each country, with the same four difficulty levels, goals, lives and medals as the flag levels, and its own records.
-Aprender asks six question formats, from the capital of a country to the country of a capital, with wrong options picked among look-alike capitals of the same pool.
-Quiz shows one country at a time and asks for its capital, accepting the accepted spellings and telling a typo from a wrong capital.
+Aprender asks six question formats, in both directions: the capital of a country and the country of a capital.
+Wrong options come from look-alike country names, look-alike capitals and the countries nearest to the target.
+Quiz shows the flag grid of the level with every country name visible and asks for the capital of the highlighted country.
+Tapping another country switches the question, and Pular moves on.
+A right answer shows the capital under the country in the grid, any capital of a country with several is accepted, and a typo is told apart from a wrong capital.
+Each level keeps its best score and best time.
 The link under the level cards lists every country of the continent with its capital, in alphabetical order.
 
 The game holds 248 flags: the 193 UN members, 5 states outside the UN, the 4 nations of the United Kingdom and 46 territories. Once a name is revealed after an answer, a badge beside it says which of these it is.

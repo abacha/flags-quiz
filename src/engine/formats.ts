@@ -14,7 +14,7 @@ function continentMatesInPool(target: Country, ctx: FormatContext): Country[] {
 
 type Groups = FormatContext['similarGroups'];
 
-function groupsInPool(groups: Groups, target: Country, ctx: FormatContext): Country[][] {
+export function groupsInPool(groups: Groups, target: Country, ctx: FormatContext): Country[][] {
   const inPool = new Map(ctx.pool.map((c) => [c.iso2, c]));
   return groups
     .filter((group) => group.includes(target.iso2))

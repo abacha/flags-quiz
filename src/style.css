@@ -462,8 +462,26 @@ input::placeholder { text-overflow: ellipsis; }
   font-weight: 500;
   line-height: 1.2;
   text-align: center;
-  overflow-wrap: anywhere;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
+
+.quiz-capital {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.quiz-capital:empty { display: none; }
 
 .quiz-screen > .map { flex: 0 1 auto; min-height: 0; }
 

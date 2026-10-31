@@ -1,5 +1,6 @@
 import { capitalPool, nearestByCapital, similarCapitals } from '../data/capitals';
 import { similarNames, type Country } from '../data/countries';
+import { groupsInPool } from './formats';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey, Difficulty } from './pool';
 import { pickOne, shuffle, type Rng } from './rng';
@@ -8,17 +9,15 @@ const always = () => true;
 const NEAR_COUNT = 8;
 const OPTION_COUNT = 4;
 
-function lookAlikesInPool(groups: FormatContext['similarNames'], target: Country, ctx: FormatContext): Country[] {
-  const inPool = new Map(ctx.pool.map((c) => [c.iso2, c]));
-  return groups
-    .filter((group) => group.includes(target.iso2))
-    .flatMap((group) => group.flatMap((code) => (code === target.iso2 ? [] : (inPool.get(code) ?? []))));
-}
+const lookAlikes = (groups: Parameters<typeof groupsInPool>[0], target: Country, ctx: FormatContext) =>
+  groupsInPool(groups, target, ctx)
+    .flat()
+    .filter((c) => c.iso2 !== target.iso2);
 
 export function trickyOthers(target: Country, ctx: FormatContext, count: number, rng: Rng): Country[] {
   const ranked = [
-    ...shuffle(lookAlikesInPool(ctx.similarNames, target, ctx), rng),
-    ...shuffle(lookAlikesInPool(similarCapitals, target, ctx), rng),
+    ...shuffle(lookAlikes(ctx.similarNames, target, ctx), rng),
+    ...shuffle(lookAlikes(similarCapitals, target, ctx), rng),
     ...shuffle(nearestByCapital(target, ctx.pool, NEAR_COUNT), rng),
   ];
   return [...new Set(ranked)].slice(0, count);

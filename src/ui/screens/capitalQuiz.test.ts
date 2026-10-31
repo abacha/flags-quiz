@@ -48,14 +48,16 @@ describe('renderCapitalQuiz', () => {
     render('oceania', 'easy');
     const pool = capitalPool('oceania', 'easy');
     expect(cells().map((cell) => cell.querySelector('.quiz-name')!.textContent).sort()).toEqual(pool.map((c) => c.name).sort());
+    expect(cells().every((cell) => cell.querySelector('.quiz-capital')!.textContent === '')).toBe(true);
     for (const country of pool) expect(root.querySelector('.quiz-grid')!.innerHTML).not.toContain(mainCapital(country));
   });
 
-  it('appends every capital to the cell of a country answered right', () => {
+  it('shows every capital in its own element on the cell of a country answered right', () => {
     render('americas', 'general');
     cellOf('Bolívia').click();
     type('La Paz');
-    expect(cellOf('Bolívia').querySelector('.quiz-name')!.textContent).toBe(`Bolívia · ${capitalLabel(byName.get('Bolívia')!)}`);
+    expect(cellOf('Bolívia').querySelector('.quiz-name')!.textContent).toBe('Bolívia');
+    expect(cellOf('Bolívia').querySelector('.quiz-capital')!.textContent).toBe(capitalLabel(byName.get('Bolívia')!));
     expect(capitalLabel(byName.get('Bolívia')!)).toBe('Sucre / La Paz');
   });
 

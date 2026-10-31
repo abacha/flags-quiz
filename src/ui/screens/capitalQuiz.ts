@@ -14,7 +14,10 @@ export function renderCapitalQuiz(root: HTMLElement, navigate: Navigate, contine
     placeholder: 'Capital',
     title: `Capitais · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`,
     figure: countryFigure,
-    board: quizGrid((country, state) => (state === 'answered' ? `${country.name} · ${capitalLabel(country)}` : country.name)),
+    board: quizGrid(
+      (country) => country.name,
+      (country, state) => (state === 'answered' ? capitalLabel(country) : ''),
+    ),
     save: (store, outcome) => saveCapitalQuizOutcome(store, continent, difficulty, outcome),
     resultScreen: (result) => ({ name: 'capitalQuizResult', continent, difficulty, ...result }),
   });

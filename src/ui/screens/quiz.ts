@@ -55,14 +55,18 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
   });
 }
 
-export function quizGrid(label: (country: Country, state: FlagState) => string): (quiz: Quiz, pick: (country: Country) => void) => QuizBoard {
+export function quizGrid(
+  label: (country: Country, state: FlagState) => string,
+  detail?: (country: Country, state: FlagState) => string,
+): (quiz: Quiz, pick: (country: Country) => void) => QuizBoard {
   return (quiz, pick) => {
-    const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
+    const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement; detail: HTMLSpanElement | null }>();
     const element = el(
       'div',
       { className: 'quiz-grid' },
       quiz.flags.map((country) => {
         const name = el('span', { className: 'quiz-name' });
+        const detailLine = detail ? el('span', { className: 'quiz-capital' }) : null;
         const cell = el(
           'button',
           {
@@ -70,21 +74,22 @@ export function quizGrid(label: (country: Country, state: FlagState) => string):
             type: 'button',
             onclick: () => pick(country),
           },
-          [el('span', { className: 'quiz-thumb' }, [flagImg(country, 'flag', 'lazy')]), name],
+          [el('span', { className: 'quiz-thumb' }, [flagImg(country, 'flag', 'lazy')]), name, ...(detailLine ? [detailLine] : [])],
         );
-        cells.set(country, { cell, name });
+        cells.set(country, { cell, name, detail: detailLine });
         return cell;
       }),
     );
     return {
       element,
       paint() {
-        for (const [country, { cell, name }] of cells) {
+        for (const [country, { cell, name, detail: detailLine }] of cells) {
           const state = quiz.stateOf(country.iso2);
           cell.className = `quiz-cell ${state}`;
           cell.classList.toggle('current', country === quiz.current);
           cell.disabled = state === 'answered';
           name.textContent = label(country, state);
+          if (detailLine) detailLine.textContent = detail!(country, state);
         }
       },
       reveal: (country) => cells.get(country)!.cell.scrollIntoView({ block: 'nearest' }),

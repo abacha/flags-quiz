@@ -98,7 +98,6 @@ export function judgeTypedName(country: Country, text: string): TypedVerdict {
 export function judgeTypedCapital(country: Country, text: string): TypedVerdict {
   const typed = normalizeName(text);
   if (typedCapitals.get(country)!.includes(typed)) return 'right';
-  // Naming the country is a knowledge error, not a slip.
   if ([...typedNames.values()].some((names) => names.includes(typed))) return 'wrong';
   return judgeTyped(country, text, typedCapitals);
 }

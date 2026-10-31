@@ -17,6 +17,11 @@ describe('judgeTypedCapital', () => {
     expect(judgeTypedCapital(c('bo'), 'sucre')).toBe('right');
   });
 
+  it('judges a former name of the capital right', () => {
+    expect(judgeTypedCapital(c('kz'), 'Nur-Sultan')).toBe('right');
+    expect(judgeTypedCapital(c('kz'), 'Nursultan')).toBe('right');
+  });
+
   it('judges a country whose capital shares its name right', () => {
     expect(judgeTypedCapital(c('gt'), 'Guatemala')).toBe('right');
   });
