@@ -8,12 +8,15 @@ describe('clickOnLongPress', () => {
   let clicked: ReturnType<typeof vi.fn<() => void>>;
   let stop: () => void;
 
-  const pointer = (type: string, x = 10, y = 10, pointerType = 'touch') =>
-    button.dispatchEvent(new PointerEvent(type, { bubbles: true, clientX: x, clientY: y, pointerType }));
-  const press = (ms: number, upX = 10, upY = 10, pointerType = 'touch') => {
-    pointer('pointerdown', 10, 10, pointerType);
+  const touch = (type: string, x = 10, y = 10) => {
+    const point = new Touch({ identifier: 1, target: button, clientX: x, clientY: y });
+    const touches = type === 'touchstart' ? [point] : [];
+    button.dispatchEvent(new TouchEvent(type, { bubbles: true, touches, changedTouches: [point] }));
+  };
+  const press = (ms: number, upX = 10, upY = 10) => {
+    touch('touchstart');
     time += ms;
-    pointer('pointerup', upX, upY, pointerType);
+    touch('touchend', upX, upY);
   };
 
   beforeEach(() => {
@@ -36,6 +39,11 @@ describe('clickOnLongPress', () => {
     expect(clicked).toHaveBeenCalledTimes(1);
   });
 
+  it('clicks after a long press whose finger drifted a few pixels, which Android reads as a scroll start', () => {
+    press(800, 24, 18);
+    expect(clicked).toHaveBeenCalledTimes(1);
+  });
+
   it('drops the browser click that follows a long press it already clicked', () => {
     press(400);
     button.click();
@@ -54,27 +62,27 @@ describe('clickOnLongPress', () => {
     expect(clicked).not.toHaveBeenCalled();
   });
 
-  it('does not click when the finger slides off the button before release', () => {
-    press(800, 150, 10);
+  it('does not click after a drag longer than a drift, even when it ends on the button', () => {
+    press(800, 10, 38);
     expect(clicked).not.toHaveBeenCalled();
   });
 
-  it('does not click when the browser cancels the press for a scroll', () => {
-    pointer('pointerdown');
-    pointer('pointercancel');
+  it('does not click when the finger slides off the button before release', () => {
+    press(800, 110, 10);
+    expect(clicked).not.toHaveBeenCalled();
+  });
+
+  it('does not click when the system cancels the touch', () => {
+    touch('touchstart');
+    touch('touchcancel');
     time += 800;
-    pointer('pointerup');
+    touch('touchend');
     expect(clicked).not.toHaveBeenCalled();
   });
 
   it('does not click a disabled button', () => {
     button.disabled = true;
     press(800);
-    expect(clicked).not.toHaveBeenCalled();
-  });
-
-  it('leaves a mouse press to the browser', () => {
-    press(800, 10, 10, 'mouse');
     expect(clicked).not.toHaveBeenCalled();
   });
 });
