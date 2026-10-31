@@ -35,7 +35,7 @@ export interface LevelLadder<L extends string> {
   play: (level: L) => Screen;
 }
 
-export function flagLadder(mode: 'game' | 'quiz', continent: ContinentKey, difficulty: Difficulty): LevelLadder<Difficulty> {
+export function flagLadder(mode: 'game' | 'quiz' | 'capitalGame' | 'capitalQuiz', continent: ContinentKey, difficulty: Difficulty): LevelLadder<Difficulty> {
   return { levels: DIFFICULTIES, current: difficulty, label: (d) => DIFFICULTY_LABEL[d], play: (d) => ({ name: mode, continent, difficulty: d }) };
 }
 

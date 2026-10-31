@@ -1,6 +1,7 @@
 import { countries, type Country } from '../../data/countries';
+import { judgeTypedName, type TypedVerdict } from '../../engine/answer';
 import { poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { Quiz, type Nearest } from '../../engine/quiz';
+import { Quiz, type FlagState, type Nearest } from '../../engine/quiz';
 import { saveQuizOutcome, type NewRecords, type QuizOutcome, type RecordStore } from '../../quizRecords';
 import { el } from '../dom';
 import { onBack } from '../backButton';
@@ -29,6 +30,8 @@ export interface QuizResult {
 export interface QuizSpec {
   pool: readonly Country[];
   nearest?: Nearest;
+  judge?: (country: Country, text: string) => TypedVerdict;
+  placeholder?: string;
   title: string;
   figure?: (country: Country) => HTMLElement;
   board: (quiz: Quiz, pick: (country: Country) => void) => QuizBoard;
@@ -41,7 +44,7 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
     pool: poolFor(countries, continent, difficulty),
     title: `${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`,
     figure: (country) => flagImg(country),
-    board: flagGrid,
+    board: quizGrid((country, state) => (state === 'answered' ? country.name : '')),
     save: (store, outcome) => saveQuizOutcome(store, continent, difficulty, outcome),
     resultScreen: (result) => ({
       name: 'quizResult',
@@ -52,43 +55,45 @@ export function renderQuiz(root: HTMLElement, navigate: Navigate, continent: Con
   });
 }
 
-function flagGrid(quiz: Quiz, pick: (country: Country) => void): QuizBoard {
-  const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
-  const element = el(
-    'div',
-    { className: 'quiz-grid' },
-    quiz.flags.map((country) => {
-      const name = el('span', { className: 'quiz-name' });
-      const cell = el(
-        'button',
-        {
-          className: 'quiz-cell',
-          type: 'button',
-          onclick: () => pick(country),
-        },
-        [el('span', { className: 'quiz-thumb' }, [flagImg(country, 'flag', 'lazy')]), name],
-      );
-      cells.set(country, { cell, name });
-      return cell;
-    }),
-  );
-  return {
-    element,
-    paint() {
-      for (const [country, { cell, name }] of cells) {
-        const state = quiz.stateOf(country.iso2);
-        cell.className = `quiz-cell ${state}`;
-        cell.classList.toggle('current', country === quiz.current);
-        cell.disabled = state === 'answered';
-        name.textContent = state === 'answered' ? country.name : '';
-      }
-    },
-    reveal: (country) => cells.get(country)!.cell.scrollIntoView({ block: 'nearest' }),
+export function quizGrid(label: (country: Country, state: FlagState) => string): (quiz: Quiz, pick: (country: Country) => void) => QuizBoard {
+  return (quiz, pick) => {
+    const cells = new Map<Country, { cell: HTMLButtonElement; name: HTMLSpanElement }>();
+    const element = el(
+      'div',
+      { className: 'quiz-grid' },
+      quiz.flags.map((country) => {
+        const name = el('span', { className: 'quiz-name' });
+        const cell = el(
+          'button',
+          {
+            className: 'quiz-cell',
+            type: 'button',
+            onclick: () => pick(country),
+          },
+          [el('span', { className: 'quiz-thumb' }, [flagImg(country, 'flag', 'lazy')]), name],
+        );
+        cells.set(country, { cell, name });
+        return cell;
+      }),
+    );
+    return {
+      element,
+      paint() {
+        for (const [country, { cell, name }] of cells) {
+          const state = quiz.stateOf(country.iso2);
+          cell.className = `quiz-cell ${state}`;
+          cell.classList.toggle('current', country === quiz.current);
+          cell.disabled = state === 'answered';
+          name.textContent = label(country, state);
+        }
+      },
+      reveal: (country) => cells.get(country)!.cell.scrollIntoView({ block: 'nearest' }),
+    };
   };
 }
 
 export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): void {
-  const quiz = new Quiz(spec.pool, Math.random, spec.nearest);
+  const quiz = new Quiz(spec.pool, Math.random, spec.nearest, spec.judge);
   const startedAt = performance.now();
   const elapsed = () => performance.now() - startedAt;
 
@@ -132,7 +137,7 @@ export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): 
     autocomplete: 'off',
     autocapitalize: 'off',
     spellcheck: false,
-    placeholder: 'Nome',
+    placeholder: spec.placeholder ?? 'Nome',
   });
   const skip = el('button', { className: 'secondary', type: 'button' }, ['Pular']);
   const form = el('form', { className: 'type-form' }, [input, el('button', { className: 'primary', type: 'submit' }, ['Responder']), skip]);

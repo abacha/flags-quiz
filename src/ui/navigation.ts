@@ -37,6 +37,21 @@ export type Screen =
       unanswered: Country[];
       missed: Country[];
       newRecords: NewRecords;
+    }
+  | { name: 'capitalGame'; continent: ContinentKey; difficulty: Difficulty }
+  | { name: 'capitalResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
+  | { name: 'capitalQuiz'; continent: ContinentKey; difficulty: Difficulty }
+  | {
+      name: 'capitalQuizResult';
+      continent: ContinentKey;
+      difficulty: Difficulty;
+      score: number;
+      timeMs: number;
+      errors: number;
+      finished: boolean;
+      unanswered: Country[];
+      missed: Country[];
+      newRecords: NewRecords;
     };
 
 export type Navigate = (screen: Screen) => void;

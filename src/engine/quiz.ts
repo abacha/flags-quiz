@@ -18,6 +18,7 @@ export class Quiz {
     pool: readonly Country[],
     rng: Rng,
     private readonly nearest?: Nearest,
+    private readonly judge: (country: Country, text: string) => TypedVerdict = judgeTypedName,
   ) {
     if (pool.length === 0) throw new Error('Quiz needs at least one country');
     this.flags = shuffle(pool, rng);
@@ -73,7 +74,7 @@ export class Quiz {
 
   answer(text: string): TypedVerdict {
     const flag = this.current;
-    const verdict = judgeTypedName(flag, text);
+    const verdict = this.judge(flag, text);
     if (verdict === 'right') {
       this.answered.add(flag.iso2);
       this.skipped.clear();

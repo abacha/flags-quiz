@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countries, type Country } from '../data/countries';
+import { judgeTypedCapital } from './answer';
 import { poolFor } from './pool';
 import { Quiz } from './quiz';
 import { seededRng } from './rng';
@@ -239,6 +240,23 @@ describe('Quiz', () => {
       }
       quiz.skip();
       expect(quiz.current).toBe(d);
+    });
+  });
+
+  describe('with a capital judge', () => {
+    it('accepts any accepted capital of the country', () => {
+      const quiz = new Quiz([c('bo'), c('fr')], seededRng(1), undefined, judgeTypedCapital);
+      quiz.select('bo');
+      expect(quiz.answer('La Paz')).toBe('right');
+      expect(quiz.stateOf('bo')).toBe('answered');
+    });
+
+    it('tells a typo from a wrong capital without counting an error for the typo', () => {
+      const quiz = new Quiz([c('bo'), c('fr')], seededRng(1), undefined, judgeTypedCapital);
+      quiz.select('fr');
+      expect(quiz.answer('Pariss')).toBe('typo');
+      expect(quiz.errors).toBe(0);
+      expect(quiz.stateOf('fr')).toBe('open');
     });
   });
 });

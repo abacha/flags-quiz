@@ -2,6 +2,10 @@ import './style.css';
 import { loadContinent } from './continentChoice';
 import { listenForBack, settleBack } from './ui/backButton';
 import type { Screen } from './ui/navigation';
+import { renderCapitalGame } from './ui/screens/capitalGame';
+import { renderCapitalQuiz } from './ui/screens/capitalQuiz';
+import { renderCapitalQuizResult } from './ui/screens/capitalQuizResult';
+import { renderCapitalResult } from './ui/screens/capitalResult';
 import { renderFlagTable } from './ui/screens/flagTable';
 import { renderGame } from './ui/screens/game';
 import { renderMapGame } from './ui/screens/mapGame';
@@ -63,6 +67,14 @@ function render(screen: Screen): void {
       return renderQuiz(app, navigate, screen.continent, screen.difficulty);
     case 'quizResult':
       return renderQuizResult(app, navigate, screen);
+    case 'capitalGame':
+      return renderCapitalGame(app, navigate, screen.continent, screen.difficulty);
+    case 'capitalResult':
+      return renderCapitalResult(app, navigate, screen);
+    case 'capitalQuiz':
+      return renderCapitalQuiz(app, navigate, screen.continent, screen.difficulty);
+    case 'capitalQuizResult':
+      return renderCapitalQuizResult(app, navigate, screen);
   }
 }
 
