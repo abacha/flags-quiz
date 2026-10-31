@@ -1,6 +1,7 @@
 import './style.css';
 import { loadContinent } from './continentChoice';
 import { listenForBack, settleBack } from './ui/backButton';
+import { ignoreDoubleTap } from './ui/doubleTap';
 import { clickOnLongPress } from './ui/longPress';
 import type { Screen } from './ui/navigation';
 import { renderCapitalGame } from './ui/screens/capitalGame';
@@ -24,20 +25,7 @@ const root = document.getElementById('app');
 if (!root) throw new Error('#app not found');
 const app = root;
 
-// A fast double-tap on a button (e.g. "Continuar") would otherwise land its second click
-// on whatever element the first click's DOM swap put under the pointer. `detail` counts
-// clicks in the same spot within the OS double-click interval; the app has no legitimate
-// double-click interaction, and keyboard-triggered clicks have `detail` 0.
-document.addEventListener(
-  'click',
-  (event) => {
-    if (event.detail > 1) {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-  },
-  { capture: true },
-);
+ignoreDoubleTap(document);
 clickOnLongPress(document);
 
 function navigate(screen: Screen): void {
