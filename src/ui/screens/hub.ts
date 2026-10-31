@@ -16,7 +16,6 @@ import type { Navigate, Screen } from '../navigation';
 import { formatTime } from '../time';
 
 const AREA_LABEL: Record<Area, string> = { flags: 'Bandeiras', maps: 'Mapas', capitals: 'Capitais' };
-const PILL_UNIT: Record<Area, string> = { flags: 'quizzes', maps: 'mapas', capitals: 'capitais' };
 
 export function renderHub(root: HTMLElement, navigate: Navigate, initial: ContinentKey): void {
   const medals = loadMedals(localStorage);
@@ -48,14 +47,15 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   };
 
   const tabCount = (key: ContinentKey) => {
-    if (area !== 'maps') return [' ', el('small', {}, [`${completedIn(key)}/${DIFFICULTIES.length}`])];
-    return completedIn(key) === levelsOf(key).length ? [' ', el('small', {}, ['✓'])] : [];
+    const done = completedIn(key);
+    const levelCount = levelsOf(key).length;
+    return [' ', el('small', {}, [done === levelCount ? '✓' : `${done}/${levelCount}`])];
   };
 
   const render = () => {
     press(areas, area);
     press(tabs, continent);
-    pill.textContent = `${completed()}/${total()} ${PILL_UNIT[area]}`;
+    pill.textContent = `${completed()}/${total()} níveis`;
     for (const [key, tab] of tabs) tab.replaceChildren(CONTINENT_LABEL[key], ...tabCount(key));
     tabs.get(continent)!.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (area === 'maps') {

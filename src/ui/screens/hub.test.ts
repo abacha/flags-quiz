@@ -41,10 +41,20 @@ describe('renderHub', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows the title and the completed quizzes out of all 24 in the header', () => {
+  it('shows the title and the completed levels out of all 24 in the header', () => {
     render('africa');
     expect(root.querySelector('.hub-header h1')!.textContent).toBe('🌍 Bandeiras');
-    expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+    expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 níveis');
+  });
+
+  it('checks a tab with all four levels completed in place of 4/4', () => {
+    localStorage.setItem(
+      'flags-quiz:quiz-records-v2',
+      JSON.stringify({ oceania: Object.fromEntries(['easy', 'medium', 'hard', 'general'].map((level) => [level, { bestScore: 9, completed: true }])) }),
+    );
+    render('africa');
+    expect(tab('Oceania').textContent).toBe('Oceania ✓');
+    expect(root.querySelector('.hub-header .pill')!.textContent).toBe('4/24 níveis');
   });
 
   it('shows one tab per continent in order with its completed quizzes, the chosen one filled', () => {
@@ -175,7 +185,7 @@ describe('renderHub', () => {
         ['Capitais', 'false'],
       ]);
       expect(root.querySelectorAll('.level-card')).toHaveLength(4);
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 níveis');
     });
 
     it('switches to Mapas in place, remembers it and shows a card per region of the chosen continent, then the whole continent', () => {
@@ -213,7 +223,7 @@ describe('renderHub', () => {
       render('africa');
       area('Bandeiras').click();
       expect(localStorage.getItem('flags-quiz:area')).toBe('flags');
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 quizzes');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 níveis');
       expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 1/4', 'África 2/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
       expect(tags('Fácil')).toEqual([
         ['🥉 Bronze', true],
@@ -222,11 +232,11 @@ describe('renderHub', () => {
       expect(root.querySelectorAll('.see-all')).toHaveLength(1);
     });
 
-    it('counts the completed map quizzes over every continent and level, and checks the tabs with every level completed', () => {
+    it('counts the completed map levels per tab out of its own levels, and checks the tabs with every level completed', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('9/36 mapas');
-      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo', 'África', 'Américas', 'Ásia', 'Europa ✓', 'Oceania']);
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('9/36 níveis');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 0/1', 'África 0/8', 'Américas 0/8', 'Ásia 1/8', 'Europa ✓', 'Oceania 1/4']);
     });
 
     it('tags the map medal and the map quiz of each level of the chosen continent', () => {
@@ -284,14 +294,14 @@ describe('renderHub', () => {
         [`🏅 meta ${capitalGoal('africa', 'general')}`, false],
         ['Quiz —', false],
       ]);
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('0/24 capitais');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('0/24 níveis');
       expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 0/4', 'África 0/4', 'Américas 0/4', 'Ásia 0/4', 'Europa 0/4', 'Oceania 0/4']);
     });
 
     it('counts a completed capital quiz in the pill and in its tab', () => {
       localStorage.setItem('flags-quiz:capital-quiz-records', JSON.stringify({ africa: { easy: { bestScore: 10, bestTimeMs: 90000, completed: true } } }));
       render('africa');
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('1/24 capitais');
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('1/24 níveis');
       expect(tab('África').textContent).toBe('África 1/4');
       expect(tags('Fácil')[1]).toEqual(['✓ Quiz 01:30', true]);
     });
