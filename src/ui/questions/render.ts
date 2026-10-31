@@ -4,6 +4,7 @@ import type { Question } from '../../engine/question';
 import type { MapScope } from '../../data/maps';
 import { CONTINENT_FROM } from '../labels';
 import { cropFigure, flagFigure, renderFlagChoices, renderNameChoices } from './choices';
+import { renderCapitalQuestion } from './capitalQuestions';
 import { renderMapQuestion } from './mapQuestions';
 import { renderPairs } from './pairs';
 import { renderTrueFalse } from './trueFalse';
@@ -48,6 +49,6 @@ export function renderQuestion(question: Question, submit: Submit, scope?: MapSc
     case 'capitalTrueFalse':
     case 'typeCapital':
     case 'typeCapitalCountry':
-      throw new Error('Capital questions are rendered in Task 4');
+      return renderCapitalQuestion(question, submit);
   }
 }

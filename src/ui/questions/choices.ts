@@ -37,7 +37,13 @@ export function renderFlagChoices(prompt: string, options: Country[], submit: Su
   ]);
 }
 
-export function renderNameChoices(prompt: string, figure: HTMLElement, options: Country[], submit: Submit): HTMLElement {
+export function renderNameChoices(
+  prompt: string,
+  figure: HTMLElement,
+  options: Country[],
+  submit: Submit,
+  label: (country: Country) => string | Node = (country) => country.name,
+): HTMLElement {
   return el('div', { className: 'question' }, [
     el('h2', {}, [prompt]),
     figure,
@@ -55,7 +61,7 @@ export function renderNameChoices(prompt: string, figure: HTMLElement, options: 
                 submit({ kind: 'choice', iso2: country.iso2 });
               },
             },
-            [country.name],
+            [label(country)],
           ),
           index,
           options.length,

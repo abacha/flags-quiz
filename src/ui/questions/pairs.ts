@@ -8,10 +8,11 @@ type Selection = { side: 'name' | 'flag'; iso2: string } | null;
 interface PairsOptions {
   figure?: HTMLElement;
   face?: (country: Country, index: number) => HTMLElement;
+  label?: (country: Country) => string;
 }
 
-export function renderPairs(prompt: string, countries: Country[], submit: Submit, { figure, face = (country) => flagImg(country) }: PairsOptions = {}): HTMLElement {
-  const names = [...countries].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+export function renderPairs(prompt: string, countries: Country[], submit: Submit, { figure, face = (country) => flagImg(country), label = (country) => country.name }: PairsOptions = {}): HTMLElement {
+  const names = [...countries].sort((a, b) => label(a).localeCompare(label(b), 'pt-BR'));
   const links: Record<string, string> = {};
   let selected: Selection = null;
   const container = el('div', { className: 'question' });
@@ -61,7 +62,7 @@ export function renderPairs(prompt: string, countries: Country[], submit: Submit
           const name = nameOnFlag(flag.iso2);
           return el('button', { className: classes('pair-flag', 'flag', flag.iso2, Boolean(name)), onclick: () => tapFlag(flag.iso2) }, [
             face(flag, index),
-            el('span', { className: 'pair-label' }, [name?.name ?? '—']),
+            el('span', { className: 'pair-label' }, [name ? label(name) : '—']),
           ]);
         }),
       ),
@@ -72,7 +73,7 @@ export function renderPairs(prompt: string, countries: Country[], submit: Submit
           el(
             'button',
             { className: classes('name-option', 'name', country.iso2, Boolean(links[country.iso2])), onclick: () => tapName(country.iso2) },
-            [country.name],
+            [label(country)],
           ),
         ),
       ),
