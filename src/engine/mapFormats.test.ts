@@ -4,7 +4,7 @@ import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { LEVEL_RULES, goalFor } from './pool';
 import { grade, type Answer } from './answer';
-import { mapContext, mapDifficulty, mapFormats, mapPairs, mapToNames, mapTrueFalse } from './mapFormats';
+import { MAP_LADDER, ladderStart, mapContext, mapDifficulty, mapFlagToNames, mapFormats, mapPairs, mapSpellName, mapToFlags, mapToNames, mapTrueFalse, spelledLetters } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 import { Round } from './round';
@@ -226,5 +226,57 @@ describe('grade a tap outside the level', () => {
       expect(new Set(names.options.map((o) => o.iso2)).size).toBe(4);
       expect(new Set(pairs.countries.map((o) => o.iso2)).size).toBe(4);
     });
+  });
+});
+
+describe('map ladder', () => {
+  it('orders the ladder from flag hint to bare typing', () => {
+    expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapToFlags', 'mapToNames', 'mapSpellName', 'mapTypeName']);
+  });
+
+  it('starts regions at step 1 and whole maps at step 3', () => {
+    expect(ladderStart('west-coast')).toBe(0);
+    expect(ladderStart(MAP_ALL)).toBe(2);
+  });
+
+  it('draws step 1 and step 2 options from the 8 nearest countries', () => {
+    const gt = c('gt');
+    const americas = mapContext('americas', MAP_ALL);
+    const near = new Set(nearestCountries(gt, americas.pool, 8).map((country) => country.iso2));
+    for (let seed = 1; seed <= 20; seed++) {
+      for (const format of [mapFlagToNames, mapToFlags]) {
+        const q = format.build(gt, americas, seededRng(seed));
+        if (q.format !== 'mapFlagToNames' && q.format !== 'mapToFlags') throw new Error('wrong format');
+        expect(new Set(q.options.map((o) => o.iso2)).size).toBe(4);
+        expect(q.options).toContain(gt);
+        for (const option of q.options.filter((o) => o !== gt)) expect(near.has(option.iso2), option.iso2).toBe(true);
+      }
+    }
+  });
+
+  it('shuffles exactly the letters of the name without separators', () => {
+    expect(spelledLetters('Guiné-Bissau')).toEqual([...'GuinéBissau']);
+    expect(spelledLetters('Costa do Marfim')).toEqual([...'CostadoMarfim']);
+    expect(spelledLetters("Cote d'Ivoire")).toEqual([...'CotedIvoire']);
+    const q = mapSpellName.build(c('ci'), ctx, seededRng(1));
+    if (q.format !== 'mapSpellName') throw new Error('wrong format');
+    expect([...q.letters].sort()).toEqual(spelledLetters(c('ci').name).sort());
+  });
+
+  it('grades step 4 only on the exact name', () => {
+    const sn = c('sn');
+    const q: Question = { format: 'mapSpellName', target: sn, letters: spelledLetters(sn.name) };
+    expect(grade(q, { kind: 'text', text: 'Senegal' })).toEqual({ correct: true, missed: [], typos: [] });
+    expect(grade(q, { kind: 'text', text: 'Senagel' })).toEqual({ correct: false, missed: [sn], typos: [] });
+  });
+
+  it('grades steps 1 and 2 against the target', () => {
+    const sn = c('sn');
+    const options = [sn, c('gm'), c('gw'), c('ml')];
+    for (const format of ['mapFlagToNames', 'mapToFlags'] as const) {
+      const q: Question = { format, target: sn, options };
+      expect(grade(q, { kind: 'choice', iso2: 'sn' }).correct).toBe(true);
+      expect(grade(q, { kind: 'choice', iso2: 'gm' })).toEqual({ correct: false, missed: [sn], typos: [] });
+    }
   });
 });

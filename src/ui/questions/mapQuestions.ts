@@ -9,7 +9,7 @@ import type { Submit } from './render';
 import { renderYesNo } from './trueFalse';
 import { renderTypeName } from './typeName';
 
-export type MapQuestion = Extract<Question, { format: 'mapToNames' | 'nameToMap' | 'mapPairs' | 'mapTrueFalse' | 'mapTypeName' }>;
+export type MapQuestion = Extract<Question, { format: 'mapToNames' | 'nameToMap' | 'mapPairs' | 'mapTrueFalse' | 'mapTypeName' | 'mapFlagToNames' | 'mapToFlags' | 'mapSpellName' }>;
 
 const letterOf = (index: number) => String.fromCharCode(65 + index);
 
@@ -49,5 +49,9 @@ export function renderMapQuestion(question: MapQuestion, scope: MapScope, submit
       return renderYesNo(`Este é ${question.shown.name}?`, highlightedMap(scope, question.target), submit);
     case 'mapTypeName':
       return renderTypeName('Escreva o nome deste país', highlightedMap(scope, question.target), submit);
+    case 'mapFlagToNames':
+    case 'mapToFlags':
+    case 'mapSpellName':
+      throw new Error('not rendered yet');
   }
 }

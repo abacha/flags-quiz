@@ -50,6 +50,7 @@ function wrongAnswer(q: Question): Answer {
     case 'mapTrueFalse':
     case 'mapTypeName':
     case 'mapPairs':
+    case 'mapSpellName':
     case 'countryToCapitals':
     case 'capitalToCountries':
     case 'capitalPairs':

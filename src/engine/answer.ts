@@ -36,6 +36,8 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'flagToTwoNames':
     case 'crop':
     case 'mapToNames':
+    case 'mapFlagToNames':
+    case 'mapToFlags':
     case 'nameToMap':
     case 'countryToCapitals':
     case 'capitalToCountries':
@@ -53,6 +55,8 @@ export function grade(question: Question, answer: Answer): Grade {
       if (verdict === 'typo') return { correct: false, missed: [], typos: [question.target] };
       return targetGrade(verdict === 'right', question.target);
     }
+    case 'mapSpellName':
+      return targetGrade(expectKind(answer, 'text').text === question.target.name, question.target);
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;
       if (chosen === question.intruder.iso2) return { correct: true, missed: [], typos: [] };

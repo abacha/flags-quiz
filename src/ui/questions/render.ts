@@ -41,6 +41,9 @@ export function renderQuestion(question: Question, submit: Submit, scope?: MapSc
     case 'mapPairs':
     case 'mapTrueFalse':
     case 'mapTypeName':
+    case 'mapFlagToNames':
+    case 'mapToFlags':
+    case 'mapSpellName':
       if (!scope) throw new Error(`The ${question.format} question needs a map scope`);
       return renderMapQuestion(question, scope, submit);
     case 'countryToCapitals':
