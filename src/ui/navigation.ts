@@ -12,7 +12,7 @@ export type Screen =
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
   | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
   | { name: 'mapGame'; continent: ContinentKey; level: MapLevel }
-  | { name: 'mapResult'; continent: ContinentKey; level: MapLevel; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
+  | { name: 'mapResult'; continent: ContinentKey; level: MapLevel; won: boolean; medal: Medal | null; done: number; missed: Country[] }
   | { name: 'mapQuiz'; continent: ContinentKey; level: MapLevel }
   | {
       name: 'mapQuizResult';

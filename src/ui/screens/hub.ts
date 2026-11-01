@@ -2,7 +2,6 @@ import { loadArea, saveArea, saveContinent, type Area } from '../../continentCho
 import { countries, type Country } from '../../data/countries';
 import { capitalPool } from '../../data/capitals';
 import { MAP_ALL, mapLevelLabel, mapLevels, mapPool, type MapLevel } from '../../data/maps';
-import { mapDifficulty } from '../../engine/mapFormats';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Medal } from '../../engine/round';
 import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
@@ -170,7 +169,7 @@ function mapLevelCard(continent: ContinentKey, level: MapLevel, medals: Medals<M
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, level),
-    goal: goalFor(mapDifficulty(level), pool.length),
+    goal: pool.length,
     record: quizRecord(records, continent, level),
     play: (mode) => ({ name: mode === 'learn' ? 'mapGame' : 'mapQuiz', continent, level }),
   };

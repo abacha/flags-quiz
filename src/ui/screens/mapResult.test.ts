@@ -2,13 +2,12 @@
 import { describe, expect, it } from 'vitest';
 import { countries } from '../../data/countries';
 import { MAP_ALL, mapPool } from '../../data/maps';
-import { goalFor } from '../../engine/pool';
 import type { Screen } from '../navigation';
 import { renderMapResult } from './mapResult';
 
 const tonga = countries.find((c) => c.iso2 === 'to')!;
 const samoa = countries.find((c) => c.iso2 === 'ws')!;
-const goal = goalFor('medium', mapPool('oceania', 'polynesia').length);
+const size = mapPool('oceania', 'polynesia').length;
 
 function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
   const root = document.createElement('div');
@@ -19,7 +18,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
     level: 'polynesia',
     won: false,
     medal: null,
-    correct: 3,
+    done: 3,
     missed: [],
     ...overrides,
   });
@@ -28,11 +27,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
 }
 
 describe('renderMapResult', () => {
-  it('celebrates a won medal and shows the continent and the correct answers out of the goal', () => {
-    const { root } = render({ won: true, medal: 'silver', correct: goal });
+  it('celebrates a won medal and shows the continent and the countries done out of the level size', () => {
+    const { root } = render({ won: true, medal: 'silver', done: size });
     expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');
     expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania · Polinésia');
-    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
+    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${size}/${size}países`]);
   });
 
   it.each([
@@ -40,7 +39,7 @@ describe('renderMapResult', () => {
     ['bronze', '🥉 Medalha de bronze!'],
     [null, '✓ Meta concluída sem medalha'],
   ] as const)('titles a reached goal by its medal: %s', (medal, title) => {
-    expect(render({ won: true, medal, correct: goal }).root.querySelector('h1')!.textContent).toBe(title);
+    expect(render({ won: true, medal, done: size }).root.querySelector('h1')!.textContent).toBe(title);
   });
 
   it('offers the whole continent after the last region of the map Learn, and nothing after it', () => {
@@ -51,7 +50,7 @@ describe('renderMapResult', () => {
   });
 
   it('keeps the not-won title', () => {
-    expect(render({}).root.querySelector('h1')!.textContent).toBe(`Você fez 3 de ${goal}`);
+    expect(render({}).root.querySelector('h1')!.textContent).toBe(`Você fez 3 de ${size}`);
   });
 
   it('plays the map Learn again and goes back to the hub on the same continent', () => {

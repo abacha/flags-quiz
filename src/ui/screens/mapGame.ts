@@ -1,7 +1,8 @@
 import { mapLevelLabel, type MapLevel } from '../../data/maps';
-import { LEVEL_RULES, goalFor, type ContinentKey } from '../../engine/pool';
-import { mapContext, mapDifficulty, mapFormats } from '../../engine/mapFormats';
-import { Round, STARTING_LIVES } from '../../engine/round';
+import type { ContinentKey } from '../../engine/pool';
+import { LadderRound } from '../../engine/ladderRound';
+import { ladderStart, mapContext } from '../../engine/mapFormats';
+import { STARTING_LIVES } from '../../engine/round';
 import { awardMapMedal } from '../../mapRecords';
 import { onBack } from '../backButton';
 import { outOfLivesSheet } from '../outOfLives';
@@ -15,14 +16,7 @@ import { renderQuestion } from '../questions/render';
 import { topBar } from '../topbar';
 
 export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
-  const context = mapContext(continent, level);
-  const difficulty = mapDifficulty(level);
-  const round = new Round(
-    context,
-    { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: LEVEL_RULES[difficulty].recallWeight },
-    Math.random,
-    mapFormats(level),
-  );
+  const round = new LadderRound(mapContext(continent, level), ladderStart(level), Math.random);
   const stage = el('section', { className: 'stage' });
 
   let currentQuestion: HTMLElement | null = null;
@@ -49,16 +43,16 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
           { className: 'lives' },
           Array.from({ length: STARTING_LIVES }, (_, life) => el('span', { className: life < round.lives ? 'heart' : 'heart lost' }, ['♥'])),
         ),
-        el('span', {}, [`${round.correct}/${round.correctToWin}`]),
+        el('span', {}, [`${round.done}/${round.size}`]),
       ],
-      round.correct / round.correctToWin,
+      round.done / round.size,
     );
 
   const finish = () => {
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
     if (medal) awardMapMedal(localStorage, continent, level, medal);
-    leave({ name: 'mapResult', continent, level, won, medal, correct: round.correct, missed: round.missed });
+    leave({ name: 'mapResult', continent, level, won, medal, done: round.done, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {

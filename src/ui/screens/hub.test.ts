@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { capitalPool } from '../../data/capitals';
 import { countries } from '../../data/countries';
 import { MAP_ALL, mapLevels, mapPool } from '../../data/maps';
-import { mapDifficulty } from '../../engine/mapFormats';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Screen } from '../navigation';
 import { renderHub } from './hub';
@@ -157,7 +156,7 @@ describe('renderHub', () => {
     const areas = () => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')];
     const area = (label: string) => areas().find((b) => b.textContent === label)!;
     const mapTags = (level: string) => tags(level);
-    const mapGoal = (continent: ContinentKey, level: string) => goalFor(mapDifficulty(level), mapPool(continent, level).length);
+    const mapGoal = (continent: ContinentKey, level: string) => mapPool(continent, level).length;
     const cardTitles = () => [...root.querySelectorAll('.level-card h2')].map((h) => h.textContent);
 
     beforeEach(() => {
