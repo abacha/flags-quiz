@@ -2,6 +2,22 @@ import { isSeparator } from '../../engine/mapFormats';
 import { el } from '../dom';
 import type { Submit } from './render';
 
+// Groups each word's cells so a long name wraps between words, keeping every word length visible.
+function words(cells: HTMLElement[]): HTMLElement[] {
+  const groups: HTMLElement[] = [];
+  let word: HTMLElement | null = null;
+  for (const cell of cells) {
+    if (cell.textContent === ' ') {
+      groups.push(cell);
+      word = null;
+      continue;
+    }
+    if (!word) groups.push((word = el('span', { className: 'spell-word' })));
+    word.append(cell);
+  }
+  return groups;
+}
+
 export function renderSpellName(prompt: string, figure: HTMLElement, name: string, letters: string[], submit: Submit): HTMLElement {
   const placed = new Map<HTMLElement, HTMLButtonElement>();
   const confirm = el('button', { className: 'primary', type: 'button', disabled: true }, ['Responder']);
@@ -41,7 +57,7 @@ export function renderSpellName(prompt: string, figure: HTMLElement, name: strin
   return el('div', { className: 'question' }, [
     el('h2', {}, [prompt]),
     figure,
-    el('div', { className: 'spell-slots' }, cells),
+    el('div', { className: 'spell-slots' }, words(cells)),
     el('div', { className: 'spell-tiles' }, tiles),
     confirm,
   ]);

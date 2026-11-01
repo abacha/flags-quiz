@@ -40,7 +40,7 @@ export const mapToFlags: Format = {
   build: (target, ctx, rng) => ({ format: 'mapToFlags', target, options: shuffle([target, ...sample(nearby(target, ctx), 3, rng)], rng) }),
 };
 
-const SEPARATOR = /[\s\-'’]/u;
+const SEPARATOR = /[\s\-'’,]/u;
 
 export const isSeparator = (char: string) => SEPARATOR.test(char);
 

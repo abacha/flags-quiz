@@ -129,6 +129,7 @@ describe('map ladder', () => {
     expect(spelledLetters('Guiné-Bissau')).toEqual([...'GuinéBissau']);
     expect(spelledLetters('Costa do Marfim')).toEqual([...'CostadoMarfim']);
     expect(spelledLetters("Cote d'Ivoire")).toEqual([...'CotedIvoire']);
+    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'SantaHelenaAscensão']);
     const q = mapSpellName.build(c('ci'), ctx, seededRng(1));
     if (q.format !== 'mapSpellName') throw new Error('wrong format');
     expect([...q.letters].sort()).toEqual(spelledLetters(c('ci').name).sort());

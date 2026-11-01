@@ -25,6 +25,13 @@ describe('renderSpellName', () => {
     expect(slots().every((s) => s.textContent === '')).toBe(true);
   });
 
+  it('keeps each word on one line and shows the comma in place', () => {
+    const { rendered } = render('Santa Helena, Ascensão');
+    const words = [...rendered.querySelectorAll('.spell-word')];
+    expect(words.map((w) => w.querySelectorAll('.spell-slot').length)).toEqual([5, 6, 8]);
+    expect(words[1].querySelector('.spell-gap')!.textContent).toBe(',');
+  });
+
   it('fills the next slot and sends a letter back when its slot is tapped', () => {
     const { tiles, slots, tap } = render('Chade', ['e', 'd', 'a', 'h', 'C']);
     tap('C');
@@ -48,10 +55,12 @@ describe('renderSpellName', () => {
   });
 
   it('submits the assembled name with its separators', () => {
-    const { submit, confirm, spell } = render('Costa do Marfim');
-    spell();
-    click(confirm());
-    expect(submit).toHaveBeenCalledWith({ kind: 'text', text: 'Costa do Marfim' });
+    for (const name of ['Costa do Marfim', 'Santa Helena, Ascensão']) {
+      const { submit, confirm, spell } = render(name);
+      spell();
+      click(confirm());
+      expect(submit).toHaveBeenCalledWith({ kind: 'text', text: name });
+    }
   });
 
   it('accepts either copy of a repeated letter', () => {
