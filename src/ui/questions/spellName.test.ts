@@ -1,76 +1,52 @@
 // @vitest-environment happy-dom
 import { describe, expect, it, vi } from 'vitest';
-import { spelledLetters } from '../../engine/mapFormats';
 import { renderSpellName } from './spellName';
 
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
-function render(name: string, letters = spelledLetters(name).reverse()) {
+function render(letters: string[]) {
   const submit = vi.fn(() => []);
-  const rendered = renderSpellName('Monte o nome deste país', document.createElement('div'), name, letters, submit);
+  const rendered = renderSpellName('Monte o nome deste país', document.createElement('div'), letters, submit);
   const tiles = () => [...rendered.querySelectorAll<HTMLButtonElement>('.spell-tile')];
-  const slots = () => [...rendered.querySelectorAll<HTMLElement>('.spell-slot')];
+  const placed = () => [...rendered.querySelectorAll<HTMLButtonElement>('.spell-placed')].map((p) => p.textContent).join('');
   const confirm = () => [...rendered.querySelectorAll<HTMLButtonElement>('button.primary')][0];
   const tap = (letter: string) => click(tiles().find((t) => t.textContent === letter && !t.disabled)!);
-  const spell = () => spelledLetters(name).forEach(tap);
-  return { rendered, submit, tiles, slots, confirm, tap, spell };
+  return { rendered, submit, tiles, placed, confirm, tap };
 }
 
 describe('renderSpellName', () => {
-  it('shows separators in place and one tile per letter', () => {
-    const { rendered, tiles, slots } = render('Guiné-Bissau');
-    expect(tiles()).toHaveLength(11);
-    expect(slots()).toHaveLength(11);
-    expect([...rendered.querySelectorAll('.spell-gap')].map((g) => g.textContent)).toEqual(['-']);
-    expect(slots().every((s) => s.textContent === '')).toBe(true);
+  it('shows one tile per letter and nothing that reveals the name length', () => {
+    const { rendered, tiles, placed } = render([...'esdahcx']);
+    expect(tiles().map((t) => t.textContent)).toEqual([...'esdahcx']);
+    expect(placed()).toBe('');
+    expect(rendered.querySelectorAll('.spell-slot, .spell-gap')).toHaveLength(0);
   });
 
-  it('keeps each word on one line and shows the comma in place', () => {
-    const { rendered } = render('Santa Helena, Ascensão');
-    const words = [...rendered.querySelectorAll('.spell-word')];
-    expect(words.map((w) => w.querySelectorAll('.spell-slot').length)).toEqual([5, 6, 8]);
-    expect(words[1].querySelector('.spell-gap')!.textContent).toBe(',');
-  });
-
-  it('fills the next slot and sends a letter back when its slot is tapped', () => {
-    const { tiles, slots, tap } = render('Chade', ['e', 'd', 'a', 'h', 'C']);
-    tap('C');
+  it('appends tapped letters and sends a placed letter back when tapped', () => {
+    const { rendered, tiles, placed, tap } = render([...'edahcx']);
+    tap('c');
     tap('h');
-    expect(slots().map((s) => s.textContent)).toEqual(['C', 'h', '', '', '']);
-    expect(tiles().filter((t) => t.disabled).map((t) => t.textContent)).toEqual(['h', 'C']);
-    click(slots()[0]);
-    expect(slots().map((s) => s.textContent)).toEqual(['', 'h', '', '', '']);
-    expect(tiles().find((t) => t.textContent === 'C')!.disabled).toBe(false);
+    tap('x');
+    expect(placed()).toBe('chx');
+    expect(tiles().filter((t) => t.disabled).map((t) => t.textContent)).toEqual(['h', 'c', 'x']);
+    click(rendered.querySelectorAll('.spell-placed')[2]);
+    expect(placed()).toBe('ch');
+    expect(tiles().find((t) => t.textContent === 'x')!.disabled).toBe(false);
     tap('a');
-    expect(slots().map((s) => s.textContent)).toEqual(['a', 'h', '', '', '']);
+    expect(placed()).toBe('cha');
   });
 
-  it('enables Responder only when every slot is filled', () => {
-    const { confirm, tap } = render('Chade', ['e', 'd', 'a', 'h', 'C']);
+  it('enables Responder once a letter is placed, with tiles left over', () => {
+    const { confirm, tap } = render([...'edahcx']);
     expect(confirm().disabled).toBe(true);
-    ['C', 'h', 'a', 'd'].forEach(tap);
-    expect(confirm().disabled).toBe(true);
-    tap('e');
+    tap('c');
     expect(confirm().disabled).toBe(false);
   });
 
-  it('submits the assembled name with its separators', () => {
-    for (const name of ['Costa do Marfim', 'Santa Helena, Ascensão']) {
-      const { submit, confirm, spell } = render(name);
-      spell();
-      click(confirm());
-      expect(submit).toHaveBeenCalledWith({ kind: 'text', text: name });
-    }
-  });
-
-  it('accepts either copy of a repeated letter', () => {
-    const { submit, confirm, tiles, tap } = render('Senegal', ['l', 'e', 'a', 'g', 'n', 'e', 'S']);
-    tap('S');
-    click(tiles()[5]);
-    tap('n');
-    click(tiles()[1]);
-    ['g', 'a', 'l'].forEach(tap);
+  it('submits the placed letters in order', () => {
+    const { submit, confirm, tap } = render([...'lxeagnes']);
+    [...'senegal'].forEach(tap);
     click(confirm());
-    expect(submit).toHaveBeenCalledWith({ kind: 'text', text: 'Senegal' });
+    expect(submit).toHaveBeenCalledWith({ kind: 'text', text: 'senegal' });
   });
 });

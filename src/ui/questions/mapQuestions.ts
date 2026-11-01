@@ -40,6 +40,6 @@ export function renderMapQuestion(question: MapQuestion, scope: MapScope, submit
     case 'mapToFlags':
       return renderFlagChoices('Qual é a bandeira deste país?', question.options, submit, highlightedMap(scope, question.target));
     case 'mapSpellName':
-      return renderSpellName('Monte o nome deste país', highlightedMap(scope, question.target), question.target.name, question.letters, submit);
+      return renderSpellName('Monte o nome deste país', highlightedMap(scope, question.target), question.letters, submit);
   }
 }

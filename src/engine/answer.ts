@@ -1,5 +1,6 @@
 import { capitalsExcluded, capitalsOf } from '../data/capitals';
 import { countries, type Country } from '../data/countries';
+import { spelledLetters } from './mapFormats';
 import type { Question } from './question';
 
 export type Answer =
@@ -54,7 +55,7 @@ export function grade(question: Question, answer: Answer): Grade {
       return targetGrade(verdict === 'right', question.target);
     }
     case 'mapSpellName':
-      return targetGrade(expectKind(answer, 'text').text === question.target.name, question.target);
+      return targetGrade(spelledLetters(expectKind(answer, 'text').text).join('') === spelledLetters(question.target.name).join(''), question.target);
     case 'oddOneOut': {
       const chosen = expectKind(answer, 'choice').iso2;
       if (chosen === question.intruder.iso2) return { correct: true, missed: [], typos: [] };

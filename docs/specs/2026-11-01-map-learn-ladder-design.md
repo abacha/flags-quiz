@@ -36,7 +36,7 @@ Each step removes part of the help, and the last one asks for the name with noth
   1. The country's flag is shown next to the map; the player picks its name among 4.
   2. The player picks the country's flag among 4 flags.
   3. The player picks its name among 4, with no flag (today's `mapToNames`).
-  4. The letters of the name are shown shuffled as tiles; the player puts them in order.
+  4. The letters of the name, mixed with letters from neighbouring countries' names, are shown shuffled as tiles; the player builds the name from them.
   5. The player types the name with no help (today's `mapTypeName`).
 - **Moving on the ladder.** A right answer moves the country one step up. A wrong answer moves it one step down (never below step 1) and costs one life.
 - **Lives.** 3 lives, as today. Losing the last one ends the round as today, with the option to continue without a medal.
@@ -52,7 +52,7 @@ Each step removes part of the help, and the last one asks for the name with noth
 - **Picking the next country.** At random among the countries not done yet, skipping the ones asked within the last `REVIEW_GAP` questions, as the flag Learn rounds do; when every remaining country is inside the gap, the gap is ignored.
 - **Distractors.** Steps 1, 2 and 3 draw their 3 wrong options among the 8 nearest countries of the level's pool, as `mapToNames` does today. A pool with fewer than 4 countries is not possible: regions have at least 5.
 - **Flags known.** Every map country is an entry of `countries.json` and is taught by some flag level (the flag Geral levels cover every tier), so step 1 needs no per-country start.
-- **Letter tiles (step 4).** One tile per letter of the country's name, accents as written, shuffled, with no extra letters. Spaces, hyphens and apostrophes are not tiles: the answer slots show them in place, so the player sees the word lengths. Tapping a tile puts it in the next empty slot; tapping a placed letter sends it back. When every slot is filled the player confirms; the order is right only if it spells the name exactly, and typo forgiveness does not apply. Repeated letters are interchangeable.
+- **Letter tiles (step 4).** Revised by Adriano after playing it (2026-11-01): the first version was too easy. Every tile is lowercase, accents as written. The tiles hold the name's letters plus 4 letters drawn from the names of the 8 nearest countries, all shuffled. Nothing shows the name's length or its word breaks: the answer line grows as tiles are tapped, and tapping a placed letter sends it back. Responder is enabled once a letter is placed. The answer is right only if its letters spell the name's letters exactly, with case, spaces, hyphens, apostrophes and commas ignored; typo forgiveness does not apply. Repeated letters are interchangeable. The count of 4 decoys is my call.
 - **Progress shown.** The top bar shows countries done out of the level size ("4/9") in place of correct answers out of the goal.
 - **Saved medals.** Maps Learn medals earned under the old formats stay as they are; the storage keys do not change.
 - **Feedback.** A wrong answer shows the existing map solution (the country painted and named) before moving on, as today.

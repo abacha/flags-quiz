@@ -741,18 +741,24 @@ input::placeholder { text-overflow: ellipsis; }
 .map-flag { display: flex; flex-direction: column; gap: 10px; }
 .map-flag > .figure .flag { max-height: 70px; }
 
-.spell-slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-.spell-word { display: flex; gap: 4px; }
-.spell-slot, .spell-gap {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 38px;
-  font-size: 1.15rem;
+.spell-answer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding-bottom: 4px;
+  border-bottom: 3px solid var(--accent-line);
+}
+.spell-placed {
+  min-width: 26px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 1.3rem;
   font-weight: 600;
 }
-.spell-slot { border-bottom: 3px solid var(--accent-line); cursor: pointer; }
-.spell-gap { width: 14px; color: var(--muted); }
 
 .spell-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .spell-tile {

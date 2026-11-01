@@ -2,7 +2,7 @@ import type { Country } from '../data/countries';
 import { MAP_ALL, mapPool, nearestCountries, type MapLevel } from '../data/maps';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey } from './pool';
-import { sample, shuffle } from './rng';
+import { sample, shuffle, type Rng } from './rng';
 
 const always = () => true;
 const NEAR_COUNT = 8;
@@ -41,11 +41,15 @@ export const mapToFlags: Format = {
 };
 
 const SEPARATOR = /[\s\-'’,]/u;
-
-export const isSeparator = (char: string) => SEPARATOR.test(char);
+const DECOY_LETTERS = 4;
 
 export function spelledLetters(name: string): string[] {
-  return [...name].filter((char) => !isSeparator(char));
+  return [...name.toLocaleLowerCase('pt-BR')].filter((char) => !SEPARATOR.test(char));
+}
+
+// Letters from the neighbours' names, so the tiles only spell the target for someone who knows which country it is.
+function decoyLetters(target: Country, ctx: FormatContext, rng: Rng): string[] {
+  return sample(nearby(target, ctx).flatMap((country) => spelledLetters(country.name)), DECOY_LETTERS, rng);
 }
 
 export const mapSpellName: Format = {
@@ -53,7 +57,7 @@ export const mapSpellName: Format = {
   recall: false,
   choice: false,
   canTarget: always,
-  build: (target, _ctx, rng) => ({ format: 'mapSpellName', target, letters: shuffle(spelledLetters(target.name), rng) }),
+  build: (target, ctx, rng) => ({ format: 'mapSpellName', target, letters: shuffle([...spelledLetters(target.name), ...decoyLetters(target, ctx, rng)], rng) }),
 };
 
 export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapToFlags, mapToNames, mapSpellName, mapTypeName];

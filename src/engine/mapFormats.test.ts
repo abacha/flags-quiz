@@ -125,21 +125,34 @@ describe('map ladder', () => {
     }
   });
 
-  it('shuffles exactly the letters of the name without separators', () => {
-    expect(spelledLetters('Guiné-Bissau')).toEqual([...'GuinéBissau']);
-    expect(spelledLetters('Costa do Marfim')).toEqual([...'CostadoMarfim']);
-    expect(spelledLetters("Cote d'Ivoire")).toEqual([...'CotedIvoire']);
-    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'SantaHelenaAscensão']);
-    const q = mapSpellName.build(c('ci'), ctx, seededRng(1));
-    if (q.format !== 'mapSpellName') throw new Error('wrong format');
-    expect([...q.letters].sort()).toEqual(spelledLetters(c('ci').name).sort());
+  it('spells the name in lowercase letters without separators', () => {
+    expect(spelledLetters('Guiné-Bissau')).toEqual([...'guinébissau']);
+    expect(spelledLetters('Costa do Marfim')).toEqual([...'costadomarfim']);
+    expect(spelledLetters("Cote d'Ivoire")).toEqual([...'cotedivoire']);
+    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'santahelenaascensão']);
   });
 
-  it('grades step 4 only on the exact name', () => {
-    const sn = c('sn');
-    const q: Question = { format: 'mapSpellName', target: sn, letters: spelledLetters(sn.name) };
-    expect(grade(q, { kind: 'text', text: 'Senegal' })).toEqual({ correct: true, missed: [], typos: [] });
-    expect(grade(q, { kind: 'text', text: 'Senagel' })).toEqual({ correct: false, missed: [sn], typos: [] });
+  it('mixes 4 letters from neighbour names into the shuffled name', () => {
+    const ci = c('ci');
+    const africa = mapContext('africa', MAP_ALL);
+    const neighbourLetters = new Set(nearestCountries(ci, africa.pool, 8).flatMap((country) => spelledLetters(country.name)));
+    for (let seed = 1; seed <= 20; seed++) {
+      const q = mapSpellName.build(ci, africa, seededRng(seed));
+      if (q.format !== 'mapSpellName') throw new Error('wrong format');
+      const extras = [...q.letters];
+      for (const letter of spelledLetters(ci.name)) extras.splice(extras.indexOf(letter), 1);
+      expect(extras).toHaveLength(4);
+      for (const letter of extras) expect(neighbourLetters.has(letter), letter).toBe(true);
+    }
+  });
+
+  it('grades step 4 on the letters alone, ignoring case and separators', () => {
+    const gw = c('gw');
+    const q: Question = { format: 'mapSpellName', target: gw, letters: spelledLetters(gw.name) };
+    expect(grade(q, { kind: 'text', text: 'guinébissau' })).toEqual({ correct: true, missed: [], typos: [] });
+    expect(grade(q, { kind: 'text', text: 'Guiné-Bissau' }).correct).toBe(true);
+    expect(grade(q, { kind: 'text', text: 'guinebissau' })).toEqual({ correct: false, missed: [gw], typos: [] });
+    expect(grade(q, { kind: 'text', text: 'guinébissaux' }).correct).toBe(false);
   });
 
   it('grades steps 1 and 2 against the target', () => {
