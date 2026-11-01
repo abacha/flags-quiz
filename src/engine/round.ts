@@ -15,7 +15,7 @@ export interface RoundSettings {
 export type RoundStatus = 'playing' | 'won' | 'lost';
 export type Medal = 'gold' | 'silver' | 'bronze';
 
-const MEDAL_BY_LIVES: Record<number, Medal> = { 3: 'gold', 2: 'silver', 1: 'bronze' };
+export const MEDAL_BY_LIVES: Record<number, Medal> = { 3: 'gold', 2: 'silver', 1: 'bronze' };
 
 const GROUP_FORMATS: readonly FormatId[] = ['sortSimilar', 'typeSimilar', 'sortSimilarNames'];
 const showsSimilarGroup = (id: FormatId) => GROUP_FORMATS.includes(id);
