@@ -173,3 +173,34 @@ describe('renderPairs', () => {
     expect(rendered.querySelector('path[data-iso2="gm"]')!.classList.contains('country')).toBe(true);
   });
 });
+
+describe('the ladder steps', () => {
+  it('shows the flag next to the highlighted country at step 1', () => {
+    const submit = vi.fn(() => []);
+    const rendered = renderMapQuestion({ format: 'mapFlagToNames', target: br, options: [ar, br, cl, pe] }, AMERICAS, submit);
+    expect(rendered.querySelector('h2')!.textContent).toBe('Que país é este?');
+    expect(rendered.querySelector('.map .highlight')).not.toBeNull();
+    expect(rendered.querySelector<HTMLImageElement>('img.flag')!.src).toContain('/flags/br.svg');
+    click([...rendered.querySelectorAll('.name-option')].find((b) => b.textContent === br.name)!);
+    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'br' });
+  });
+
+  it('offers four flags at step 2', () => {
+    const submit = vi.fn(() => []);
+    const rendered = renderMapQuestion({ format: 'mapToFlags', target: br, options: [ar, br, cl, pe] }, AMERICAS, submit);
+    expect(rendered.querySelector('h2')!.textContent).toBe('Qual é a bandeira deste país?');
+    expect(rendered.querySelector('.map .highlight')).not.toBeNull();
+    const flags = [...rendered.querySelectorAll('.flag-option')];
+    expect(flags).toHaveLength(4);
+    click(flags[2]);
+    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'cl' });
+  });
+
+  it('opens step 4 on the highlighted country', () => {
+    const rendered = renderMapQuestion({ format: 'mapSpellName', target: pe, letters: ['u', 'r', 'e', 'P'] }, AMERICAS, () => []);
+    expect(rendered.querySelector('h2')!.textContent).toBe('Monte o nome deste país');
+    expect(shows(rendered, 'pe')).toBe(true);
+    expect(rendered.querySelector('.map .highlight')).not.toBeNull();
+    expect(rendered.querySelectorAll('.spell-tile')).toHaveLength(4);
+  });
+});

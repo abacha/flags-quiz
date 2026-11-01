@@ -10,9 +10,10 @@ function markChosen(event: MouseEvent): void {
   (event.currentTarget as HTMLElement).classList.add('chosen');
 }
 
-export function renderFlagChoices(prompt: string, options: Country[], submit: Submit): HTMLElement {
+export function renderFlagChoices(prompt: string, options: Country[], submit: Submit, figure?: HTMLElement): HTMLElement {
   return el('div', { className: 'question' }, [
     el('h2', {}, [prompt]),
+    ...(figure ? [figure] : []),
     el(
       'div',
       { className: `flag-grid count-${options.length}` },

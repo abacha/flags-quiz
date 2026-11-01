@@ -703,9 +703,9 @@ input::placeholder { text-overflow: ellipsis; }
 .map .hit.tiny.answered { stroke: var(--success); }
 .map .hit.tiny.missed { stroke: var(--wrong); }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
-.question > .map, .feedback > .map { min-width: 0; width: 100%; }
-.question > .map, .feedback > .map, .quiz-screen > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }
-.question > .map svg, .feedback > .map svg, .quiz-screen > .map svg { height: 100%; }
+.question > .map, .feedback > .map, .map-flag > .map { min-width: 0; width: 100%; }
+.question > .map, .feedback > .map, .quiz-screen > .map, .map-flag > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }
+.question > .map svg, .feedback > .map svg, .quiz-screen > .map svg, .map-flag > .map svg { height: 100%; }
 .map-names { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
 .pair-letter {
   align-self: center;
@@ -737,3 +737,31 @@ input::placeholder { text-overflow: ellipsis; }
 .pair-flag .country-figure { height: auto; padding: 0; border: none; background: none; }
 .flag-name { display: flex; align-items: center; gap: 10px; }
 .flag-name .flag { height: 24px; margin: 0; }
+
+.map-flag { display: flex; flex-direction: column; gap: 10px; }
+.map-flag > .figure .flag { max-height: 70px; }
+
+.spell-slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.spell-slot, .spell-gap {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 38px;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.spell-slot { border-bottom: 3px solid var(--accent-line); cursor: pointer; }
+.spell-gap { width: 14px; color: var(--muted); }
+
+.spell-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.spell-tile {
+  min-width: 44px;
+  height: 44px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-button);
+  background: var(--surface);
+  font-size: 1.15rem;
+  font-weight: 600;
+  box-shadow: 0 4px 0 var(--border);
+}
+.spell-tile:disabled { opacity: 0.3; }

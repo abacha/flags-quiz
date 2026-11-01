@@ -3,8 +3,9 @@ import type { MapScope } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import { el } from '../dom';
 import { renderMap } from '../map/map';
-import { renderNameChoices } from './choices';
+import { flagFigure, renderFlagChoices, renderNameChoices } from './choices';
 import { renderPairs } from './pairs';
+import { renderSpellName } from './spellName';
 import type { Submit } from './render';
 import { renderYesNo } from './trueFalse';
 import { renderTypeName } from './typeName';
@@ -50,8 +51,15 @@ export function renderMapQuestion(question: MapQuestion, scope: MapScope, submit
     case 'mapTypeName':
       return renderTypeName('Escreva o nome deste país', highlightedMap(scope, question.target), submit);
     case 'mapFlagToNames':
+      return renderNameChoices(
+        'Que país é este?',
+        el('div', { className: 'map-flag' }, [highlightedMap(scope, question.target), flagFigure(question.target)]),
+        question.options,
+        submit,
+      );
     case 'mapToFlags':
+      return renderFlagChoices('Qual é a bandeira deste país?', question.options, submit, highlightedMap(scope, question.target));
     case 'mapSpellName':
-      throw new Error('not rendered yet');
+      return renderSpellName('Monte o nome deste país', highlightedMap(scope, question.target), question.target.name, question.letters, submit);
   }
 }
