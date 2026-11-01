@@ -38,12 +38,10 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'mapToNames':
     case 'mapFlagToNames':
     case 'mapToFlags':
-    case 'nameToMap':
     case 'countryToCapitals':
     case 'capitalToCountries':
       return targetGrade(expectKind(answer, 'choice').iso2 === question.target.iso2, question.target);
     case 'trueFalse':
-    case 'mapTrueFalse':
     case 'capitalTrueFalse':
       return targetGrade(expectKind(answer, 'yesNo').yes === (question.shown === question.target), question.target);
     case 'typeName':
@@ -63,7 +61,6 @@ export function grade(question: Question, answer: Answer): Grade {
       return { correct: false, missed: question.options.filter((c) => c.iso2 === chosen), typos: [] };
     }
     case 'matchPairs':
-    case 'mapPairs':
     case 'capitalPairs':
     case 'sortSimilar':
     case 'sortSimilarNames': {

@@ -37,9 +37,6 @@ export function renderQuestion(question: Question, submit: Submit, scope?: MapSc
     case 'oddOneOut':
       return renderFlagChoices(`Qual destas bandeiras não é ${CONTINENT_FROM[question.target.continent]}?`, question.options, submit);
     case 'mapToNames':
-    case 'nameToMap':
-    case 'mapPairs':
-    case 'mapTrueFalse':
     case 'mapTypeName':
     case 'mapFlagToNames':
     case 'mapToFlags':

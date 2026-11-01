@@ -19,9 +19,6 @@ export type Question =
   | { format: 'sortSimilarNames'; target: Country; countries: Country[] }
   | { format: 'typeSimilar'; target: Country; countries: Country[] }
   | { format: 'mapToNames'; target: Country; options: Country[] }
-  | { format: 'nameToMap'; target: Country }
-  | { format: 'mapPairs'; target: Country; countries: Country[] }
-  | { format: 'mapTrueFalse'; target: Country; shown: Country }
   | { format: 'mapTypeName'; target: Country }
   | { format: 'mapFlagToNames'; target: Country; options: Country[] }
   | { format: 'mapToFlags'; target: Country; options: Country[] }

@@ -46,10 +46,7 @@ function wrongAnswer(q: Question): Answer {
       const [first, second] = q.countries;
       return { kind: 'links', links: { [first.iso2]: second.iso2, [second.iso2]: first.iso2 } };
     }
-    case 'nameToMap':
-    case 'mapTrueFalse':
     case 'mapTypeName':
-    case 'mapPairs':
     case 'mapSpellName':
     case 'countryToCapitals':
     case 'capitalToCountries':

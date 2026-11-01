@@ -22,16 +22,11 @@ function correctAnswer(question: Question): Answer {
     case 'mapToNames':
     case 'mapFlagToNames':
     case 'mapToFlags':
-    case 'nameToMap':
       return { kind: 'choice', iso2: question.target.iso2 };
     case 'mapSpellName':
       return { kind: 'text', text: question.target.name };
-    case 'mapTrueFalse':
-      return { kind: 'yesNo', yes: question.shown === question.target };
     case 'mapTypeName':
       return { kind: 'text', text: question.target.name };
-    case 'mapPairs':
-      return { kind: 'links', links: Object.fromEntries(question.countries.map((c) => [c.iso2, c.iso2])) };
     default:
       throw new Error(`Unexpected ${question.format}`);
   }
@@ -42,16 +37,11 @@ function wrongAnswer(question: Question): Answer {
     case 'mapToNames':
     case 'mapFlagToNames':
     case 'mapToFlags':
-    case 'nameToMap':
       return { kind: 'choice', iso2: '' };
     case 'mapSpellName':
       return { kind: 'text', text: '' };
-    case 'mapTrueFalse':
-      return { kind: 'yesNo', yes: question.shown !== question.target };
     case 'mapTypeName':
       return { kind: 'text', text: '' };
-    case 'mapPairs':
-      return { kind: 'links', links: {} };
     default:
       throw new Error(`Unexpected ${question.format}`);
   }

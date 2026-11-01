@@ -12,7 +12,7 @@ const AMERICAS: MapScope = { continent: 'americas', level: MAP_ALL };
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-const [br, ar, cl, pe, co, sv] = ['br', 'ar', 'cl', 'pe', 'co', 'sv'].map(country);
+const [br, ar, cl, pe, sv] = ['br', 'ar', 'cl', 'pe', 'sv'].map(country);
 
 const viewBoxOf = (rendered: Element) => rendered.querySelector('svg')!.getAttribute('viewBox')!.split(' ').map(Number);
 
@@ -36,10 +36,12 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 describe('the initial view of a map question', () => {
-  it('opens mapToNames, mapTrueFalse and mapTypeName on the highlighted country', () => {
+  it('opens every ladder step on the highlighted country', () => {
     const questions: MapQuestion[] = [
+      { format: 'mapFlagToNames', target: sv, options: [ar, br, cl, sv] },
+      { format: 'mapToFlags', target: sv, options: [ar, br, cl, sv] },
       { format: 'mapToNames', target: sv, options: [ar, br, cl, sv] },
-      { format: 'mapTrueFalse', target: sv, shown: ar },
+      { format: 'mapSpellName', target: sv, letters: [...sv.name] },
       { format: 'mapTypeName', target: sv },
     ];
     for (const question of questions) {
@@ -49,18 +51,8 @@ describe('the initial view of a map question', () => {
     }
   });
 
-  it('opens mapPairs on its four countries', () => {
-    const rendered = renderMapQuestion({ format: 'mapPairs', target: br, countries: [br, ar, cl, pe] }, AMERICAS, () => []);
-    for (const iso2 of ['br', 'ar', 'cl', 'pe']) expect(shows(rendered, iso2)).toBe(true);
-    expect(showsAll(rendered)).toBe(false);
-  });
-
-  it('opens nameToMap on the whole continent', () => {
-    expect(showsAll(renderMapQuestion({ format: 'nameToMap', target: sv }, AMERICAS, () => []))).toBe(true);
-  });
-
   it('opens the solution map on what it shows', () => {
-    const solution = mapSolution({ format: 'nameToMap', target: sv }, AMERICAS);
+    const solution = mapSolution({ format: 'mapTypeName', target: sv }, AMERICAS);
     expect(shows(solution, 'sv')).toBe(true);
     expect(showsAll(solution)).toBe(false);
   });
@@ -79,46 +71,6 @@ describe('renderMapQuestion', () => {
     expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'br' });
   });
 
-  it('submits the tapped country in nameToMap', () => {
-    const submit = vi.fn();
-    const rendered = renderMapQuestion({ format: 'nameToMap', target: br }, AMERICAS, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Onde fica Brasil?');
-    click(rendered.querySelector('path[data-iso2="ar"]')!);
-    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'ar' });
-  });
-
-  it('submits nothing when the ocean or a grey country is tapped in nameToMap', () => {
-    const submit = vi.fn();
-    const rendered = renderMapQuestion({ format: 'nameToMap', target: br }, AMERICAS, submit);
-    click(rendered.querySelector('svg')!);
-    click(rendered.querySelector('path.context')!);
-    expect(submit).not.toHaveBeenCalled();
-  });
-
-  it('links letters to names in mapPairs', () => {
-    const submit = vi.fn();
-    const countriesShown = [br, ar, cl, pe];
-    const rendered = renderMapQuestion({ format: 'mapPairs', target: br, countries: countriesShown }, AMERICAS, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Ligue cada nome ao país');
-    expect([...rendered.querySelectorAll('.map-label')].map((l) => l.textContent)).toEqual(['A', 'B', 'C', 'D']);
-    const letters = [...rendered.querySelectorAll('.pair-flag')];
-    expect(letters.map((b) => b.querySelector('.pair-letter')!.textContent)).toEqual(['A', 'B', 'C', 'D']);
-    countriesShown.forEach((c, index) => {
-      click(letters[index]);
-      click([...rendered.querySelectorAll('.name-option')].find((b) => b.textContent === c.name)!);
-    });
-    click(rendered.querySelector('button.primary')!);
-    expect(submit).toHaveBeenCalledWith({ kind: 'links', links: { br: 'br', ar: 'ar', cl: 'cl', pe: 'pe' } });
-  });
-
-  it('asks yes or no in mapTrueFalse', () => {
-    const submit = vi.fn();
-    const rendered = renderMapQuestion({ format: 'mapTrueFalse', target: br, shown: ar }, AMERICAS, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Este é Argentina?');
-    click(rendered.querySelectorAll('.yes-no button')[1]);
-    expect(submit).toHaveBeenCalledWith({ kind: 'yesNo', yes: false });
-  });
-
   it('submits the typed name in mapTypeName', () => {
     const submit = vi.fn(() => []);
     const rendered = renderMapQuestion({ format: 'mapTypeName', target: br }, AMERICAS, submit);
@@ -131,21 +83,16 @@ describe('renderMapQuestion', () => {
 
 describe('mapSolution', () => {
   it('paints the target missed with its name', () => {
-    const solution = mapSolution({ format: 'nameToMap', target: br }, AMERICAS);
+    const solution = mapSolution({ format: 'mapTypeName', target: br }, AMERICAS);
     expect(solution.querySelector('path[data-iso2="br"]')!.classList.contains('missed')).toBe(true);
     expect(solution.querySelector('.map-label')!.textContent).toBe('Brasil');
   });
 
-  it('paints the four mapPairs countries missed with their names', () => {
-    const solution = mapSolution({ format: 'mapPairs', target: br, countries: [br, ar, cl, co] }, AMERICAS);
-    expect(solution.querySelectorAll('path.missed')).toHaveLength(4);
-    expect([...solution.querySelectorAll('.map-label')].map((l) => l.textContent)).toEqual(['Brasil', 'Argentina', 'Chile', 'Colômbia']);
-  });
 });
 
 describe('renderFeedback with a solution', () => {
   it('shows the given solution instead of the flag card on a wrong answer', () => {
-    const question: Question = { format: 'nameToMap', target: br };
+    const question: Question = { format: 'mapTypeName', target: br };
     const solution = mapSolution(question, AMERICAS);
     const feedback = renderFeedback(question, { correct: false, missed: [br], typos: [] }, () => {}, solution);
     expect(feedback.contains(solution)).toBe(true);
@@ -155,7 +102,7 @@ describe('renderFeedback with a solution', () => {
 
 describe('renderQuestion with a map question', () => {
   it('delegates to the map renderer with the continent', () => {
-    const rendered = renderQuestion({ format: 'nameToMap', target: br }, () => [], AMERICAS);
+    const rendered = renderQuestion({ format: 'mapTypeName', target: br }, () => [], AMERICAS);
     expect(rendered.querySelector('path[data-iso2="br"]')).not.toBeNull();
   });
 });
@@ -166,9 +113,9 @@ describe('renderPairs', () => {
     expect(rendered.querySelectorAll('.pair-flag img')).toHaveLength(2);
   });
 
-  it('asks Onde fica X on the region map, with the other regions grey', () => {
+  it('draws a region question on the region map, with the other regions grey', () => {
     const sn = countries.find((c) => c.iso2 === 'sn')!;
-    const rendered = renderQuestion({ format: 'nameToMap', target: sn }, () => [], { continent: 'africa', level: 'west-coast' });
+    const rendered = renderQuestion({ format: 'mapTypeName', target: sn }, () => [], { continent: 'africa', level: 'west-coast' });
     expect(rendered.querySelector('path[data-iso2="ng"]')!.classList.contains('context')).toBe(true);
     expect(rendered.querySelector('path[data-iso2="gm"]')!.classList.contains('country')).toBe(true);
   });
