@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Answer } from '../../engine/answer';
 import { seededRng } from '../../engine/rng';
-import { MAP_ALL, mapPool } from '../../data/maps';
+import { MAP_ALL, mapLevels, mapPool } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import { listenForBack, settleBack } from '../backButton';
 import type { Navigate, Screen } from '../navigation';
@@ -117,6 +117,21 @@ describe('renderMapGame', () => {
     root.replaceChildren();
     renderMapGame(root, navigate, 'americas', MAP_ALL);
     expect(asked[0].question.format).toBe('mapToNames');
+  });
+
+  it('plays the whole continent on 10 countries, the regions with no medal first', () => {
+    const eastern = mapPool('europe', 'eastern-europe');
+    expect(eastern.length).toBeLessThan(10);
+    const medals = Object.fromEntries(mapLevels('europe').filter((l) => l !== 'eastern-europe' && l !== MAP_ALL).map((l) => [l, 'gold']));
+    localStorage.setItem('flags-quiz:map-medals-v2', JSON.stringify({ europe: medals }));
+    asked.length = 0;
+    root.replaceChildren();
+    renderMapGame(root, navigate, 'europe', MAP_ALL);
+    expect(root.querySelector('.topbar-counters')!.textContent).toBe('♥♥♥0/10');
+    playToTheEnd();
+    const targets = new Set(asked.map(({ question }) => question.target.iso2));
+    expect(targets.size).toBe(10);
+    for (const country of eastern) expect(targets).toContain(country.iso2);
   });
 
   it('counts a country only once it is done and costs a life per wrong answer', () => {

@@ -26,6 +26,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'result' }>>) {
 }
 
 describe('renderResult', () => {
+  it('measures the Geral goal by its sample of 20 flags', () => {
+    const { root } = render({ continent: 'africa', difficulty: 'general', correct: 4 });
+    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`4/${goalFor('general', 20)}acertos`]);
+  });
+
   it('celebrates a won medal and shows the level and the correct answers out of the goal', () => {
     const { root } = render({ won: true, medal: 'silver', correct: goal });
     expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');

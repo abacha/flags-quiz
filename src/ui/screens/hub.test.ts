@@ -4,6 +4,7 @@ import { capitalPool } from '../../data/capitals';
 import { countries } from '../../data/countries';
 import { MAP_ALL, mapLevels, mapPool } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
+import { learnPoolSize, mapLearnSize } from '../../engine/practice';
 import type { Screen } from '../navigation';
 import { renderHub } from './hub';
 
@@ -21,7 +22,7 @@ describe('renderHub', () => {
   const tags = (level: string) => [...card(level).querySelectorAll('.tag')].map((t) => [t.textContent, t.classList.contains('ok')]);
   const button = (scope: ParentNode, text: string) => [...scope.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === text)!;
   const goal = (continent: ContinentKey, difficulty: 'easy' | 'medium' | 'hard' | 'general') =>
-    goalFor(difficulty, poolFor(countries, continent, difficulty).length);
+    goalFor(difficulty, learnPoolSize(difficulty, poolFor(countries, continent, difficulty).length));
 
   beforeEach(() => {
     localStorage.clear();
@@ -126,7 +127,21 @@ describe('renderHub', () => {
 
   it('counts a record with a best time and no completed mark as a completed quiz', () => {
     render('world');
-    expect(tags('Fácil')[1]).toEqual(['✓ Quiz 12:34', true]);
+    expect(tags('Fácil')).toEqual([['✓ Quiz 12:34', true]]);
+  });
+
+  it('offers only the Quiz on Mundo, with no medal tag', () => {
+    render('world');
+    for (const level of ['Fácil', 'Médio', 'Difícil', 'Geral']) {
+      expect(button(card(level), 'Aprender')).toBeUndefined();
+      expect(button(card(level), 'Quiz')).toBeDefined();
+      expect(tags(level)).toHaveLength(1);
+    }
+  });
+
+  it('sets the Geral medal goal by a sample of 20 flags', () => {
+    render('africa');
+    expect(tags('Geral')[0]).toEqual([`🏅 meta ${goalFor('general', 20)}`, false]);
   });
 
   it('starts Aprender and Quiz on the level of the chosen continent', () => {
@@ -156,7 +171,7 @@ describe('renderHub', () => {
     const areas = () => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')];
     const area = (label: string) => areas().find((b) => b.textContent === label)!;
     const mapTags = (level: string) => tags(level);
-    const mapGoal = (continent: ContinentKey, level: string) => mapPool(continent, level).length;
+    const mapGoal = (continent: ContinentKey, level: string) => mapLearnSize(level, mapPool(continent, level).length);
     const cardTitles = () => [...root.querySelectorAll('.level-card h2')].map((h) => h.textContent);
 
     beforeEach(() => {
@@ -256,10 +271,10 @@ describe('renderHub', () => {
       ]);
       tab('Mundo').click();
       expect(cardTitles()).toEqual(['Mundo inteiro']);
-      expect(mapTags('Mundo inteiro')).toEqual([
-        [`🏅 meta ${mapGoal('world', MAP_ALL)}`, false],
-        ['Quiz —', false],
-      ]);
+      expect(mapTags('Mundo inteiro')).toEqual([['Quiz —', false]]);
+      expect(button(card('Mundo inteiro'), 'Aprender')).toBeUndefined();
+      tab('Europa').click();
+      expect(mapTags('Continente inteiro')[0]).toEqual(['🏅 meta 10', false]);
     });
 
     it('starts the map Learn and the map Quiz on the chosen continent and the level of the card', () => {
@@ -282,7 +297,7 @@ describe('renderHub', () => {
 
     const area = (label: string) => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')].find((b) => b.textContent === label)!;
     const cardTitles = () => [...root.querySelectorAll('.level-card h2')].map((h) => h.textContent);
-    const capitalGoal = (continent: ContinentKey, difficulty: Difficulty) => goalFor(difficulty, capitalPool(continent, difficulty).length);
+    const capitalGoal = (continent: ContinentKey, difficulty: Difficulty) => goalFor(difficulty, learnPoolSize(difficulty, capitalPool(continent, difficulty).length));
 
     it('shows the four difficulty cards with the capital counts and medal goals, and the empty progress', () => {
       render('africa');

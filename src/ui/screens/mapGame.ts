@@ -1,9 +1,11 @@
-import { mapLevelLabel, type MapLevel } from '../../data/maps';
+import { mapLevelLabel, mapRegionOf, type MapLevel } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { LadderRound } from '../../engine/ladderRound';
 import { ladderStart, mapContext } from '../../engine/mapFormats';
+import { mapLearnSize, practiceSample } from '../../engine/practice';
 import { STARTING_LIVES } from '../../engine/round';
-import { awardMapMedal } from '../../mapRecords';
+import { awardMapMedal, loadMapMedals } from '../../mapRecords';
+import { medalOf } from '../../progress';
 import { onBack } from '../backButton';
 import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
@@ -16,7 +18,14 @@ import { renderQuestion } from '../questions/render';
 import { topBar } from '../topbar';
 
 export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
-  const round = new LadderRound(mapContext(continent, level), ladderStart(level), Math.random);
+  const context = mapContext(continent, level);
+  const medals = loadMapMedals(localStorage);
+  const regionMedal = (iso2: string) => {
+    const region = mapRegionOf(continent, iso2);
+    return region === undefined ? undefined : medalOf(medals, continent, region);
+  };
+  const targets = practiceSample(context.pool, (c) => regionMedal(c.iso2), mapLearnSize(level, context.pool.length), Math.random);
+  const round = new LadderRound(context, ladderStart(level), Math.random, targets);
   const stage = el('section', { className: 'stage' });
 
   let currentQuestion: HTMLElement | null = null;

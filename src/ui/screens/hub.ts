@@ -3,6 +3,7 @@ import { countries, type Country } from '../../data/countries';
 import { capitalPool } from '../../data/capitals';
 import { MAP_ALL, mapLevelLabel, mapLevels, mapPool, type MapLevel } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
+import { learnPoolSize, mapLearnSize } from '../../engine/practice';
 import type { Medal } from '../../engine/round';
 import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
@@ -132,6 +133,8 @@ interface LevelCard {
   thumbs: Country[];
   medal: Medal | undefined;
   goal: number;
+  // Mundo offers only the Quiz: a Learn round over the whole world would take hundreds of answers.
+  learn: boolean;
   record: QuizRecord;
   play: (mode: 'learn' | 'quiz') => Screen;
 }
@@ -143,7 +146,8 @@ function flagLevelCard(continent: ContinentKey, difficulty: Difficulty, medals: 
     count: `${pool.length} bandeiras`,
     thumbs: pool.slice(0, 3),
     medal: medalOf(medals, continent, difficulty),
-    goal: goalFor(difficulty, pool.length),
+    goal: goalFor(difficulty, learnPoolSize(difficulty, pool.length)),
+    learn: continent !== 'world',
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'game' : 'quiz', continent, difficulty }),
   };
@@ -156,7 +160,8 @@ function capitalLevelCard(continent: ContinentKey, difficulty: Difficulty, medal
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, difficulty),
-    goal: goalFor(difficulty, pool.length),
+    goal: goalFor(difficulty, learnPoolSize(difficulty, pool.length)),
+    learn: continent !== 'world',
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'capitalGame' : 'capitalQuiz', continent, difficulty }),
   };
@@ -169,23 +174,24 @@ function mapLevelCard(continent: ContinentKey, level: MapLevel, medals: Medals<M
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, level),
-    goal: pool.length,
+    goal: mapLearnSize(level, pool.length),
+    learn: continent !== 'world',
     record: quizRecord(records, continent, level),
     play: (mode) => ({ name: mode === 'learn' ? 'mapGame' : 'mapQuiz', continent, level }),
   };
 }
 
-function levelCard(navigate: Navigate, { title, count, thumbs, medal, goal, record, play }: LevelCard): HTMLElement {
+function levelCard(navigate: Navigate, { title, count, thumbs, medal, goal, learn, record, play }: LevelCard): HTMLElement {
   return el('section', { className: 'card level-card' }, [
     el('div', { className: 'level-head' }, [
       el('h2', {}, [title]),
       el('span', { className: 'meta' }, [count]),
       ...(thumbs.length ? [el('span', { className: 'thumbs' }, thumbs.map((country) => flagImg(country)))] : []),
     ]),
-    el('div', { className: 'tags' }, [medalTag(medal, goal), quizTag(record)]),
+    el('div', { className: 'tags' }, [...(learn ? [medalTag(medal, goal)] : []), quizTag(record)]),
     el('div', { className: 'level-actions' }, [
-      el('button', { className: 'primary', type: 'button', onclick: () => navigate(play('learn')) }, ['Aprender']),
-      el('button', { className: 'outline', type: 'button', onclick: () => navigate(play('quiz')) }, ['Quiz']),
+      ...(learn ? [el('button', { className: 'primary', type: 'button', onclick: () => navigate(play('learn')) }, ['Aprender'])] : []),
+      el('button', { className: learn ? 'outline' : 'primary', type: 'button', onclick: () => navigate(play('quiz')) }, ['Quiz']),
     ]),
   ]);
 }

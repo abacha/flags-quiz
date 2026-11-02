@@ -1,7 +1,8 @@
 import { countries, similarGroups, similarNames } from '../../data/countries';
-import { LEVEL_RULES, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
+import { LEVEL_RULES, TIER_LEVEL, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
+import { learnPoolSize, practiceSample } from '../../engine/practice';
 import { Round, STARTING_LIVES } from '../../engine/round';
-import { awardMedal } from '../../progress';
+import { awardMedal, loadMedals, medalOf } from '../../progress';
 import { onBack } from '../backButton';
 import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
@@ -14,7 +15,9 @@ import { topBar } from '../topbar';
 
 export function renderGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const rules = LEVEL_RULES[difficulty];
-  const pool = poolFor(countries, continent, difficulty);
+  const levelPool = poolFor(countries, continent, difficulty);
+  const medals = loadMedals(localStorage);
+  const pool = practiceSample(levelPool, (c) => medalOf(medals, continent, TIER_LEVEL[c.tier]), learnPoolSize(difficulty, levelPool.length), Math.random);
   const round = new Round(
     { pool, world: countries, similarGroups, similarNames, similarDistractors: rules.similarDistractors },
     { correctToWin: goalFor(difficulty, pool.length), recallWeight: rules.recallWeight },

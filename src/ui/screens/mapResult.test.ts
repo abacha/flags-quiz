@@ -27,6 +27,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
 }
 
 describe('renderMapResult', () => {
+  it('measures the whole continent by its sample of 10 countries', () => {
+    const { root } = render({ level: MAP_ALL, done: 4 });
+    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['4/10países']);
+  });
+
   it('celebrates a won medal and shows the continent and the countries done out of the level size', () => {
     const { root } = render({ won: true, medal: 'silver', done: size });
     expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');

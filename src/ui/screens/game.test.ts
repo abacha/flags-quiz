@@ -121,6 +121,21 @@ describe('renderGame', () => {
     expect(root.querySelectorAll('.heart.lost')).toHaveLength(3);
   });
 
+  it('plays Geral on 20 flags from the levels with the weakest medals, with a goal of 15', () => {
+    localStorage.setItem('flags-quiz:medals', JSON.stringify({ africa: { easy: 'gold', medium: 'silver' } }));
+    asked.length = 0;
+    root.replaceChildren();
+    renderGame(root, (screen) => screens.push(screen), 'africa', 'general');
+    expect(root.querySelector('.topbar-counters')!.textContent).toBe('♥♥♥0/15');
+    while (screens.length === 0) {
+      const { question, submit } = asked[asked.length - 1];
+      expect(question.target.tier).toBe(3);
+      submit(rightAnswer(question));
+      root.querySelector<HTMLButtonElement>('.feedback button')!.click();
+    }
+    expect(screens[0]).toMatchObject({ name: 'result', won: true });
+  });
+
   it('leaves to the hub on the same continent on ✕', () => {
     root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
     expect(screens).toEqual([{ name: 'hub', continent: 'oceania' }]);

@@ -56,6 +56,20 @@ describe('renderCapitalGame', () => {
     expect(root.querySelector('.topbar-counters')!.textContent).toBe(`♥♥♥0/${goal}`);
   });
 
+  it('plays Geral on 20 countries from the levels with the weakest medals, with a goal of 15', () => {
+    localStorage.setItem('flags-quiz:capital-medals', JSON.stringify({ africa: { easy: 'gold', medium: 'silver' } }));
+    asked.length = 0;
+    root.replaceChildren();
+    renderCapitalGame(root, (screen) => screens.push(screen), 'africa', 'general');
+    expect(root.querySelector('.topbar-counters')!.textContent).toBe('♥♥♥0/15');
+    while (screens.length === 0) {
+      const { question, submit } = asked[asked.length - 1];
+      if ('target' in question) expect(question.target.tier).toBeGreaterThan(1);
+      submit(rightAnswer(question));
+      root.querySelector<HTMLButtonElement>('.feedback button')!.click();
+    }
+  });
+
   it('asks only capital formats', () => {
     expect(CAPITAL_FORMATS.map((f) => f.id)).toContain(asked[0].question.format);
   });

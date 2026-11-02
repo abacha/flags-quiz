@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Answer } from './answer';
 import { LadderRound } from './ladderRound';
+import { MAP_ALL } from '../data/maps';
 import { mapContext } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
@@ -129,6 +130,21 @@ describe('LadderRound', () => {
       targets.push(q.target.iso2);
       round.answer(rightAnswer(q));
     }
+  });
+
+  it('asks only the given targets and draws options from the whole context', () => {
+    const continent = mapContext('africa', MAP_ALL);
+    const targets = continent.pool.slice(0, 3);
+    const round = new LadderRound(continent, 0, seededRng(10), targets);
+    expect(round.size).toBe(3);
+    const options = new Set<string>();
+    while (round.status === 'playing') {
+      const q = round.nextQuestion();
+      expect(targets).toContain(q.target);
+      if ('options' in q) for (const o of q.options) options.add(o.iso2);
+      round.answer(rightAnswer(q));
+    }
+    expect([...options].some((iso2) => !targets.some((t) => t.iso2 === iso2))).toBe(true);
   });
 });
 
