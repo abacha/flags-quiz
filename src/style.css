@@ -675,7 +675,7 @@ input::placeholder { text-overflow: ellipsis; }
 .streak { color: #e8590c; font-weight: 700; animation: pop 260ms ease-out; }
 .topbar-fill.bump { animation: glow 500ms ease-out; }
 
-.screen.result { max-width: 720px; }
+.screen.hub, .screen.result { max-width: 720px; }
 .result h1 { margin: 16px 0 0; font-size: 1.5rem; text-align: center; }
 .result h1.cheer { animation: medal-drop 650ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 .result > .detail { margin: 0; text-align: center; }

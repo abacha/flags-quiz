@@ -107,7 +107,8 @@ describe('style.css', () => {
     expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{ animation: none !important; transition: none !important; \}/);
   });
 
-  it('widens every screen to 1200px on a desktop but keeps the short result screens at 720px', () => {
+  it('widens every screen to 1200px on a desktop but keeps the hub and the result screens at 720px', () => {
+    expect(declared('.screen.hub', 'max-width')).toContain('720px');
     expect(declared('.screen', 'max-width')).toContain('1200px');
     expect(declared('.screen.result', 'max-width')).toContain('720px');
     expect(declared('.feedback', 'max-width')).toContain('1200px');
