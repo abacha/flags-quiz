@@ -109,4 +109,9 @@ describe('style.css', () => {
     expect(declared('.answered-wrong .chosen', 'border-color')).toContain('var(--wrong)');
     expect(declared('.revealed', 'border-color')).toContain('var(--success)');
   });
+
+  it('highlights the player in the ranking and marks a refused nickname in the wrong-answer colour', () => {
+    expect(declared('.ranking li.me', 'font-weight')).toContain('700');
+    expect(declared('.ranking-error', 'color')).toContain('var(--wrong)');
+  });
 });

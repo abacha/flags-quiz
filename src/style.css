@@ -840,3 +840,12 @@ input::placeholder { text-overflow: ellipsis; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.ranking { display: flex; flex-direction: column; gap: 8px; }
+.ranking h2 { margin: 12px 0 0; }
+.ranking ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.ranking li { padding: 8px 12px; border-radius: var(--radius-button); background: var(--surface); font-variant-numeric: tabular-nums; }
+.ranking li.me { font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); }
+.ranking li.gap { padding: 0; background: none; text-align: center; color: var(--muted); }
+.ranking form p { margin: 0; }
+.ranking-error { margin: 0; color: var(--wrong); }
