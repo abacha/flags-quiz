@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it, vi } from 'vitest';
+import { pressShortcut } from './keys';
 import { renderSpellName } from './spellName';
 
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -11,7 +12,8 @@ function render(letters: string[]) {
   const placed = () => [...rendered.querySelectorAll<HTMLButtonElement>('.spell-placed')].map((p) => p.textContent).join('');
   const confirm = () => [...rendered.querySelectorAll<HTMLButtonElement>('button.primary')][0];
   const tap = (letter: string) => click(tiles().find((t) => t.textContent === letter && !t.disabled)!);
-  return { rendered, submit, tiles, placed, confirm, tap };
+  const type = (...keys: string[]) => keys.forEach((key) => pressShortcut(rendered, new KeyboardEvent('keydown', { key })));
+  return { rendered, submit, tiles, placed, confirm, tap, type };
 }
 
 describe('renderSpellName', () => {
@@ -48,5 +50,30 @@ describe('renderSpellName', () => {
     [...'senegal'].forEach(tap);
     click(confirm());
     expect(submit).toHaveBeenCalledWith({ kind: 'text', text: 'senegal' });
+  });
+
+  it('places tiles from the keyboard, in either case, and ignores letters with no tile left', () => {
+    const { placed, tiles, type } = render([...'lxeagnes']);
+    type('S', 'e', 'n', 'e', 'e', 'z');
+    expect(placed()).toBe('sene');
+    expect(tiles().filter((t) => t.disabled)).toHaveLength(4);
+  });
+
+  it('types an accented tile from its plain letter only when no plain tile is left', () => {
+    const { placed, type } = render([...'éeia']);
+    type('e', 'e');
+    expect(placed()).toBe('eé');
+    type('é');
+    expect(placed()).toBe('eé');
+  });
+
+  it('takes the last letter back with Backspace and answers with Enter', () => {
+    const { submit, placed, type } = render([...'cxhade']);
+    type('Enter');
+    expect(submit).not.toHaveBeenCalled();
+    type('c', 'h', 'x', 'Backspace', 'a', 'd', 'e');
+    expect(placed()).toBe('chade');
+    type('Enter');
+    expect(submit).toHaveBeenCalledWith({ kind: 'text', text: 'chade' });
   });
 });

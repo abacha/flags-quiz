@@ -1,4 +1,4 @@
-const SHORTCUT = /^([1-6]|ArrowLeft|ArrowRight)$/;
+const SHORTCUT = /^([1-6]|ArrowLeft|ArrowRight|Backspace|Enter|\p{L})$/u;
 
 export function bindKeys(button: HTMLButtonElement, index: number, optionCount: number): HTMLButtonElement {
   const keys = [String(index + 1)];
@@ -11,7 +11,11 @@ export function bindKeys(button: HTMLButtonElement, index: number, optionCount: 
 export function pressShortcut(question: HTMLElement, event: KeyboardEvent): void {
   if (question.inert || event.ctrlKey || event.metaKey || event.altKey) return;
   if (event.target instanceof HTMLInputElement || !SHORTCUT.test(event.key)) return;
-  const button = question.querySelector<HTMLButtonElement>(`[data-keys~="${event.key}"]`);
+  const key = event.key.length === 1 ? event.key.toLocaleLowerCase('pt-BR') : event.key;
+  // An exact key wins over a loose one, so "e" takes a plain "e" tile before an "é" one.
+  const button =
+    question.querySelector<HTMLButtonElement>(`[data-keys~="${key}"]:not(:disabled)`) ??
+    question.querySelector<HTMLButtonElement>(`[data-loose-keys~="${key}"]:not(:disabled)`);
   if (!button) return;
   event.preventDefault();
   button.click();

@@ -6,6 +6,7 @@ export function renderSpellName(prompt: string, figure: HTMLElement, letters: st
   const placed: HTMLButtonElement[] = [];
   const answer = el('div', { className: 'spell-answer' });
   const confirm = el('button', { className: 'primary', type: 'button', disabled: true }, ['Responder']);
+  confirm.dataset.keys = 'Enter';
 
   const redraw = () => {
     answer.replaceChildren(
@@ -16,6 +17,7 @@ export function renderSpellName(prompt: string, figure: HTMLElement, letters: st
           tile.disabled = false;
           redraw();
         };
+        if (index === placed.length - 1) letter.dataset.keys = 'Backspace';
         return letter;
       }),
     );
@@ -24,6 +26,9 @@ export function renderSpellName(prompt: string, figure: HTMLElement, letters: st
 
   const tiles = letters.map((letter) => {
     const tile = el('button', { className: 'spell-tile', type: 'button' }, [letter]);
+    tile.dataset.keys = letter;
+    const plain = letter.normalize('NFD').replace(/\p{M}/gu, '');
+    if (plain !== letter) tile.dataset.looseKeys = plain;
     tile.onclick = () => {
       placed.push(tile);
       tile.disabled = true;
