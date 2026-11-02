@@ -74,8 +74,16 @@ describe('rankingSection', () => {
     expect(text(section)).toBe('Ninguém no ranking ainda');
   });
 
-  it('says the ranking is unavailable when the queue or the ranking cannot be reached', async () => {
+  it('still shows the ranking when the queue could not be sent', async () => {
     vi.mocked(flushQueue).mockRejectedValue(new TypeError('Failed to fetch'));
+    vi.mocked(fetchLeaderboard).mockResolvedValue([standing(1, 'Tio')]);
+    const section = rankingSection(run);
+    await settle();
+    expect(rows(section)).toEqual([['1. Tio · 29 pts · 03:12', '']]);
+  });
+
+  it('says the ranking is unavailable when it cannot be read', async () => {
+    vi.mocked(fetchLeaderboard).mockRejectedValue(new TypeError('Failed to fetch'));
     const section = rankingSection(run);
     await settle();
     expect(text(section)).toBe('Ranking indisponível sem conexão');
@@ -110,6 +118,19 @@ describe('rankingSection', () => {
       expect(flushQueue).toHaveBeenCalledTimes(2);
       expect(rows(section)[1]).toEqual(['2. Vovó · 28 pts · 03:12', 'me']);
       expect(section.querySelector('form')).toBeNull();
+    });
+
+    it('disables Entrar while the nickname is being claimed', async () => {
+      const section = rankingSection(run);
+      await settle();
+      let refuse: (error: Error) => void = () => {};
+      vi.mocked(claimNickname).mockReturnValue(new Promise((_, reject) => (refuse = reject)));
+      submitNickname(section, 'Vovó');
+      const enter = section.querySelector<HTMLButtonElement>('form button')!;
+      expect(enter.disabled).toBe(true);
+      refuse(new NicknameTakenError());
+      await settle();
+      expect(enter.disabled).toBe(false);
     });
 
     it.each([

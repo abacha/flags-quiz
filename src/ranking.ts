@@ -1,7 +1,7 @@
 import type { Area } from './continentChoice';
 import type { ContinentKey } from './engine/pool';
 
-export type RankingStore = Pick<Storage, 'getItem' | 'setItem'>;
+export type RankingStore = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
 export interface RankedLevel {
   area: Area;
@@ -37,10 +37,12 @@ class RankingRequestError extends Error {
 }
 
 const PLAYER_KEY = 'flags-quiz:player';
+const SECRET_KEY = 'flags-quiz:secret';
 const QUEUE_KEY = 'flags-quiz:ranking-queue';
 const TIMEOUT_MS = 5000;
 const NICKNAME_LENGTH = { min: 2, max: 16 };
 const CONFLICT = 409;
+const BAD_REQUEST = 400;
 
 async function rpc(name: string, body: Record<string, unknown>): Promise<Response> {
   const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/${name}`, {
@@ -58,10 +60,16 @@ export function loadPlayer(store: RankingStore): Player | null {
   return raw === null ? null : (JSON.parse(raw) as Player);
 }
 
+function phoneSecret(store: RankingStore): string {
+  const secret = store.getItem(SECRET_KEY) ?? crypto.randomUUID();
+  store.setItem(SECRET_KEY, secret);
+  return secret;
+}
+
 export async function claimNickname(store: RankingStore, nickname: string): Promise<Player> {
   const trimmed = nickname.trim();
   if (trimmed.length < NICKNAME_LENGTH.min || trimmed.length > NICKNAME_LENGTH.max) throw new NicknameLengthError();
-  const player = { secret: crypto.randomUUID(), nickname: trimmed };
+  const player = { secret: phoneSecret(store), nickname: trimmed };
   try {
     await rpc('claim_nickname', { p_secret: player.secret, p_nickname: trimmed });
   } catch (error) {
@@ -95,14 +103,20 @@ export async function flushQueue(store: RankingStore): Promise<void> {
   const player = loadPlayer(store);
   if (!player) return;
   for (const run of loadQueue(store)) {
-    await rpc('submit_score', {
-      p_secret: player.secret,
-      p_area: run.area,
-      p_continent: run.continent,
-      p_level: run.level,
-      p_score: run.score,
-      p_time_ms: Math.round(run.timeMs),
-    });
+    try {
+      await rpc('submit_score', {
+        p_secret: player.secret,
+        p_area: run.area,
+        p_continent: run.continent,
+        p_level: run.level,
+        p_score: run.score,
+        p_time_ms: Math.round(run.timeMs),
+      });
+    } catch (error) {
+      if (!(error instanceof RankingRequestError)) throw error;
+      if (error.status === CONFLICT) return store.removeItem(PLAYER_KEY);
+      if (error.status !== BAD_REQUEST) throw error;
+    }
     saveQueue(store, loadQueue(store).filter((other) => !sameLevel(other, run)));
   }
 }

@@ -64,6 +64,15 @@ describe('ranking', () => {
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
+    it('claims again with the same secret after a failed attempt, since the first may have reached the server', async () => {
+      vi.mocked(crypto.randomUUID).mockReturnValueOnce(SECRET).mockReturnValueOnce('22222222-2222-4222-8222-222222222222');
+      fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
+      await expect(claimNickname(localStorage, 'Vovó')).rejects.toThrow();
+      await claimNickname(localStorage, 'Vovó');
+      expect(calls().map(({ body }) => body.p_secret)).toEqual([SECRET, SECRET]);
+      expect(loadPlayer(localStorage)).toEqual({ secret: SECRET, nickname: 'Vovó' });
+    });
+
     it('rejects on any other server failure', async () => {
       fetchMock.mockResolvedValue(reply(500));
       await expect(claimNickname(localStorage, 'Vovó')).rejects.toThrow();
@@ -110,6 +119,25 @@ describe('ranking', () => {
       fetchMock.mockResolvedValueOnce(reply(204)).mockRejectedValueOnce(new TypeError('Failed to fetch'));
       await expect(flushQueue(localStorage)).rejects.toThrow();
       expect(queue()).toEqual([run(3, 1000, 'hard')]);
+    });
+
+    it('forgets a player the server no longer knows and keeps its runs for the next nickname', async () => {
+      savePlayer();
+      queueRun(localStorage, run(10, 90000));
+      fetchMock.mockResolvedValue(reply(409, { code: '23503' }));
+      await flushQueue(localStorage);
+      expect(loadPlayer(localStorage)).toBeNull();
+      expect(queue()).toEqual([run(10, 90000)]);
+    });
+
+    it('drops a run the server refuses and sends the rest', async () => {
+      savePlayer();
+      queueRun(localStorage, run(10, 90000));
+      queueRun(localStorage, run(3, 1000, 'hard'));
+      fetchMock.mockResolvedValueOnce(reply(400, { code: '23514' })).mockResolvedValueOnce(reply(204));
+      await flushQueue(localStorage);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(queue()).toEqual([]);
     });
 
     it('rounds the time to whole milliseconds', async () => {

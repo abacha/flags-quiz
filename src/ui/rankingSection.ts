@@ -38,19 +38,22 @@ export function rankingSection(run: RankedRun): HTMLElement {
   const nicknameForm = () => {
     const input = el('input', { type: 'text', placeholder: 'Seu apelido', maxLength: 16 });
     const error = el('p', { className: 'ranking-error', hidden: true });
+    const enter = el('button', { className: 'primary', type: 'submit' }, ['Entrar']);
     const form = el('form', { className: 'type-form' }, [
       el('p', {}, ['Escolha um apelido para entrar no ranking']),
       input,
-      el('button', { className: 'primary', type: 'submit' }, ['Entrar']),
+      enter,
       error,
     ]);
     form.onsubmit = async (event) => {
       event.preventDefault();
+      enter.disabled = true;
       try {
         await claimNickname(localStorage, input.value);
       } catch (refused) {
         error.textContent = refusal(refused);
         error.hidden = false;
+        enter.disabled = false;
         return;
       }
       await show();
@@ -59,8 +62,8 @@ export function rankingSection(run: RankedRun): HTMLElement {
   };
 
   const show = async () => {
+    await flushQueue(localStorage).catch(() => {});
     try {
-      await flushQueue(localStorage);
       const player = loadPlayer(localStorage);
       const rows = await fetchLeaderboard(run, player);
       body.replaceChildren(standings(rows), ...(player ? [] : [nicknameForm()]));

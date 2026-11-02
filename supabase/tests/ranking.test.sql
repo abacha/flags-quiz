@@ -1,5 +1,5 @@
 begin;
-select plan(20);
+select plan(23);
 
 -- nicknames
 select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000001', ' Vovó ')$$, 'claims a nickname');
@@ -7,6 +7,10 @@ select is((select nickname from players where id = '00000000-0000-0000-0000-0000
 select throws_ok($$select claim_nickname('00000000-0000-0000-0000-000000000002', 'vovó')$$, '23505', null, 'refuses a nickname taken in another case');
 select throws_ok($$select claim_nickname(gen_random_uuid(), ' a ')$$, '23514', null, 'refuses a nickname shorter than 2 characters');
 select throws_ok($$select claim_nickname(gen_random_uuid(), repeat('x', 17))$$, '23514', null, 'refuses a nickname longer than 16 characters');
+
+select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000001', 'Vovó')$$, 'accepts a retried claim of the same nickname from the same phone');
+select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000003', 'Tio'); select claim_nickname('00000000-0000-0000-0000-000000000003', 'Titio')$$, 'lets a phone change its own nickname');
+select is((select nickname from players where id = '00000000-0000-0000-0000-000000000003'), 'Titio', 'keeps one nickname per phone');
 
 -- best run per level
 select submit_score('00000000-0000-0000-0000-000000000001', 'flags', 'africa', 'easy', 10, 90000);
