@@ -48,6 +48,7 @@ function wrongAnswer(q: Question): Answer {
     }
     case 'mapTypeName':
     case 'mapSpellName':
+    case 'mapFindCountry':
     case 'countryToCapitals':
     case 'capitalToCountries':
     case 'capitalPairs':

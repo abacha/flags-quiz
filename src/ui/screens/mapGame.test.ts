@@ -21,7 +21,7 @@ function correctAnswer(question: Question): Answer {
   switch (question.format) {
     case 'mapToNames':
     case 'mapFlagToNames':
-    case 'mapToFlags':
+    case 'mapFindCountry':
       return { kind: 'choice', iso2: question.target.iso2 };
     case 'mapSpellName':
       return { kind: 'text', text: question.target.name };
@@ -36,7 +36,7 @@ function wrongAnswer(question: Question): Answer {
   switch (question.format) {
     case 'mapToNames':
     case 'mapFlagToNames':
-    case 'mapToFlags':
+    case 'mapFindCountry':
       return { kind: 'choice', iso2: '' };
     case 'mapSpellName':
       return { kind: 'text', text: '' };

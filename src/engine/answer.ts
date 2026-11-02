@@ -38,7 +38,7 @@ export function grade(question: Question, answer: Answer): Grade {
     case 'crop':
     case 'mapToNames':
     case 'mapFlagToNames':
-    case 'mapToFlags':
+    case 'mapFindCountry':
     case 'countryToCapitals':
     case 'capitalToCountries':
       return targetGrade(expectKind(answer, 'choice').iso2 === question.target.iso2, question.target);

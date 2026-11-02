@@ -4,7 +4,7 @@ import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { grade, type Answer } from './answer';
 import { LadderRound } from './ladderRound';
-import { MAP_LADDER, mapContext, mapFlagToNames, mapSpellName, mapToFlags, mapToNames, spelledLetters } from './mapFormats';
+import { MAP_LADDER, mapContext, mapFindCountry, mapFlagToNames, mapSpellName, mapToNames, spelledLetters } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 
@@ -101,23 +101,28 @@ describe('map distractors', () => {
 });
 
 describe('map ladder', () => {
-  it('orders the ladder from flag hint to bare typing', () => {
-    expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapToFlags', 'mapToNames', 'mapSpellName', 'mapTypeName']);
+  it('orders the ladder from flag hint to bare typing, with no step that asks for the flag', () => {
+    expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapFindCountry', 'mapToNames', 'mapSpellName', 'mapTypeName']);
   });
 
-  it('draws step 1 and step 2 options from the 8 nearest countries', () => {
+  it('draws step 1 and step 3 options from the 8 nearest countries', () => {
     const gt = c('gt');
     const americas = mapContext('americas', MAP_ALL);
     const near = new Set(nearestCountries(gt, americas.pool, 8).map((country) => country.iso2));
     for (let seed = 1; seed <= 20; seed++) {
-      for (const format of [mapFlagToNames, mapToFlags]) {
+      for (const format of [mapFlagToNames, mapToNames]) {
         const q = format.build(gt, americas, seededRng(seed));
-        if (q.format !== 'mapFlagToNames' && q.format !== 'mapToFlags') throw new Error('wrong format');
+        if (q.format !== 'mapFlagToNames' && q.format !== 'mapToNames') throw new Error('wrong format');
         expect(new Set(q.options.map((o) => o.iso2)).size).toBe(4);
         expect(q.options).toContain(gt);
         for (const option of q.options.filter((o) => o !== gt)) expect(near.has(option.iso2), option.iso2).toBe(true);
       }
     }
+  });
+
+  it('asks step 2 to find the country on the map, with no options', () => {
+    const gt = c('gt');
+    expect(mapFindCountry.build(gt, mapContext('americas', MAP_ALL), seededRng(1))).toEqual({ format: 'mapFindCountry', target: gt });
   });
 
   it('spells the name in lowercase letters without separators', () => {
@@ -152,9 +157,11 @@ describe('map ladder', () => {
 
   it('grades steps 1 and 2 against the target', () => {
     const sn = c('sn');
-    const options = [sn, c('gm'), c('gw'), c('ml')];
-    for (const format of ['mapFlagToNames', 'mapToFlags'] as const) {
-      const q: Question = { format, target: sn, options };
+    const questions: Question[] = [
+      { format: 'mapFlagToNames', target: sn, options: [sn, c('gm'), c('gw'), c('ml')] },
+      { format: 'mapFindCountry', target: sn },
+    ];
+    for (const q of questions) {
       expect(grade(q, { kind: 'choice', iso2: 'sn' }).correct).toBe(true);
       expect(grade(q, { kind: 'choice', iso2: 'gm' })).toEqual({ correct: false, missed: [sn], typos: [] });
     }

@@ -21,7 +21,7 @@ export type Question =
   | { format: 'mapToNames'; target: Country; options: Country[] }
   | { format: 'mapTypeName'; target: Country }
   | { format: 'mapFlagToNames'; target: Country; options: Country[] }
-  | { format: 'mapToFlags'; target: Country; options: Country[] }
+  | { format: 'mapFindCountry'; target: Country }
   | { format: 'mapSpellName'; target: Country; letters: string[] }
   | { format: 'countryToCapitals'; target: Country; options: Country[] }
   | { format: 'capitalToCountries'; target: Country; options: Country[] }

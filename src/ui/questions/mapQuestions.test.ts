@@ -39,7 +39,6 @@ describe('the initial view of a map question', () => {
   it('opens every ladder step on the highlighted country', () => {
     const questions: MapQuestion[] = [
       { format: 'mapFlagToNames', target: sv, options: [ar, br, cl, sv] },
-      { format: 'mapToFlags', target: sv, options: [ar, br, cl, sv] },
       { format: 'mapToNames', target: sv, options: [ar, br, cl, sv] },
       { format: 'mapSpellName', target: sv, letters: [...sv.name] },
       { format: 'mapTypeName', target: sv },
@@ -132,15 +131,37 @@ describe('the ladder steps', () => {
     expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'br' });
   });
 
-  it('offers four flags at step 2', () => {
-    const submit = vi.fn(() => []);
-    const rendered = renderMapQuestion({ format: 'mapToFlags', target: br, options: [ar, br, cl, pe] }, AMERICAS, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Qual é a bandeira deste país?');
-    expect(rendered.querySelector('.map .highlight')).not.toBeNull();
-    const flags = [...rendered.querySelectorAll('.flag-option')];
-    expect(flags).toHaveLength(4);
-    click(flags[2]);
-    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'cl' });
+  describe('step 2, finding the country', () => {
+    const SOUTH: MapScope = { continent: 'americas', level: 'southern-cone' };
+    const shape = (rendered: Element, iso2: string) => rendered.querySelector(`path[data-iso2="${iso2}"]`)!;
+    const confirm = (rendered: Element) => [...rendered.querySelectorAll<HTMLButtonElement>('button.primary')].find((b) => b.textContent === 'Responder')!;
+
+    it('names the country, shows its flag as a hint and frames the whole level with nothing marked', () => {
+      const rendered = renderMapQuestion({ format: 'mapFindCountry', target: br }, SOUTH, () => []);
+      expect(rendered.querySelector('h2')!.textContent).toBe('Onde fica Brasil?');
+      expect(rendered.querySelector<HTMLImageElement>('img.flag')!.src).toContain('/flags/br.svg');
+      expect(rendered.querySelector('.map .highlight')).toBeNull();
+      for (const iso2 of ['br', 'ar', 'cl', 'py']) expect(shows(rendered, iso2), iso2).toBe(true);
+      expect(confirm(rendered).disabled).toBe(true);
+    });
+
+    it('marks the tapped country, moves the mark on another tap and answers with it on Responder', () => {
+      const submit = vi.fn(() => []);
+      const rendered = renderMapQuestion({ format: 'mapFindCountry', target: br }, SOUTH, submit);
+      click(shape(rendered, 'ar'));
+      expect(shape(rendered, 'ar').classList.contains('highlight')).toBe(true);
+      click(shape(rendered, 'cl'));
+      expect(shape(rendered, 'ar').classList.contains('highlight')).toBe(false);
+      expect(shape(rendered, 'cl').classList.contains('highlight')).toBe(true);
+      expect(submit).not.toHaveBeenCalled();
+      click(confirm(rendered));
+      expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'cl' });
+    });
+
+    it('answers with Enter once a country is marked', () => {
+      const rendered = renderMapQuestion({ format: 'mapFindCountry', target: br }, SOUTH, () => []);
+      expect(confirm(rendered).dataset.keys).toBe('Enter');
+    });
   });
 
   it('opens step 4 on the highlighted country', () => {

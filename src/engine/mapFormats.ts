@@ -32,12 +32,12 @@ export const mapFlagToNames: Format = {
   build: (target, ctx, rng) => ({ format: 'mapFlagToNames', target, options: shuffle([target, ...sample(nearby(target, ctx), 3, rng)], rng) }),
 };
 
-export const mapToFlags: Format = {
-  id: 'mapToFlags',
+export const mapFindCountry: Format = {
+  id: 'mapFindCountry',
   recall: false,
-  choice: true,
+  choice: false,
   canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'mapToFlags', target, options: shuffle([target, ...sample(nearby(target, ctx), 3, rng)], rng) }),
+  build: (target) => ({ format: 'mapFindCountry', target }),
 };
 
 const SEPARATOR = /[\s\-'’,]/u;
@@ -60,7 +60,7 @@ export const mapSpellName: Format = {
   build: (target, ctx, rng) => ({ format: 'mapSpellName', target, letters: shuffle([...spelledLetters(target.name), ...decoyLetters(target, ctx, rng)], rng) }),
 };
 
-export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapToFlags, mapToNames, mapSpellName, mapTypeName];
+export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapFindCountry, mapToNames, mapSpellName, mapTypeName];
 
 export function mapContext(continent: ContinentKey, level: MapLevel): FormatContext {
   const pool = mapPool(continent, level);
