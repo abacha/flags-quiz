@@ -43,7 +43,7 @@ Each step removes part of the help, and the last one asks for the name with noth
 - **Medal.** The round is won when every country of the level has answered step 5 right. The medal is still set by the lives left (gold 3, silver 2, bronze 1).
 - **Removed formats.** "Onde fica X?" (`nameToMap`), "Este é X?" (`mapTrueFalse`) and "Ligue cada nome ao país" (`mapPairs`) leave Maps Learn.
 - **Order of countries.** No extra rule: the region levels already keep a round among neighbours.
-- **Whole-map levels.** In "Continente inteiro" and "Mundo inteiro" every country starts at step 3, since those levels consolidate what the regions taught. A wrong answer can still drop a country to steps 2 and 1.
+- **Whole-map levels.** "Continente inteiro" and "Mundo inteiro" offer only the Quiz, so every Learn round starts each country at step 1.
 
 ## Calls made without Adriano (check while reading)
 

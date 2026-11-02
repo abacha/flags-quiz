@@ -30,7 +30,7 @@ A "Bandeiras | Mapas | Capitais" selector at the top of the hub switches between
 Mapas asks where each country lies on a map of its continent (Mundo uses the whole world), with one level per continent and no tiers.
 The header counts the map quizzes completed out of 6, a tab shows ✓ once its map quiz is completed, and the single card shows the country count, the medal tag, the Quiz tag and the Aprender and Quiz buttons.
 Aprender walks each country of the level up a five-step ladder on the highlighted country: pick its name with its flag shown, pick its flag, pick its name, put the letters of its name in order, type its name.
-A right answer climbs one step, a wrong one drops one step and costs one of 3 lives, a region starts every country at the first step and the whole continent at the third, and the medal comes once every country has passed the last step.
+A right answer climbs one step, a wrong one drops one step and costs one of 3 lives, every country starts at the first step, and the medal comes once every country has passed the last step.
 The whole continent and Mundo inteiro offer only the Quiz, for the same reason as Geral.
 Quiz highlights one country at a time on the map: type its name, tap another country to switch to it or "Pular" to move on; answered countries turn green with their name.
 The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.

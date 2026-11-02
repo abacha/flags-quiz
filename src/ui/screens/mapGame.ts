@@ -1,7 +1,7 @@
 import { mapLevelLabel, type MapLevel } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
 import { LadderRound } from '../../engine/ladderRound';
-import { ladderStart, mapContext } from '../../engine/mapFormats';
+import { mapContext } from '../../engine/mapFormats';
 import { awardMapMedal } from '../../mapRecords';
 import { onBack } from '../backButton';
 import { celebrateAnswer } from '../celebrate';
@@ -16,7 +16,7 @@ import { renderQuestion } from '../questions/render';
 import { hearts, streakCounter, topBar } from '../topbar';
 
 export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
-  const round = new LadderRound(mapContext(continent, level), ladderStart(level), Math.random);
+  const round = new LadderRound(mapContext(continent, level), 0, Math.random);
   const stage = el('section', { className: 'stage' });
 
   let currentQuestion: HTMLElement | null = null;

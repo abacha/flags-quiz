@@ -1,5 +1,5 @@
 import type { Country } from '../data/countries';
-import { MAP_ALL, mapPool, nearestCountries, type MapLevel } from '../data/maps';
+import { mapPool, nearestCountries, type MapLevel } from '../data/maps';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey } from './pool';
 import { sample, shuffle, type Rng } from './rng';
@@ -61,10 +61,6 @@ export const mapSpellName: Format = {
 };
 
 export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapToFlags, mapToNames, mapSpellName, mapTypeName];
-
-export function ladderStart(level: MapLevel): number {
-  return level === MAP_ALL ? 2 : 0;
-}
 
 export function mapContext(continent: ContinentKey, level: MapLevel): FormatContext {
   const pool = mapPool(continent, level);

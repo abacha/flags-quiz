@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Answer } from '../../engine/answer';
 import { seededRng } from '../../engine/rng';
-import { MAP_ALL, mapPool } from '../../data/maps';
+import { mapPool } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import { listenForBack, settleBack } from '../backButton';
 import type { Navigate, Screen } from '../navigation';
@@ -111,12 +111,8 @@ describe('renderMapGame', () => {
     for (const { question } of asked) expect(region).toContain(question.target);
   });
 
-  it('starts a region at the flag step and the whole continent at the name step', () => {
+  it('starts every country at the flag step', () => {
     expect(asked[0].question.format).toBe('mapFlagToNames');
-    asked.length = 0;
-    root.replaceChildren();
-    renderMapGame(root, navigate, 'americas', MAP_ALL);
-    expect(asked[0].question.format).toBe('mapToNames');
   });
 
   it('counts a country only once it is done and costs a life per wrong answer', () => {

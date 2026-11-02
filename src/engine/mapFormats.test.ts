@@ -4,7 +4,7 @@ import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { grade, type Answer } from './answer';
 import { LadderRound } from './ladderRound';
-import { MAP_LADDER, ladderStart, mapContext, mapFlagToNames, mapSpellName, mapToFlags, mapToNames, spelledLetters } from './mapFormats';
+import { MAP_LADDER, mapContext, mapFlagToNames, mapSpellName, mapToFlags, mapToNames, spelledLetters } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 
@@ -67,7 +67,7 @@ describe('a Learn round on every map level', () => {
     (continent, level) => {
       const context = mapContext(continent, level);
       for (const seed of [1, 2, 3]) {
-        const round = new LadderRound(context, ladderStart(level), seededRng(seed));
+        const round = new LadderRound(context, 0, seededRng(seed));
         while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
         expect(round.status).toBe('won');
       }
@@ -103,11 +103,6 @@ describe('map distractors', () => {
 describe('map ladder', () => {
   it('orders the ladder from flag hint to bare typing', () => {
     expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapToFlags', 'mapToNames', 'mapSpellName', 'mapTypeName']);
-  });
-
-  it('starts regions at step 1 and whole maps at step 3', () => {
-    expect(ladderStart('west-coast')).toBe(0);
-    expect(ladderStart(MAP_ALL)).toBe(2);
   });
 
   it('draws step 1 and step 2 options from the 8 nearest countries', () => {
