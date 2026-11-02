@@ -125,11 +125,12 @@ describe('map ladder', () => {
     expect(mapFindCountry.build(gt, mapContext('americas', MAP_ALL), seededRng(1))).toEqual({ format: 'mapFindCountry', target: gt });
   });
 
-  it('spells the name in lowercase letters without separators', () => {
-    expect(spelledLetters('Guiné-Bissau')).toEqual([...'guinébissau']);
+  it('spells the name in lowercase letters without separators or accents', () => {
+    expect(spelledLetters('Guiné-Bissau')).toEqual([...'guinebissau']);
     expect(spelledLetters('Costa do Marfim')).toEqual([...'costadomarfim']);
     expect(spelledLetters("Cote d'Ivoire")).toEqual([...'cotedivoire']);
-    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'santahelenaascensão']);
+    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'santahelenaascensao']);
+    expect(spelledLetters('Curaçao')).toEqual([...'curacao']);
   });
 
   it('mixes 4 letters from neighbour names into the shuffled name', () => {
@@ -146,13 +147,12 @@ describe('map ladder', () => {
     }
   });
 
-  it('grades step 4 on the letters alone, ignoring case and separators', () => {
+  it('grades step 4 on the letters alone, ignoring case, separators and accents', () => {
     const gw = c('gw');
     const q: Question = { format: 'mapSpellName', target: gw, letters: spelledLetters(gw.name) };
-    expect(grade(q, { kind: 'text', text: 'guinébissau' })).toEqual({ correct: true, missed: [], typos: [] });
+    expect(grade(q, { kind: 'text', text: 'guinebissau' })).toEqual({ correct: true, missed: [], typos: [] });
     expect(grade(q, { kind: 'text', text: 'Guiné-Bissau' }).correct).toBe(true);
-    expect(grade(q, { kind: 'text', text: 'guinebissau' })).toEqual({ correct: false, missed: [gw], typos: [] });
-    expect(grade(q, { kind: 'text', text: 'guinébissaux' }).correct).toBe(false);
+    expect(grade(q, { kind: 'text', text: 'guinebissaux' })).toEqual({ correct: false, missed: [gw], typos: [] });
   });
 
   it('grades steps 1 and 2 against the target', () => {

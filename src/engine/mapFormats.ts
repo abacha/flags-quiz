@@ -40,11 +40,13 @@ export const mapFindCountry: Format = {
   build: (target) => ({ format: 'mapFindCountry', target }),
 };
 
+export const withoutAccents = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '');
+
 const SEPARATOR = /[\s\-'’,]/u;
 const DECOY_LETTERS = 4;
 
 export function spelledLetters(name: string): string[] {
-  return [...name.toLocaleLowerCase('pt-BR')].filter((char) => !SEPARATOR.test(char));
+  return [...withoutAccents(name.toLocaleLowerCase('pt-BR'))].filter((char) => !SEPARATOR.test(char));
 }
 
 // Letters from the neighbours' names, so the tiles only spell the target for someone who knows which country it is.

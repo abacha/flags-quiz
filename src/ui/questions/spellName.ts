@@ -27,8 +27,6 @@ export function renderSpellName(prompt: string, figure: HTMLElement, letters: st
   const tiles = letters.map((letter) => {
     const tile = el('button', { className: 'spell-tile', type: 'button' }, [letter]);
     tile.dataset.keys = letter;
-    const plain = letter.normalize('NFD').replace(/\p{M}/gu, '');
-    if (plain !== letter) tile.dataset.looseKeys = plain;
     tile.onclick = () => {
       placed.push(tile);
       tile.disabled = true;

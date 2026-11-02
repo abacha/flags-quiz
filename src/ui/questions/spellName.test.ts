@@ -59,12 +59,10 @@ describe('renderSpellName', () => {
     expect(tiles().filter((t) => t.disabled)).toHaveLength(4);
   });
 
-  it('types an accented tile from its plain letter only when no plain tile is left', () => {
-    const { placed, type } = render([...'éeia']);
-    type('e', 'e');
-    expect(placed()).toBe('eé');
-    type('é');
-    expect(placed()).toBe('eé');
+  it('places the plain tile for a letter typed with an accent', () => {
+    const { placed, type } = render([...'eiac']);
+    type('é', 'Ç');
+    expect(placed()).toBe('ec');
   });
 
   it('takes the last letter back with Backspace and answers with Enter', () => {
