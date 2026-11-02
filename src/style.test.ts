@@ -113,8 +113,7 @@ describe('style.css', () => {
     expect(declared('.feedback', 'max-width')).toContain('1200px');
   });
 
-  it('lays the hub levels and the answer options out in columns on a desktop', () => {
-    expect(declaredInMedia('(min-width: 900px)', '.levels', 'grid-template-columns')).toContain('repeat(2, minmax(0, 1fr))');
+  it('lays the answer options out in columns on a desktop', () => {
     expect(declaredInMedia('(min-width: 900px)', '.name-list', 'grid-template-columns')).toContain('repeat(2, minmax(0, 1fr))');
     expect(declaredInMedia('(min-width: 900px)', '.flag-grid.count-6', 'grid-auto-flow')).toContain('column');
   });

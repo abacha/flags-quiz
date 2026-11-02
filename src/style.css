@@ -759,7 +759,6 @@ input::placeholder { text-overflow: ellipsis; }
 .map-flag > .figure .flag { max-height: 70px; }
 
 @media (min-width: 900px) {
-  .levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
   .name-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flag-grid, .flag-grid.count-6 { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 }
