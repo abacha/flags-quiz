@@ -36,6 +36,11 @@ const cardsUnder = (root: HTMLElement, heading: string) => {
 };
 
 describe('renderCapitalQuizResult', () => {
+  it('bounces the title on a finished quiz and keeps it still on one ended early', () => {
+    expect(render({ finished: true }).querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({}).querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
   it('prefixes the detail with Capitais and offers the capital quiz of the next level', () => {
     const screens: Screen[] = [];
     const root = render({ finished: true }, screens);

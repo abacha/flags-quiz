@@ -5,6 +5,7 @@ import { Quiz, type FlagState, type Nearest } from '../../engine/quiz';
 import { saveQuizOutcome, type NewRecords, type QuizOutcome, type RecordStore } from '../../quizRecords';
 import { el } from '../dom';
 import { onBack } from '../backButton';
+import { playCue } from '../cue';
 import { flagImg } from '../flag';
 import { answerInput } from '../questions/answerInput';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
@@ -178,7 +179,10 @@ export function runQuiz(root: HTMLElement, navigate: Navigate, spec: QuizSpec): 
       return;
     }
     const verdict = quiz.answer(input.value);
-    if (verdict !== 'typo') input.value = '';
+    if (verdict !== 'typo') {
+      input.value = '';
+      playCue(verdict);
+    }
     if (quiz.status !== 'playing') return finish();
     message.textContent = verdict === 'typo' ? 'Confira a grafia' : 'Errado, tente de novo';
     message.hidden = verdict === 'right';

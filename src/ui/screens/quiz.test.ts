@@ -4,11 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
 import { poolFor } from '../../engine/pool';
 import { listenForBack, settleBack } from '../backButton';
+import { playCue } from '../cue';
 import type { Screen } from '../navigation';
 import { renderQuiz } from './quiz';
 
 const oceania = poolFor(countries, 'oceania', 'easy');
 const byIso = new Map(countries.map((c) => [c.iso2, c]));
+
+vi.mock('../cue', () => ({ playCue: vi.fn() }));
 
 function countryIn(img: HTMLImageElement): Country {
   const iso2 = img.getAttribute('src')!.match(/flags\/(.+)\.svg$/)![1];
@@ -119,6 +122,16 @@ describe('renderQuiz', () => {
     expect(hud()).toContain('0 pts');
     type('nenhum país');
     expect(message().textContent).toBe('Errado, tente de novo');
+  });
+
+  it('chimes on a right answer, buzzes on a wrong one and stays quiet on a typo', () => {
+    vi.mocked(playCue).mockClear();
+    type(`${cellCountry(currentCell()).name}x`);
+    expect(playCue).not.toHaveBeenCalled();
+    type('nenhum país');
+    expect(playCue).toHaveBeenLastCalledWith('wrong');
+    type(cellCountry(currentCell()).name);
+    expect(playCue).toHaveBeenLastCalledWith('right');
   });
 
   it('hides the spelling message when another flag is tapped', () => {

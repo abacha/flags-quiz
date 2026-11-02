@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { countries } from '../data/countries';
 import { MAP_ALL } from '../data/maps';
 import type { Screen } from './navigation';
@@ -15,6 +15,19 @@ describe('statBlocks', () => {
       ['18', 'pontos'],
       ['03:12', 'tempo'],
     ]);
+  });
+
+  describe('counting up', () => {
+    afterEach(() => vi.useRealTimers());
+
+    it('counts each number up from zero', () => {
+      vi.useFakeTimers({ toFake: ['requestAnimationFrame'] });
+      const stats = statBlocks([['15/20', 'acertos']]);
+      vi.advanceTimersToNextFrame();
+      expect(stats.querySelector('b')!.textContent).toBe('0/20');
+      vi.advanceTimersByTime(1000);
+      expect(stats.querySelector('b')!.textContent).toBe('15/20');
+    });
   });
 });
 

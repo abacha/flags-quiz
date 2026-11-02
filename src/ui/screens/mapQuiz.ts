@@ -3,6 +3,7 @@ import { mapLevelLabel, mapPool, nearestCountries, type MapLevel, type MapScope 
 import type { ContinentKey } from '../../engine/pool';
 import type { Quiz } from '../../engine/quiz';
 import { saveMapQuizOutcome } from '../../mapRecords';
+import { motionAllowed } from '../../settings';
 import { CONTINENT_LABEL } from '../labels';
 import { renderMap } from '../map/map';
 import type { Navigate } from '../navigation';
@@ -37,7 +38,7 @@ function mapBoard(scope: MapScope, quiz: Quiz, pick: (country: Country) => void)
         view.paint(country.iso2, look, state === 'answered' ? country.name : undefined);
       }
       if (quiz.current === framed) return;
-      view.focus([quiz.current.iso2], { animate: framed !== undefined });
+      view.focus([quiz.current.iso2], { animate: framed !== undefined && motionAllowed(localStorage) });
       framed = quiz.current;
     },
     reveal() {},

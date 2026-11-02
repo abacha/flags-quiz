@@ -3,10 +3,10 @@ import type { ContinentKey } from '../../engine/pool';
 import { LadderRound } from '../../engine/ladderRound';
 import { ladderStart, mapContext } from '../../engine/mapFormats';
 import { mapLearnSize, practiceSample } from '../../engine/practice';
-import { STARTING_LIVES } from '../../engine/round';
 import { awardMapMedal, loadMapMedals } from '../../mapRecords';
 import { medalOf } from '../../progress';
 import { onBack } from '../backButton';
+import { celebrateAnswer } from '../celebrate';
 import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
 import { CONTINENT_LABEL } from '../labels';
@@ -15,7 +15,7 @@ import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
 import { mapSolution, type MapQuestion } from '../questions/mapQuestions';
 import { renderQuestion } from '../questions/render';
-import { topBar } from '../topbar';
+import { hearts, streakCounter, topBar } from '../topbar';
 
 export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, level: MapLevel): void {
   const context = mapContext(continent, level);
@@ -44,16 +44,10 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
   onBack(exit);
   root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
-  const updateHud = () =>
+  let streak = 0;
+  const updateHud = (lifeLost = false) =>
     bar.update(
-      [
-        el(
-          'span',
-          { className: 'lives' },
-          Array.from({ length: STARTING_LIVES }, (_, life) => el('span', { className: life < round.lives ? 'heart' : 'heart lost' }, ['♥'])),
-        ),
-        el('span', {}, [`${round.done}/${round.size}`]),
-      ],
+      [hearts(round.lives, lifeLost), ...streakCounter(streak), el('span', {}, [`${round.done}/${round.size}`])],
       round.done / round.size,
     );
 
@@ -80,10 +74,12 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
     const questionEl = renderQuestion(
       question,
       (answer) => {
+        const lives = round.lives;
         const result = round.answer(answer);
         if (result.typos.length > 0) return result.typos;
         questionEl.inert = true;
-        updateHud();
+        streak = result.correct ? streak + 1 : 0;
+        updateHud(round.lives < lives);
         const feedback = renderFeedback(
           question,
           result,
@@ -91,6 +87,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
           result.correct ? undefined : mapSolution(question as MapQuestion, { continent, level }),
         );
         stage.append(feedback);
+        celebrateAnswer(questionEl, feedback, result, streak);
         feedback.querySelector('button')?.focus();
         return [];
       },

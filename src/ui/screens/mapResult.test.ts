@@ -27,6 +27,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
 }
 
 describe('renderMapResult', () => {
+  it('bounces the title on a win and keeps it still on a loss', () => {
+    expect(render({ won: true, medal: 'bronze', done: size }).root.querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
   it('measures the whole continent by its sample of 10 countries', () => {
     const { root } = render({ level: MAP_ALL, done: 4 });
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['4/10países']);

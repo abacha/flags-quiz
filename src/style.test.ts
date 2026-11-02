@@ -92,4 +92,21 @@ describe('style.css', () => {
     expect(declared('.type-form input.typo', 'border-color')).toContain('var(--wrong)');
     expect(declared('.type-message', 'color')).toContain('var(--wrong)');
   });
+
+  it('stops every animation and transition with the animations turned off or when the device asks for reduced motion', () => {
+    expect(declaredInSource(":root[data-motion='off'] *", 'animation')).toContain('none !important');
+    expect(declaredInSource(":root[data-motion='off'] *", 'transition')).toContain('none !important');
+    expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{ animation: none !important; transition: none !important; \}/);
+  });
+
+  it('keeps confetti out of the way of every tap', () => {
+    expect(declared('.confetti', 'position')).toContain('fixed');
+    expect(declared('.confetti', 'pointer-events')).toContain('none');
+  });
+
+  it('marks the chosen option green on a right answer and red on a wrong one, lighting the right option', () => {
+    expect(declared('.answered-right .chosen', 'border-color')).toContain('var(--success)');
+    expect(declared('.answered-wrong .chosen', 'border-color')).toContain('var(--wrong)');
+    expect(declared('.revealed', 'border-color')).toContain('var(--success)');
+  });
 });

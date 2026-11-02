@@ -88,6 +88,14 @@ describe('renderMapQuiz', () => {
     expect(pool.every((c) => shows(c.iso2))).toBe(false);
   });
 
+  it('jumps to the next highlighted country with the animations turned off', () => {
+    localStorage.setItem('flags-quiz:settings', JSON.stringify({ sound: true, motion: false }));
+    const next = highlighted();
+    pressSkip();
+    expect(frames).toHaveLength(0);
+    expect(highlighted()).not.toBe(next);
+  });
+
   it('slides to a tapped country', () => {
     const far = pool.find((c) => !shows(c.iso2))!;
     click(shape(far.iso2));

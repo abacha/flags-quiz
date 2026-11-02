@@ -40,6 +40,12 @@ const sectionNames = (root: HTMLElement, heading: string) => {
 };
 
 describe('renderQuizResult', () => {
+  it('bounces the title on a finished quiz or a record and keeps it still on one ended early', () => {
+    expect(render({ finished: true }).querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({ newRecords: { score: true, time: false } }).querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({}).querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
   it('celebrates a finished quiz and shows points, time and errors as stat blocks', () => {
     const root = render({ finished: true, score: 18, timeMs: 192000, errors: 2 });
     expect(root.querySelector('h1')!.textContent).toBe('🎉 Quiz concluído!');

@@ -2,6 +2,7 @@ import type { Country } from '../../data/countries';
 import { MAP_ALL, mapLevelLabel, mapPool, type MapScope } from '../../data/maps';
 import { continentBreakdown } from '../../engine/breakdown';
 import { onBack } from '../backButton';
+import { celebrateResult, quizCheer } from '../celebrate';
 import { el } from '../dom';
 import { CONTINENT_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -11,9 +12,10 @@ import { formatTime } from '../time';
 export function renderMapQuizResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'mapQuizResult' }>): void {
   const { continent, level, score, timeMs, errors, finished, unanswered, missed, newRecords } = screen;
   onBack(() => navigate({ name: 'hub', continent }));
+  const title = el('h1', {}, [finished ? '🎉 Quiz concluído!' : 'Quiz encerrado']);
   root.append(
     el('main', { className: 'screen result' }, [
-      el('h1', {}, [finished ? '🎉 Quiz concluído!' : 'Quiz encerrado']),
+      title,
       el('p', { className: 'detail' }, [`Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`]),
       statBlocks([
         [String(score), 'pontos'],
@@ -30,6 +32,7 @@ export function renderMapQuizResult(root: HTMLElement, navigate: Navigate, scree
       ...reviewSection('Países que você errou', { continent, level }, missed),
     ]),
   );
+  celebrateResult(title, quizCheer(finished, newRecords));
 }
 
 function reviewSection(heading: string, scope: MapScope, countries: Country[]): HTMLElement[] {

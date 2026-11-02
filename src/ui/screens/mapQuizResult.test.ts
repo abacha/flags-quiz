@@ -40,6 +40,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapQuizResult' }>>) 
 }
 
 describe('renderMapQuizResult', () => {
+  it('bounces the title on a finished quiz and keeps it still on one ended early', () => {
+    expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({ finished: false }).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
   it('celebrates a finished quiz with its stats and the continent', () => {
     const { root } = render({});
     expect(root.querySelector('h1')!.textContent).toBe('🎉 Quiz concluído!');

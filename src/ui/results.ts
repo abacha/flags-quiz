@@ -4,6 +4,7 @@ import type { Continent } from '../data/countries';
 import type { ContinentScore } from '../engine/breakdown';
 import type { ContinentKey, Difficulty } from '../engine/pool';
 import type { Medal } from '../engine/round';
+import { countUp } from './celebrate';
 import { el } from './dom';
 import { CONTINENT_LABEL, DIFFICULTIES, DIFFICULTY_LABEL } from './labels';
 import { renderMap } from './map/map';
@@ -24,7 +25,11 @@ export function statBlocks(stats: [value: string, label: string][]): HTMLElement
   return el(
     'div',
     { className: 'stats' },
-    stats.map(([value, label]) => el('div', { className: 'card stat' }, [el('b', {}, [value]), el('span', {}, [label])])),
+    stats.map(([value, label]) => {
+      const number = el('b');
+      countUp(number, value);
+      return el('div', { className: 'card stat' }, [number, el('span', {}, [label])]);
+    }),
   );
 }
 

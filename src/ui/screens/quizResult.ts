@@ -2,6 +2,7 @@ import { countries, type Country } from '../../data/countries';
 import { continentBreakdown } from '../../engine/breakdown';
 import { poolFor } from '../../engine/pool';
 import { onBack } from '../backButton';
+import { celebrateResult, quizCheer } from '../celebrate';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -12,9 +13,10 @@ import { formatTime } from '../time';
 export function renderQuizResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'quizResult' }>): void {
   const { continent, difficulty, score, timeMs, errors, finished, unanswered, missed, newRecords } = screen;
   onBack(() => navigate({ name: 'hub', continent: screen.continent }));
+  const title = el('h1', {}, [finished ? '🎉 Quiz concluído!' : 'Quiz encerrado']);
   root.append(
     el('main', { className: 'screen result' }, [
-      el('h1', {}, [finished ? '🎉 Quiz concluído!' : 'Quiz encerrado']),
+      title,
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       statBlocks([
         [String(score), 'pontos'],
@@ -31,6 +33,7 @@ export function renderQuizResult(root: HTMLElement, navigate: Navigate, screen: 
       ...solutionSection('Bandeiras que você errou', missed),
     ]),
   );
+  celebrateResult(title, quizCheer(finished, newRecords));
 }
 
 function solutionSection(heading: string, flags: Country[]): HTMLElement[] {

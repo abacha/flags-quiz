@@ -1,9 +1,10 @@
 import { countries, similarGroups, similarNames } from '../../data/countries';
 import { LEVEL_RULES, TIER_LEVEL, goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { learnPoolSize, practiceSample } from '../../engine/practice';
-import { Round, STARTING_LIVES } from '../../engine/round';
+import { Round } from '../../engine/round';
 import { awardMedal, loadMedals, medalOf } from '../../progress';
 import { onBack } from '../backButton';
+import { celebrateAnswer } from '../celebrate';
 import { outOfLivesSheet } from '../outOfLives';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
@@ -11,7 +12,7 @@ import type { Navigate, Screen } from '../navigation';
 import { renderFeedback } from '../questions/feedback';
 import { pressShortcut } from '../questions/keys';
 import { renderQuestion } from '../questions/render';
-import { topBar } from '../topbar';
+import { hearts, streakCounter, topBar } from '../topbar';
 
 export function renderGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const rules = LEVEL_RULES[difficulty];
@@ -41,16 +42,10 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   onBack(exit);
   root.append(el('main', { className: 'screen' }, [bar.element, stage]));
 
-  const updateHud = () =>
+  let streak = 0;
+  const updateHud = (lifeLost = false) =>
     bar.update(
-      [
-        el(
-          'span',
-          { className: 'lives' },
-          Array.from({ length: STARTING_LIVES }, (_, life) => el('span', { className: life < round.lives ? 'heart' : 'heart lost' }, ['♥'])),
-        ),
-        el('span', {}, [`${round.correct}/${round.correctToWin}`]),
-      ],
+      [hearts(round.lives, lifeLost), ...streakCounter(streak), el('span', {}, [`${round.correct}/${round.correctToWin}`])],
       round.correct / round.correctToWin,
     );
 
@@ -75,12 +70,15 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
   const ask = () => {
     const question = round.nextQuestion();
     const questionEl = renderQuestion(question, (answer) => {
+      const lives = round.lives;
       const result = round.answer(answer);
       if (result.typos.length > 0) return result.typos;
       questionEl.inert = true;
-      updateHud();
+      streak = result.correct ? streak + 1 : 0;
+      updateHud(round.lives < lives);
       const feedback = renderFeedback(question, result, () => next(feedback));
       stage.append(feedback);
+      celebrateAnswer(questionEl, feedback, result, streak);
       feedback.querySelector('button')?.focus();
       return [];
     });

@@ -26,6 +26,11 @@ function render(overrides: Partial<Extract<Screen, { name: 'result' }>>) {
 }
 
 describe('renderResult', () => {
+  it('bounces the title on a win and keeps it still on a loss', () => {
+    expect(render({ won: true, medal: 'gold', correct: goal }).root.querySelector('h1')!.classList.contains('cheer')).toBe(true);
+    expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
   it('measures the Geral goal by its sample of 20 flags', () => {
     const { root } = render({ continent: 'africa', difficulty: 'general', correct: 4 });
     expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`4/${goalFor('general', 20)}acertos`]);

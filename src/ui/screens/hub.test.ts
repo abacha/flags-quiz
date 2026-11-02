@@ -47,6 +47,29 @@ describe('renderHub', () => {
     expect(root.querySelector('.hub-header .pill')!.textContent).toBe('3/24 níveis');
   });
 
+  it('turns the sound off and on from the header and remembers it', () => {
+    render('africa');
+    const sound = root.querySelector<HTMLButtonElement>('.setting.sound')!;
+    expect([sound.textContent, sound.getAttribute('aria-pressed'), sound.ariaLabel]).toEqual(['🔊', 'true', 'Som']);
+    sound.click();
+    expect([sound.textContent, sound.getAttribute('aria-pressed')]).toEqual(['🔇', 'false']);
+    expect(JSON.parse(localStorage.getItem('flags-quiz:settings')!)).toEqual({ sound: false, motion: true });
+    sound.click();
+    expect(JSON.parse(localStorage.getItem('flags-quiz:settings')!)).toEqual({ sound: true, motion: true });
+  });
+
+  it('turns the animations off from the header, marks the page and remembers it', () => {
+    render('africa');
+    const motion = root.querySelector<HTMLButtonElement>('.setting.motion')!;
+    expect([motion.textContent, motion.getAttribute('aria-pressed'), motion.ariaLabel]).toEqual(['✨', 'true', 'Animações']);
+    motion.click();
+    expect(motion.getAttribute('aria-pressed')).toBe('false');
+    expect(document.documentElement.dataset.motion).toBe('off');
+    expect(JSON.parse(localStorage.getItem('flags-quiz:settings')!)).toEqual({ sound: true, motion: false });
+    motion.click();
+    expect(document.documentElement.dataset.motion).toBe('on');
+  });
+
   it('checks a tab with all four levels completed in place of 4/4', () => {
     localStorage.setItem(
       'flags-quiz:quiz-records-v2',

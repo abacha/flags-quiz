@@ -10,6 +10,11 @@ function markChosen(event: MouseEvent): void {
   (event.currentTarget as HTMLElement).classList.add('chosen');
 }
 
+function option(button: HTMLButtonElement, country: Country, index: number, total: number): HTMLButtonElement {
+  button.dataset.iso2 = country.iso2;
+  return bindKeys(button, index, total);
+}
+
 export function renderFlagChoices(prompt: string, options: Country[], submit: Submit, figure?: HTMLElement): HTMLElement {
   return el('div', { className: 'question' }, [
     el('h2', {}, [prompt]),
@@ -18,7 +23,7 @@ export function renderFlagChoices(prompt: string, options: Country[], submit: Su
       'div',
       { className: `flag-grid count-${options.length}` },
       options.map((country, index) =>
-        bindKeys(
+        option(
           el(
             'button',
             {
@@ -30,6 +35,7 @@ export function renderFlagChoices(prompt: string, options: Country[], submit: Su
             },
             [flagImg(country)],
           ),
+          country,
           index,
           options.length,
         ),
@@ -52,7 +58,7 @@ export function renderNameChoices(
       'div',
       { className: 'name-list' },
       options.map((country, index) =>
-        bindKeys(
+        option(
           el(
             'button',
             {
@@ -64,6 +70,7 @@ export function renderNameChoices(
             },
             [label(country)],
           ),
+          country,
           index,
           options.length,
         ),

@@ -180,6 +180,33 @@ describe('renderMapGame', () => {
     expect(localStorage.getItem('flags-quiz:map-medals-v2')).toBeNull();
   });
 
+  it('praises a right answer, counts the answers in a row in the top bar and resets the streak on a miss', () => {
+    const play = (pick: (question: Question) => Answer) => {
+      const { question, submit } = asked[asked.length - 1];
+      submit(pick(question));
+      const verdict = root.querySelector('.feedback .verdict')!.textContent;
+      root.querySelector<HTMLButtonElement>('.feedback button')!.click();
+      return verdict;
+    };
+    expect(play(correctAnswer)).toBe('Certo!');
+    expect(root.querySelector('.streak')).toBeNull();
+    expect(play(correctAnswer)).toBe('Isso aí!');
+    expect(root.querySelector('.streak')!.textContent).toBe('🔥 2');
+    play(wrongAnswer);
+    expect(root.querySelector('.streak')).toBeNull();
+  });
+
+  it('breaks only the heart just lost', () => {
+    const { question, submit } = asked[asked.length - 1];
+    submit(wrongAnswer(question));
+    expect(root.querySelectorAll('.heart.breaking')).toHaveLength(1);
+    root.querySelector<HTMLButtonElement>('.feedback button')!.click();
+    const next = asked[asked.length - 1];
+    next.submit(correctAnswer(next.question));
+    expect(root.querySelectorAll('.heart.lost')).toHaveLength(1);
+    expect(root.querySelectorAll('.heart.breaking')).toHaveLength(0);
+  });
+
   it('leaves to the hub on the same continent on ✕', () => {
     root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
     expect(screens).toEqual([{ name: 'hub', continent: 'americas' }]);

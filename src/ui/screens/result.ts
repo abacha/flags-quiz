@@ -2,6 +2,7 @@ import { countries } from '../../data/countries';
 import { goalFor, poolFor } from '../../engine/pool';
 import { learnPoolSize } from '../../engine/practice';
 import { onBack } from '../backButton';
+import { celebrateResult, learnCheer } from '../celebrate';
 import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
@@ -15,13 +16,15 @@ export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extr
     ? [el('h2', {}, ['Bandeiras para revisar']), el('div', { className: 'solution-grid' }, missed.map((c) => solutionCard(c)))]
     : [];
   onBack(() => navigate({ name: 'hub', continent: screen.continent }));
+  const title = el('h1', {}, [learnResultTitle(won, medal, correct, goal)]);
   root.append(
     el('main', { className: 'screen result' }, [
-      el('h1', {}, [learnResultTitle(won, medal, correct, goal)]),
+      title,
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
       statBlocks([[`${correct}/${goal}`, 'acertos']]),
       resultActions(navigate, continent, flagLadder('game', continent, difficulty)),
       ...review,
     ]),
   );
+  celebrateResult(title, learnCheer(won, medal));
 }

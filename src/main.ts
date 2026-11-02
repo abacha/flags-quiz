@@ -1,5 +1,6 @@
 import './style.css';
 import { loadContinent } from './continentChoice';
+import { applyMotion, loadSettings } from './settings';
 import { listenForBack, settleBack } from './ui/backButton';
 import { ignoreDoubleTap } from './ui/doubleTap';
 import { clickOnLongPress } from './ui/longPress';
@@ -25,6 +26,7 @@ const root = document.getElementById('app');
 if (!root) throw new Error('#app not found');
 const app = root;
 
+applyMotion(document.documentElement, loadSettings(localStorage));
 ignoreDoubleTap(document);
 clickOnLongPress(document);
 

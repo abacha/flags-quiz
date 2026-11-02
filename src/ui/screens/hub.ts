@@ -8,6 +8,7 @@ import type { Medal } from '../../engine/round';
 import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
 import { loadMedals, medalOf, type Medals } from '../../progress';
+import { applyMotion, loadSettings, saveSettings, type Settings } from '../../settings';
 import { isCompleted, loadQuizRecords, quizRecord, type QuizRecord, type QuizRecords } from '../../quizRecords';
 import { el } from '../dom';
 import { flagImg } from '../flag';
@@ -112,7 +113,7 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
 
   root.append(
     el('main', { className: 'screen hub' }, [
-      el('header', { className: 'hub-header' }, [el('h1', {}, ['🌍 Bandeiras']), pill]),
+      el('header', { className: 'hub-header' }, [el('h1', {}, ['🌍 Bandeiras']), pill, ...settingToggles()]),
       el('div', { className: 'area-selector', role: 'group' }, [...areas.values()]),
       el('nav', { className: 'tabs' }, [...tabs.values()]),
       levels,
@@ -120,6 +121,26 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   );
   saveContinent(localStorage, continent);
   render();
+}
+
+function settingToggles(): HTMLButtonElement[] {
+  let settings = loadSettings(localStorage);
+  const toggle = (key: keyof Settings, label: string, on: string, off: string) => {
+    const button = el('button', { className: `setting ${key}`, type: 'button', ariaLabel: label, title: label });
+    const paint = () => {
+      button.textContent = settings[key] ? on : off;
+      button.setAttribute('aria-pressed', String(settings[key]));
+    };
+    button.onclick = () => {
+      settings = { ...settings, [key]: !settings[key] };
+      saveSettings(localStorage, settings);
+      applyMotion(document.documentElement, settings);
+      paint();
+    };
+    paint();
+    return button;
+  };
+  return [toggle('sound', 'Som', '🔊', '🔇'), toggle('motion', 'Animações', '✨', '✨')];
 }
 
 interface Saved {

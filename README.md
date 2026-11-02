@@ -16,6 +16,14 @@ Quiz shows every flag of the level at once as a grid on the same levels: type th
 Every game has a thin top bar: ✕ goes back to the hub (in Quiz it ends the quiz and shows its result), beside the level, its counters and a progress bar.
 Results show the numbers as blocks, the new records, and the next level, another try or the way back to the hub, above the flags to review.
 
+Every answer gets a reaction that never holds the game up: the Continuar button shows at once while the effects play.
+In Aprender a right answer turns the chosen option green, varies the praise, chimes and throws confetti from the verdict, and the top bar counts the answers in a row from 2, with a bigger celebration on every fifth.
+A wrong answer shakes the chosen option red, lights the right one green, buzzes and breaks the heart just lost.
+Quiz chimes on a right name and buzzes on a wrong one.
+A won round or a finished Quiz bounces the result title, counts its numbers up and plays a fanfare, with confetti rain for a gold medal or a new record.
+The sounds are synthesized in the browser and phones also vibrate with them.
+Two buttons in the hub header turn the sound (with the vibration) and the animations off, and the device's reduced-motion setting also turns the animations off.
+
 The link under the level cards lists every flag of the continent with its name and badge, in alphabetical order, for review; tap one to see it large.
 
 A "Bandeiras | Mapas | Capitais" selector at the top of the hub switches between the flag levels, the Maps area and the Capitals area, and the hub remembers the last area chosen.
