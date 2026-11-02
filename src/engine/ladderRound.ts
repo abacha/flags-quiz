@@ -55,12 +55,14 @@ export class LadderRound {
     if (this.status !== 'playing') throw new Error(`Round is ${this.status}`);
     if (this.current) throw new Error('Current question not answered yet');
     const open = this.ctx.pool.filter((c) => !this.finished.has(c.iso2));
-    const gap = Math.min(REVIEW_GAP, open.length - 1);
-    const rested = open.filter((c) => {
+    const lowest = Math.min(...open.map((c) => this.stepOf(c)));
+    const behind = open.filter((c) => this.stepOf(c) === lowest);
+    const gap = Math.min(REVIEW_GAP, behind.length - 1);
+    const rested = behind.filter((c) => {
       const askedAt = this.askedAt.get(c.iso2);
       return askedAt === undefined || this.asked - askedAt > gap;
     });
-    const target = pickOne(rested.length > 0 ? rested : open, this.rng);
+    const target = pickOne(rested.length > 0 ? rested : behind, this.rng);
     this.current = this.ladder[this.stepOf(target)].build(target, this.ctx, this.rng);
     this.askedAt.set(target.iso2, this.asked++);
     return this.current;

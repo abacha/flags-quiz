@@ -39,6 +39,23 @@ describe('LadderRound', () => {
     }
   });
 
+  it('moves no country to a step before every open country has passed the one below', () => {
+    for (let seed = 1; seed <= 10; seed++) {
+      const round = new LadderRound(ctx, 0, seededRng(seed));
+      const pick = seededRng(seed + 100);
+      const finished = new Set<string>();
+      while (round.status !== 'won') {
+        if (round.status === 'lost') round.continueWithoutMedal();
+        const q = round.nextQuestion();
+        const lowest = Math.min(...ctx.pool.filter((c) => !finished.has(c.iso2)).map((c) => round.stepOf(c)));
+        expect(round.stepOf(q.target)).toBe(lowest);
+        const right = pick() < 0.8;
+        round.answer(right ? rightAnswer(q) : wrongAnswer(q));
+        if (right && q.format === 'mapTypeName') finished.add(q.target.iso2);
+      }
+    }
+  });
+
   it('climbs one step on a right answer and drops one on a wrong one', () => {
     const round = new LadderRound(ctx, 0, seededRng(2));
     const target = round.nextQuestion().target;
