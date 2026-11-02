@@ -1,5 +1,5 @@
 begin;
-select plan(23);
+select plan(30);
 
 -- nicknames
 select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000001', ' Vovó ')$$, 'claims a nickname');
@@ -12,6 +12,9 @@ select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000001', 
 select lives_ok($$select claim_nickname('00000000-0000-0000-0000-000000000003', 'Tio'); select claim_nickname('00000000-0000-0000-0000-000000000003', 'Titio')$$, 'lets a phone change its own nickname');
 select is((select nickname from players where id = '00000000-0000-0000-0000-000000000003'), 'Titio', 'keeps one nickname per phone');
 
+select throws_ok($$select claim_nickname(gen_random_uuid(), U&'Vovo\0301')$$, '23505', null, 'refuses a nickname that only differs in its Unicode form');
+select is((select nickname from players where id = '00000000-0000-0000-0000-000000000001'), U&'Vov\00F3', 'stores the nickname in its composed form');
+
 -- best run per level
 select submit_score('00000000-0000-0000-0000-000000000001', 'flags', 'africa', 'easy', 10, 90000);
 select submit_score('00000000-0000-0000-0000-000000000001', 'flags', 'africa', 'easy', 8, 50000);
@@ -23,6 +26,9 @@ select is((select time_ms from scores where player_id = '00000000-0000-0000-0000
 select is((select count(*) from scores), 1::bigint, 'holds one row per player and level');
 select throws_ok($$select submit_score(gen_random_uuid(), 'flags', 'africa', 'easy', 1, 1)$$, '23503', null, 'refuses a run from an unknown player');
 select throws_ok($$select submit_score('00000000-0000-0000-0000-000000000001', 'darts', 'africa', 'easy', 1, 1)$$, '23514', null, 'refuses an unknown area');
+
+select throws_ok($$select submit_score('00000000-0000-0000-0000-000000000001', 'flags', 'atlantis', 'easy', 1, 1)$$, '23514', null, 'refuses an unknown continent');
+select throws_ok($$select submit_score('00000000-0000-0000-0000-000000000001', 'flags', 'africa', repeat('a', 33), 1, 1)$$, '23514', null, 'refuses a level that is not a short slug');
 
 -- order, ties and negative scores
 do $$
@@ -63,6 +69,19 @@ select is(
   pg_get_function_result('leaderboard(text, text, text, uuid)'::regprocedure),
   'TABLE(nickname text, score integer, time_ms integer, rank bigint, mine boolean)',
   'never returns a secret'
+);
+
+select has_index('public', 'scores', 'scores_level_rank_idx', 'indexes the ranking of a level');
+select is(
+  (select count(*) from pg_proc where proname in ('claim_nickname', 'submit_score', 'leaderboard') and proconfig = array['search_path=""']),
+  3::bigint,
+  'runs every public function with an empty search path'
+);
+select ok(
+  not has_function_privilege('authenticated', 'claim_nickname(uuid, text)', 'execute')
+    and not has_function_privilege('authenticated', 'submit_score(uuid, text, text, text, int, int)', 'execute')
+    and not has_function_privilege('authenticated', 'leaderboard(text, text, text, uuid)', 'execute'),
+  'leaves the functions to the anonymous key alone'
 );
 
 -- the anonymous key only reaches the functions

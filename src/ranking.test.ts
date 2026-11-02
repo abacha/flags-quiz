@@ -73,6 +73,16 @@ describe('ranking', () => {
       expect(loadPlayer(localStorage)).toEqual({ secret: SECRET, nickname: 'Vovó' });
     });
 
+    it('counts a nickname by its characters, so a single emoji is too short', async () => {
+      await expect(claimNickname(localStorage, '😀')).rejects.toBeInstanceOf(NicknameLengthError);
+      await expect(claimNickname(localStorage, '😀😀')).resolves.toMatchObject({ nickname: '😀😀' });
+    });
+
+    it('reads a length the server refuses as a length error', async () => {
+      fetchMock.mockResolvedValue(reply(400, { code: '23514' }));
+      await expect(claimNickname(localStorage, 'Vovó')).rejects.toBeInstanceOf(NicknameLengthError);
+    });
+
     it('rejects on any other server failure', async () => {
       fetchMock.mockResolvedValue(reply(500));
       await expect(claimNickname(localStorage, 'Vovó')).rejects.toThrow();
@@ -138,6 +148,18 @@ describe('ranking', () => {
       await flushQueue(localStorage);
       expect(fetchMock).toHaveBeenCalledTimes(2);
       expect(queue()).toEqual([]);
+    });
+
+    it('keeps a better run of the same level queued while the previous one was being sent', async () => {
+      savePlayer();
+      queueRun(localStorage, run(10, 90000));
+      let accept: (response: Response) => void = () => {};
+      fetchMock.mockReturnValueOnce(new Promise((resolve) => (accept = resolve)));
+      const flushing = flushQueue(localStorage);
+      queueRun(localStorage, run(12, 70000));
+      accept(reply(204));
+      await flushing;
+      expect(queue()).toEqual([run(12, 70000)]);
     });
 
     it('rounds the time to whole milliseconds', async () => {

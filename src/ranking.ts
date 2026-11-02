@@ -68,12 +68,14 @@ function phoneSecret(store: RankingStore): string {
 
 export async function claimNickname(store: RankingStore, nickname: string): Promise<Player> {
   const trimmed = nickname.trim();
-  if (trimmed.length < NICKNAME_LENGTH.min || trimmed.length > NICKNAME_LENGTH.max) throw new NicknameLengthError();
+  const length = [...trimmed].length;
+  if (length < NICKNAME_LENGTH.min || length > NICKNAME_LENGTH.max) throw new NicknameLengthError();
   const player = { secret: phoneSecret(store), nickname: trimmed };
   try {
     await rpc('claim_nickname', { p_secret: player.secret, p_nickname: trimmed });
   } catch (error) {
     if (error instanceof RankingRequestError && error.status === CONFLICT) throw new NicknameTakenError();
+    if (error instanceof RankingRequestError && error.status === BAD_REQUEST) throw new NicknameLengthError();
     throw error;
   }
   store.setItem(PLAYER_KEY, JSON.stringify(player));
@@ -81,6 +83,7 @@ export async function claimNickname(store: RankingStore, nickname: string): Prom
 }
 
 const sameLevel = (a: RankedLevel, b: RankedLevel) => a.area === b.area && a.continent === b.continent && a.level === b.level;
+const sameRun = (a: RankedRun, b: RankedRun) => sameLevel(a, b) && a.score === b.score && a.timeMs === b.timeMs;
 const beats = (a: RankedRun, b: RankedRun) => a.score > b.score || (a.score === b.score && a.timeMs < b.timeMs);
 
 function loadQueue(store: RankingStore): RankedRun[] {
@@ -117,7 +120,7 @@ export async function flushQueue(store: RankingStore): Promise<void> {
       if (error.status === CONFLICT) return store.removeItem(PLAYER_KEY);
       if (error.status !== BAD_REQUEST) throw error;
     }
-    saveQueue(store, loadQueue(store).filter((other) => !sameLevel(other, run)));
+    saveQueue(store, loadQueue(store).filter((other) => !sameRun(other, run)));
   }
 }
 
