@@ -24,7 +24,7 @@ export function renderCapitalTable(root: HTMLElement, navigate: Navigate, contin
   );
   onBack(() => (dialog.open ? dialog.close() : navigate({ name: 'hub', continent })));
   root.append(
-    el('main', { className: 'screen wide' }, [
+    el('main', { className: 'screen' }, [
       el('header', { className: 'table-head' }, [
         el('h1', {}, [CONTINENT_LABEL[continent]]),
         el('span', { className: 'detail' }, [`${countries.length} capitais`]),

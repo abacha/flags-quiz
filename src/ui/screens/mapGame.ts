@@ -33,7 +33,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
   const exit = () => leave({ name: 'hub', continent });
   const bar = topBar(`Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`, exit);
   onBack(exit);
-  root.append(el('main', { className: 'screen' }, [bar.element, stage]));
+  root.append(el('main', { className: 'screen map-game' }, [bar.element, stage]));
 
   let streak = 0;
   const updateHud = (lifeLost = false) =>

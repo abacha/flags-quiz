@@ -17,6 +17,14 @@ const declaredInSource = (selector: string, property: string) =>
     .map(([, , body]) => body!.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`))?.[1]?.trim())
     .filter(Boolean);
 
+const declaredInMedia = (media: string, selector: string, property: string) =>
+  [...document.styleSheets[0]!.cssRules]
+    .filter((r): r is CSSMediaRule => 'media' in r && (r as CSSMediaRule).media.mediaText === media)
+    .flatMap((r) => [...r.cssRules] as CSSStyleRule[])
+    .filter((rule) => rule.selectorText.split(',').map((s) => s.trim()).includes(selector))
+    .map((rule) => rule.style.getPropertyValue(property))
+    .filter(Boolean);
+
 beforeAll(() => {
   const style = document.createElement('style');
   style.textContent = source;
@@ -97,6 +105,27 @@ describe('style.css', () => {
     expect(declaredInSource(":root[data-motion='off'] *", 'animation')).toContain('none !important');
     expect(declaredInSource(":root[data-motion='off'] *", 'transition')).toContain('none !important');
     expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{ animation: none !important; transition: none !important; \}/);
+  });
+
+  it('widens every screen to 1200px on a desktop but keeps the short result screens at 720px', () => {
+    expect(declared('.screen', 'max-width')).toContain('1200px');
+    expect(declared('.screen.result', 'max-width')).toContain('720px');
+    expect(declared('.feedback', 'max-width')).toContain('1200px');
+  });
+
+  it('lays the hub levels and the answer options out in columns on a desktop', () => {
+    expect(declaredInMedia('(min-width: 900px)', '.levels', 'grid-template-columns')).toContain('repeat(2, minmax(0, 1fr))');
+    expect(declaredInMedia('(min-width: 900px)', '.name-list', 'grid-template-columns')).toContain('repeat(2, minmax(0, 1fr))');
+    expect(declaredInMedia('(min-width: 900px)', '.flag-grid.count-6', 'grid-auto-flow')).toContain('column');
+  });
+
+  it('lets the Learn and Quiz maps fill the height on a desktop, with the four names in one row', () => {
+    const desktop = '(min-width: 900px) and (min-height: 600px)';
+    for (const map of ['.map-game .question > .map', '.map-game .map-flag > .map', '.quiz-screen > .map']) {
+      expect(declaredInMedia(desktop, map, 'max-height')).toContain('none');
+      expect(declaredInMedia(desktop, map, 'flex-grow')).toContain('1');
+    }
+    expect(declaredInMedia(desktop, '.map-game .name-list', 'grid-template-columns')).toContain('repeat(4, minmax(0, 1fr))');
   });
 
   it('keeps confetti out of the way of every tap', () => {

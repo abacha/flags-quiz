@@ -72,7 +72,7 @@ button:active:not(:disabled) { transform: scale(0.96); }
 button:disabled { cursor: not-allowed; opacity: 0.45; }
 
 .screen {
-  max-width: 720px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px 48px;
   display: flex;
@@ -311,7 +311,7 @@ input::placeholder { text-overflow: ellipsis; }
   z-index: 10;
   box-sizing: border-box;
   width: 100%;
-  max-width: 720px;
+  max-width: 1200px;
   max-height: 75dvh;
   margin: 0 auto;
   overflow-y: auto;
@@ -525,8 +525,6 @@ input::placeholder { text-overflow: ellipsis; }
 
 .record { margin: 0; color: var(--success); font-weight: 600; }
 
-.screen.wide { max-width: 1200px; }
-
 .table-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; min-width: 0; }
 .table-head h1 { margin: 0; white-space: nowrap; }
 .table-head .detail { white-space: nowrap; }
@@ -677,6 +675,7 @@ input::placeholder { text-overflow: ellipsis; }
 .streak { color: #e8590c; font-weight: 700; animation: pop 260ms ease-out; }
 .topbar-fill.bump { animation: glow 500ms ease-out; }
 
+.screen.result { max-width: 720px; }
 .result h1 { margin: 16px 0 0; font-size: 1.5rem; text-align: center; }
 .result h1.cheer { animation: medal-drop 650ms cubic-bezier(0.34, 1.56, 0.64, 1); }
 .result > .detail { margin: 0; text-align: center; }
@@ -758,6 +757,22 @@ input::placeholder { text-overflow: ellipsis; }
 
 .map-flag { display: flex; flex-direction: column; gap: 10px; }
 .map-flag > .figure .flag { max-height: 70px; }
+
+@media (min-width: 900px) {
+  .levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .name-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flag-grid, .flag-grid.count-6 { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 900px) and (min-height: 600px) {
+  .map-game { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding-bottom: 16px; }
+  .map-game .stage, .map-game .question, .map-game .map-flag { flex: 1 1 auto; min-height: 0; }
+  .map-game .question > .map, .map-game .map-flag > .map, .quiz-screen > .map { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; max-height: none; }
+  .map-game .map-flag > .figure { flex: none; height: 110px; }
+  .map-game .name-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .map-game .type-form { flex-direction: row; }
+  .map-game .type-form input { flex: 1; min-width: 0; }
+}
 
 .spell-answer {
   display: flex;

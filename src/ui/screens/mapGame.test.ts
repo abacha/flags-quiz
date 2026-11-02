@@ -87,6 +87,10 @@ describe('renderMapGame', () => {
     vi.restoreAllMocks();
   });
 
+  it('marks its screen as the map game so a desktop can stretch the map to the full height', () => {
+    expect(root.querySelector('main')!.classList).toContain('map-game');
+  });
+
   it('keeps the map name question open, with no feedback and every life, on a typo', () => {
     vi.spyOn(Math, 'random').mockImplementation(seededRng(2));
     asked.length = 0;

@@ -30,7 +30,7 @@ export function renderMapTable(root: HTMLElement, navigate: Navigate, continent:
   const back = () => navigate({ name: 'hub', continent });
   onBack(back);
   root.append(
-    el('main', { className: 'screen wide map-table' }, [
+    el('main', { className: 'screen map-table' }, [
       el('header', { className: 'table-head' }, [
         el('h1', {}, [CONTINENT_LABEL[continent]]),
         el('span', { className: 'detail' }, [`${pool.length} países`]),
