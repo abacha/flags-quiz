@@ -7,6 +7,7 @@ import { el } from '../dom';
 import { CONTINENT_LABEL, DIFFICULTY_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
 import { capitalCard } from '../questions/capitalQuestions';
+import { rankingSection } from '../rankingSection';
 import { continentReport, flagLadder, resultActions, statBlocks } from '../results';
 import { formatTime } from '../time';
 
@@ -25,6 +26,7 @@ export function renderCapitalQuizResult(root: HTMLElement, navigate: Navigate, s
       ]),
       ...(newRecords.score ? [el('p', { className: 'record' }, ['🏆 Novo recorde de pontos!'])] : []),
       ...(newRecords.time ? [el('p', { className: 'record' }, ['🏆 Novo recorde de tempo!'])] : []),
+      rankingSection({ area: 'capitals', continent, level: difficulty, score, timeMs }),
       resultActions(navigate, continent, flagLadder('capitalQuiz', continent, difficulty)),
       ...(continent === 'world'
         ? [continentReport(navigate, continentBreakdown(capitalPool('world', difficulty), unanswered, missed), (c) => ({ name: 'capitalGame', continent: c, difficulty }))]

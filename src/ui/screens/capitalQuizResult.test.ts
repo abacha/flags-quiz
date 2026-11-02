@@ -5,6 +5,11 @@ import { countries } from '../../data/countries';
 import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderCapitalQuizResult } from './capitalQuizResult';
+import { rankingSection } from '../rankingSection';
+
+vi.mock('../rankingSection', () => ({
+  rankingSection: vi.fn(() => Object.assign(document.createElement('div'), { className: 'ranking' })),
+}));
 
 const c = (iso2: string) => countries.find((country) => country.iso2 === iso2)!;
 
@@ -36,6 +41,13 @@ const cardsUnder = (root: HTMLElement, heading: string) => {
 };
 
 describe('renderCapitalQuizResult', () => {
+  it('shows the level ranking for this run between the stats and the next steps', () => {
+    const root = render({ score: 18, timeMs: 192000 });
+    expect(rankingSection).toHaveBeenLastCalledWith({ area: 'capitals', continent: 'oceania', level: 'easy', score: 18, timeMs: 192000 });
+    const order = [...root.querySelectorAll('.stats, .ranking, .result-actions')].map((e) => e.className.split(' ')[0]);
+    expect(order).toEqual(['stats', 'ranking', 'result-actions']);
+  });
+
   it('bounces the title on a finished quiz and keeps it still on one ended early', () => {
     expect(render({ finished: true }).querySelector('h1')!.classList.contains('cheer')).toBe(true);
     expect(render({}).querySelector('h1')!.classList.contains('cheer')).toBe(false);

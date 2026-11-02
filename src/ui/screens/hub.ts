@@ -7,6 +7,7 @@ import type { Medal } from '../../engine/round';
 import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
 import { loadMedals, medalOf, type Medals } from '../../progress';
+import { flushQueue } from '../../ranking';
 import { applyMotion, loadSettings, saveSettings, type Settings } from '../../settings';
 import { isCompleted, loadQuizRecords, quizRecord, type QuizRecord, type QuizRecords } from '../../quizRecords';
 import { el } from '../dom';
@@ -120,6 +121,7 @@ export function renderHub(root: HTMLElement, navigate: Navigate, initial: Contin
   );
   saveContinent(localStorage, continent);
   render();
+  flushQueue(localStorage).catch(() => {});
 }
 
 function settingToggles(): HTMLButtonElement[] {

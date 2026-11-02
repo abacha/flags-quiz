@@ -6,6 +6,7 @@ import { celebrateResult, quizCheer } from '../celebrate';
 import { el } from '../dom';
 import { CONTINENT_LABEL } from '../labels';
 import type { Navigate, Screen } from '../navigation';
+import { rankingSection } from '../rankingSection';
 import { continentReport, mapLadder, mapReview, resultActions, statBlocks } from '../results';
 import { formatTime } from '../time';
 
@@ -24,6 +25,7 @@ export function renderMapQuizResult(root: HTMLElement, navigate: Navigate, scree
       ]),
       ...(newRecords.score ? [el('p', { className: 'record' }, ['🏆 Novo recorde de pontos!'])] : []),
       ...(newRecords.time ? [el('p', { className: 'record' }, ['🏆 Novo recorde de tempo!'])] : []),
+      rankingSection({ area: 'maps', continent, level, score, timeMs }),
       resultActions(navigate, continent, mapLadder('mapQuiz', continent, level)),
       ...(continent === 'world'
         ? [continentReport(navigate, continentBreakdown(mapPool('world', MAP_ALL), unanswered, missed), (c) => ({ name: 'hub', continent: c }))]

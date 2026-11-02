@@ -5,6 +5,11 @@ import { MAP_ALL } from '../../data/maps';
 import { listenForBack, settleBack } from '../backButton';
 import type { Screen } from '../navigation';
 import { renderMapQuizResult } from './mapQuizResult';
+import { rankingSection } from '../rankingSection';
+
+vi.mock('../rankingSection', () => ({
+  rankingSection: vi.fn(() => Object.assign(document.createElement('div'), { className: 'ranking' })),
+}));
 
 function pressDeviceBack(): void {
   vi.spyOn(history, 'pushState').mockImplementation(() => {});
@@ -40,6 +45,13 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapQuizResult' }>>) 
 }
 
 describe('renderMapQuizResult', () => {
+  it('shows the level ranking for this run between the stats and the next steps', () => {
+    const root = render({ score: 18, timeMs: 192000 }).root;
+    expect(rankingSection).toHaveBeenLastCalledWith({ area: 'maps', continent: 'oceania', level: 'polynesia', score: 18, timeMs: 192000 });
+    const order = [...root.querySelectorAll('.stats, .ranking, .result-actions')].map((e) => e.className.split(' ')[0]);
+    expect(order).toEqual(['stats', 'ranking', 'result-actions']);
+  });
+
   it('bounces the title on a finished quiz and keeps it still on one ended early', () => {
     expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(true);
     expect(render({ finished: false }).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);

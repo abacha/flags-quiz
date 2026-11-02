@@ -24,6 +24,10 @@ A won round or a finished Quiz bounces the result title, counts its numbers up a
 The sounds are synthesized in the browser and phones also vibrate with them.
 Two buttons in the hub header turn the sound (with the vibration) and the animations off, and the device's reduced-motion setting also turns the animations off.
 
+Every Quiz result also shows the online ranking of its level, open to anyone who plays: the top 10 by points, the shorter time breaking a tie, with the player's own place highlighted even outside the top 10.
+The first result asks for a nickname, which then belongs to that phone; each nickname keeps its best run per level, and a run set offline is sent the next time the app is online.
+The ranking lives in a Supabase project (`supabase/`), whose only public entry points are three database functions.
+
 The link under the level cards lists every flag of the continent with its name and badge, in alphabetical order, for review; tap one to see it large.
 
 A "Bandeiras | Mapas | Capitais" selector at the top of the hub switches between the flag levels, the Maps area and the Capitals area, and the hub remembers the last area chosen.

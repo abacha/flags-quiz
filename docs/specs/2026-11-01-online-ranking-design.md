@@ -1,7 +1,7 @@
 # Flags Quiz — Online ranking
 
 Date: 2026-11-01
-Status: draft
+Status: implemented
 
 ## Reasoning
 
@@ -60,7 +60,7 @@ Migrations live in `supabase/migrations/` and are applied with `supabase db push
 ### Client
 
 - Plain `fetch` to the RPC endpoints with a 5 s timeout, and no Supabase SDK in the bundle.
-- `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` live in a committed `.env`, since both ship in the public bundle anyway and the anonymous key can only call the three functions. The build fails when either is missing.
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` live in a committed `.env`, since both ship in the public bundle anyway and the publishable key can only call the three functions. The build fails when either is missing.
 - Phone state in `localStorage`: `flags-quiz:player` (secret and nickname) and `flags-quiz:ranking-queue` (runs waiting to be sent).
 - `runQuiz` already hands every result screen its score and time. The three Quiz result screens gain a ranking section that renders empty, sends the queue, then fills in with the leaderboard.
 - The service worker never caches the Supabase origin.

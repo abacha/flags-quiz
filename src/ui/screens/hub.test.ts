@@ -5,7 +5,10 @@ import { countries } from '../../data/countries';
 import { MAP_ALL, mapLevels, mapPool } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import type { Screen } from '../navigation';
+import { flushQueue } from '../../ranking';
 import { renderHub } from './hub';
+
+vi.mock('../../ranking', () => ({ flushQueue: vi.fn(() => Promise.resolve()) }));
 
 describe('renderHub', () => {
   let root: HTMLElement;
@@ -67,6 +70,15 @@ describe('renderHub', () => {
     expect(JSON.parse(localStorage.getItem('flags-quiz:settings')!)).toEqual({ sound: true, motion: false });
     motion.click();
     expect(document.documentElement.dataset.motion).toBe('on');
+  });
+
+  it('sends the ranking runs queued offline, and opens even when that fails', async () => {
+    vi.mocked(flushQueue).mockReset().mockRejectedValue(new TypeError('Failed to fetch'));
+    render('africa');
+    expect(flushQueue).toHaveBeenCalledOnce();
+    expect(flushQueue).toHaveBeenCalledWith(localStorage);
+    await Promise.resolve();
+    expect(root.querySelector('.hub-header')).not.toBeNull();
   });
 
   it('checks a tab with all four levels completed in place of 4/4', () => {
