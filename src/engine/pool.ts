@@ -18,8 +18,6 @@ export const LEVEL_RULES: Record<Difficulty, LevelRules> = {
   general: { tiers: [1, 2, 3], goal: [13, 18], recallWeight: 3, similarDistractors: true },
 };
 
-export const TIER_LEVEL: Record<Tier, Difficulty> = { 1: 'easy', 2: 'medium', 3: 'hard' };
-
 export const MIN_GOAL = 15;
 
 export function goalFor(difficulty: Difficulty, poolSize: number): number {

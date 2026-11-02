@@ -1,6 +1,5 @@
 import { capitalPool } from '../../data/capitals';
 import { goalFor } from '../../engine/pool';
-import { learnPoolSize } from '../../engine/practice';
 import { onBack } from '../backButton';
 import { celebrateResult, learnCheer } from '../celebrate';
 import { el } from '../dom';
@@ -11,7 +10,7 @@ import { flagLadder, learnResultTitle, resultActions, statBlocks } from '../resu
 
 export function renderCapitalResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'capitalResult' }>): void {
   const { continent, difficulty, won, medal, correct, missed } = screen;
-  const goal = goalFor(difficulty, learnPoolSize(difficulty, capitalPool(continent, difficulty).length));
+  const goal = goalFor(difficulty, capitalPool(continent, difficulty).length);
   const review = missed.length
     ? [el('h2', {}, ['Capitais para revisar']), el('div', { className: 'solution-grid' }, missed.map(capitalCard))]
     : [];

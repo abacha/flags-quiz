@@ -5,9 +5,9 @@ The app opens on a hub with one tab per continent and Mundo, and remembers the l
 Fácil, Médio and Difícil split each continent into three tiers, Geral holds all of them, and Mundo joins each level across every continent.
 The header counts the quizzes completed (every flag answered, errors allowed) out of the 24 levels, and each tab counts its own out of 4.
 Each level card shows its flag count and first flags, a medal tag with the Aprender goal, a Quiz tag with the best time or score, and one button for each mode.
+Geral offers only the Quiz, with no medal tag, since an Aprender round over all its flags would take hundreds of answers.
 
 Aprender uses eleven question formats and 3 lives per round to earn a medal, with goals scaled to the size of each level.
-Geral plays a sample of 20 flags, taken first from the tiers with no medal, then bronze, silver and gold, and Mundo offers only the Quiz, in every area.
 Each flag first appears in a choice question, with its name on screen, and only after that in the other formats.
 Choice questions can be answered with the keys 1–6, and two-option questions with ← and →.
 
@@ -29,9 +29,9 @@ The link under the level cards lists every flag of the continent with its name a
 A "Bandeiras | Mapas | Capitais" selector at the top of the hub switches between the flag levels, the Maps area and the Capitals area, and the hub remembers the last area chosen.
 Mapas asks where each country lies on a map of its continent (Mundo uses the whole world), with one level per continent and no tiers.
 The header counts the map quizzes completed out of 6, a tab shows ✓ once its map quiz is completed, and the single card shows the country count, the medal tag, the Quiz tag and the Aprender and Quiz buttons.
-Aprender walks each country of the level up a five-step ladder on the highlighted country: pick its name with its flag shown, pick its flag, pick its name, build its name from letter tiles mixed with letters from neighbouring countries, type its name.
-Continente inteiro plays a sample of 10 countries, taken first from the regions with no medal, then bronze, silver and gold.
+Aprender walks each country of the level up a five-step ladder on the highlighted country: pick its name with its flag shown, pick its flag, pick its name, put the letters of its name in order, type its name.
 A right answer climbs one step, a wrong one drops one step and costs one of 3 lives, a region starts every country at the first step and the whole continent at the third, and the medal comes once every country has passed the last step.
+The whole continent and Mundo inteiro offer only the Quiz, for the same reason as Geral.
 Quiz highlights one country at a time on the map: type its name, tap another country to switch to it or "Pular" to move on; answered countries turn green with their name.
 The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.
 

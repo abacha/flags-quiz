@@ -47,10 +47,6 @@ export function mapLevelLabel(continent: ContinentKey, level: MapLevel): string 
   return regionOf(continent, level).label;
 }
 
-export function mapRegionOf(continent: ContinentKey, iso2: string): MapLevel | undefined {
-  return regionsOf(continent).find((r) => r.countries.includes(iso2))?.key;
-}
-
 export function mapPool(continent: ContinentKey, level: MapLevel): Country[] {
   const pool = poolFor(countries, continent, 'general').filter((c) => !mapExcluded.includes(c.iso2));
   if (level === MAP_ALL) return pool;

@@ -1,9 +1,7 @@
 import { capitalContext, CAPITAL_FORMATS } from '../../engine/capitalFormats';
-import { LEVEL_RULES, TIER_LEVEL, goalFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { learnPoolSize, practiceSample } from '../../engine/practice';
-import { medalOf } from '../../progress';
+import { LEVEL_RULES, goalFor, type ContinentKey, type Difficulty } from '../../engine/pool';
 import { Round } from '../../engine/round';
-import { awardCapitalMedal, loadCapitalMedals } from '../../capitalRecords';
+import { awardCapitalMedal } from '../../capitalRecords';
 import { onBack } from '../backButton';
 import { celebrateAnswer } from '../celebrate';
 import { outOfLivesSheet } from '../outOfLives';
@@ -18,15 +16,7 @@ import { hearts, streakCounter, topBar } from '../topbar';
 
 export function renderCapitalGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
   const rules = LEVEL_RULES[difficulty];
-  const levelContext = capitalContext(continent, difficulty);
-  const medals = loadCapitalMedals(localStorage);
-  const pool = practiceSample(
-    levelContext.pool,
-    (c) => medalOf(medals, continent, TIER_LEVEL[c.tier]),
-    learnPoolSize(difficulty, levelContext.pool.length),
-    Math.random,
-  );
-  const context = { ...levelContext, pool };
+  const context = capitalContext(continent, difficulty);
   const round = new Round(
     context,
     { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: rules.recallWeight },

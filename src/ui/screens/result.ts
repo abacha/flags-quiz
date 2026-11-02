@@ -1,6 +1,5 @@
 import { countries } from '../../data/countries';
 import { goalFor, poolFor } from '../../engine/pool';
-import { learnPoolSize } from '../../engine/practice';
 import { onBack } from '../backButton';
 import { celebrateResult, learnCheer } from '../celebrate';
 import { el } from '../dom';
@@ -11,7 +10,7 @@ import { flagLadder, learnResultTitle, resultActions, statBlocks } from '../resu
 
 export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'result' }>): void {
   const { continent, difficulty, won, medal, correct, missed } = screen;
-  const goal = goalFor(difficulty, learnPoolSize(difficulty, poolFor(countries, continent, difficulty).length));
+  const goal = goalFor(difficulty, poolFor(countries, continent, difficulty).length);
   const review = missed.length
     ? [el('h2', {}, ['Bandeiras para revisar']), el('div', { className: 'solution-grid' }, missed.map((c) => solutionCard(c)))]
     : [];

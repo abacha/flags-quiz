@@ -1,5 +1,4 @@
 import { mapLevelLabel, mapPool } from '../../data/maps';
-import { mapLearnSize } from '../../engine/practice';
 import { onBack } from '../backButton';
 import { celebrateResult, learnCheer } from '../celebrate';
 import { el } from '../dom';
@@ -9,7 +8,7 @@ import { learnResultTitle, mapLadder, mapReview, resultActions, statBlocks } fro
 
 export function renderMapResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'mapResult' }>): void {
   const { continent, level, won, medal, done, missed } = screen;
-  const size = mapLearnSize(level, mapPool(continent, level).length);
+  const size = mapPool(continent, level).length;
   const review = missed.length ? [el('h2', {}, ['Países para revisar']), ...mapReview({ continent, level }, missed)] : [];
   onBack(() => navigate({ name: 'hub', continent }));
   const title = el('h1', {}, [learnResultTitle(won, medal, done, size)]);

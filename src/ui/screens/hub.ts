@@ -3,7 +3,6 @@ import { countries, type Country } from '../../data/countries';
 import { capitalPool } from '../../data/capitals';
 import { MAP_ALL, mapLevelLabel, mapLevels, mapPool, type MapLevel } from '../../data/maps';
 import { goalFor, poolFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { learnPoolSize, mapLearnSize } from '../../engine/practice';
 import type { Medal } from '../../engine/round';
 import { loadCapitalMedals, loadCapitalQuizRecords } from '../../capitalRecords';
 import { loadMapMedals, loadMapQuizRecords } from '../../mapRecords';
@@ -154,7 +153,7 @@ interface LevelCard {
   thumbs: Country[];
   medal: Medal | undefined;
   goal: number;
-  // Mundo offers only the Quiz: a Learn round over the whole world would take hundreds of answers.
+  // Geral and the whole-continent map offer only the Quiz: a Learn round over every country would take hundreds of answers.
   learn: boolean;
   record: QuizRecord;
   play: (mode: 'learn' | 'quiz') => Screen;
@@ -167,8 +166,8 @@ function flagLevelCard(continent: ContinentKey, difficulty: Difficulty, medals: 
     count: `${pool.length} bandeiras`,
     thumbs: pool.slice(0, 3),
     medal: medalOf(medals, continent, difficulty),
-    goal: goalFor(difficulty, learnPoolSize(difficulty, pool.length)),
-    learn: continent !== 'world',
+    goal: goalFor(difficulty, pool.length),
+    learn: difficulty !== 'general',
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'game' : 'quiz', continent, difficulty }),
   };
@@ -181,8 +180,8 @@ function capitalLevelCard(continent: ContinentKey, difficulty: Difficulty, medal
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, difficulty),
-    goal: goalFor(difficulty, learnPoolSize(difficulty, pool.length)),
-    learn: continent !== 'world',
+    goal: goalFor(difficulty, pool.length),
+    learn: difficulty !== 'general',
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'capitalGame' : 'capitalQuiz', continent, difficulty }),
   };
@@ -195,8 +194,8 @@ function mapLevelCard(continent: ContinentKey, level: MapLevel, medals: Medals<M
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, level),
-    goal: mapLearnSize(level, pool.length),
-    learn: continent !== 'world',
+    goal: pool.length,
+    learn: level !== MAP_ALL,
     record: quizRecord(records, continent, level),
     play: (mode) => ({ name: mode === 'learn' ? 'mapGame' : 'mapQuiz', continent, level }),
   };

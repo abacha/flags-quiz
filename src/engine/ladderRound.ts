@@ -1,7 +1,7 @@
 import type { Country } from '../data/countries';
 import { grade, type Answer, type Grade } from './answer';
 import { MAP_LADDER } from './mapFormats';
-import type { FormatContext, Question } from './question';
+import type { Format, FormatContext, Question } from './question';
 import { pickOne, type Rng } from './rng';
 import { MEDAL_BY_LIVES, REVIEW_GAP, STARTING_LIVES, type Medal, type RoundStatus } from './round';
 
@@ -19,9 +19,9 @@ export class LadderRound {
     private readonly ctx: FormatContext,
     start: number,
     private readonly rng: Rng,
-    private readonly targets: readonly Country[] = ctx.pool,
+    private readonly ladder: readonly Format[] = MAP_LADDER,
   ) {
-    for (const country of targets) this.steps.set(country.iso2, start);
+    for (const country of ctx.pool) this.steps.set(country.iso2, start);
   }
 
   get done(): number {
@@ -29,7 +29,7 @@ export class LadderRound {
   }
 
   get size(): number {
-    return this.targets.length;
+    return this.ctx.pool.length;
   }
 
   get status(): RoundStatus {
@@ -54,14 +54,14 @@ export class LadderRound {
   nextQuestion(): Question {
     if (this.status !== 'playing') throw new Error(`Round is ${this.status}`);
     if (this.current) throw new Error('Current question not answered yet');
-    const open = this.targets.filter((c) => !this.finished.has(c.iso2));
+    const open = this.ctx.pool.filter((c) => !this.finished.has(c.iso2));
     const gap = Math.min(REVIEW_GAP, open.length - 1);
     const rested = open.filter((c) => {
       const askedAt = this.askedAt.get(c.iso2);
       return askedAt === undefined || this.asked - askedAt > gap;
     });
     const target = pickOne(rested.length > 0 ? rested : open, this.rng);
-    this.current = MAP_LADDER[this.stepOf(target)].build(target, this.ctx, this.rng);
+    this.current = this.ladder[this.stepOf(target)].build(target, this.ctx, this.rng);
     this.askedAt.set(target.iso2, this.asked++);
     return this.current;
   }
@@ -74,7 +74,7 @@ export class LadderRound {
     this.current = null;
     const step = this.stepOf(target);
     if (result.correct) {
-      if (step === MAP_LADDER.length - 1) this.finished.add(target.iso2);
+      if (step === this.ladder.length - 1) this.finished.add(target.iso2);
       else this.steps.set(target.iso2, step + 1);
     } else {
       this.lives = Math.max(0, this.lives - 1);

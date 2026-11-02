@@ -85,7 +85,7 @@ describe('renderGame', () => {
   const button = (text: string) => [...root.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === text)!;
 
   it('keeps a typed question open, with no feedback and every life, on a typo', () => {
-    vi.spyOn(Math, 'random').mockImplementation(seededRng(2));
+    vi.spyOn(Math, 'random').mockImplementation(seededRng(3));
     asked.length = 0;
     root.replaceChildren();
     renderGame(root, (screen) => screens.push(screen), 'oceania', 'easy');
@@ -119,21 +119,6 @@ describe('renderGame', () => {
     button('Continuar sem medalha').click();
     expect(asked.length).toBe(asking + 1);
     expect(root.querySelectorAll('.heart.lost')).toHaveLength(3);
-  });
-
-  it('plays Geral on 20 flags from the levels with the weakest medals, with a goal of 15', () => {
-    localStorage.setItem('flags-quiz:medals', JSON.stringify({ africa: { easy: 'gold', medium: 'silver' } }));
-    asked.length = 0;
-    root.replaceChildren();
-    renderGame(root, (screen) => screens.push(screen), 'africa', 'general');
-    expect(root.querySelector('.topbar-counters')!.textContent).toBe('♥♥♥0/15');
-    while (screens.length === 0) {
-      const { question, submit } = asked[asked.length - 1];
-      expect(question.target.tier).toBe(3);
-      submit(rightAnswer(question));
-      root.querySelector<HTMLButtonElement>('.feedback button')!.click();
-    }
-    expect(screens[0]).toMatchObject({ name: 'result', won: true });
   });
 
   it('praises a right answer, counts the answers in a row in the top bar and resets the streak on a miss', () => {
