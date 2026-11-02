@@ -213,10 +213,10 @@ describe('renderMapQuiz', () => {
     expect(localStorage.getItem('flags-quiz:quiz-records-v2')).toBeNull();
   });
 
-  it('ends the quiz on ✕, counting each unanswered country as an error', () => {
+  it('ends the quiz on ✕ without charging the unanswered countries', () => {
     type(highlighted().name);
     root.querySelector<HTMLButtonElement>('.topbar-close')!.click();
-    expect(screens[0]).toMatchObject({ name: 'mapQuizResult', score: 2 - pool.length, errors: pool.length - 1, finished: false });
+    expect(screens[0]).toMatchObject({ name: 'mapQuizResult', score: 1, errors: 0, finished: false });
   });
 
   it('asks before ending the quiz on the device back, and keeps playing when declined', () => {

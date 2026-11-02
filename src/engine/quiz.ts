@@ -43,8 +43,7 @@ export class Quiz {
   }
 
   get errors(): number {
-    const misses = [...this.errorCounts.values()].reduce((sum, count) => sum + count, 0);
-    return this.endedEarly ? misses + this.unanswered.length : misses;
+    return [...this.errorCounts.values()].reduce((sum, count) => sum + count, 0);
   }
 
   get score(): number {

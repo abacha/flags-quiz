@@ -160,13 +160,13 @@ describe('Quiz', () => {
     expect(() => quiz.select(first.iso2)).toThrow('Quiz is finished');
   });
 
-  it('counts each flag left unanswered on an early end as one error, on top of its misses', () => {
+  it('charges nothing for the flags left unanswered on an early end, keeping only the misses', () => {
     const quiz = new Quiz(three, seededRng(12));
     quiz.answer('errado');
     quiz.answer('errado');
     expect([quiz.errors, quiz.score]).toEqual([2, -2]);
     quiz.end();
-    expect([quiz.errors, quiz.score]).toEqual([5, -5]);
+    expect([quiz.errors, quiz.score]).toEqual([2, -2]);
     expect(quiz.missed).toEqual([quiz.flags[0]]);
   });
 
@@ -176,7 +176,7 @@ describe('Quiz', () => {
     quiz.select(quiz.flags[2].iso2);
     quiz.end();
     expect(quiz.status).toBe('ended');
-    expect([quiz.answeredCount, quiz.errors, quiz.score]).toEqual([1, 2, -1]);
+    expect([quiz.answeredCount, quiz.errors, quiz.score]).toEqual([1, 0, 1]);
     expect(quiz.unanswered).toEqual([quiz.flags[1], quiz.flags[2]]);
     expect(() => quiz.current).toThrow('Quiz is ended');
     expect(() => quiz.end()).toThrow('Quiz is ended');
