@@ -193,7 +193,8 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
   const countryLayer = shared.countryLayer.cloneNode(true) as SVGGElement;
   const markLayer = svgEl('g');
   const hitLayer = svgEl('g');
-  svg.append(hitLayer, countryLayer, markLayer);
+  const tinyHitLayer = svgEl('g');
+  svg.append(hitLayer, countryLayer, tinyHitLayer, markLayer);
 
   const shapes = new Map([...countryLayer.querySelectorAll<SVGPathElement>('path[data-iso2]')].map((shape) => [shape.dataset.iso2!, shape]));
   for (const [iso2, shape] of shapes) if (!playable.has(iso2)) shape.classList.replace('country', 'context');
@@ -213,7 +214,10 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
     for (const hit of hits.values()) {
       const radius = Math.min(hit.cap, MIN_HIT_PX * unitsPerPx);
       hit.circle.setAttribute('r', String(radius));
-      hit.circle.classList.toggle('tiny', hit.size < OUTLINE_BELOW_PX * unitsPerPx);
+      const tiny = hit.size < OUTLINE_BELOW_PX * unitsPerPx;
+      hit.circle.classList.toggle('tiny', tiny);
+      const layer = tiny ? tinyHitLayer : hitLayer;
+      if (hit.circle.parentNode !== layer) layer.append(hit.circle);
     }
     for (const [iso2, { ring, label }] of marks) {
       ring?.setAttribute('r', String(Math.max(RING_PX * unitsPerPx, hits.get(iso2)!.size)));

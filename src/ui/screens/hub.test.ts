@@ -243,7 +243,7 @@ describe('renderHub', () => {
       expect(root.firstElementChild).toBe(main);
       expect(localStorage.getItem('flags-quiz:area')).toBe('maps');
       expect(areas().map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'true', 'false']);
-      expect(cardTitles()).toEqual(['Ilhas Britânicas e Atlântico Norte', 'Nórdicos e Bálticos', 'Ocidental', 'Central', 'Bálcãs', 'Leste', 'Continente inteiro']);
+      expect(cardTitles()).toEqual(['Ilhas Britânicas e Atlântico Norte', 'Nórdicos e Bálticos', 'Ocidental', 'Itália e Microestados', 'Central', 'Bálcãs', 'Leste', 'Continente inteiro']);
       expect(card('Bálcãs').querySelector('.meta')!.textContent).toBe(`${mapPool('europe', 'balkans').length} países`);
       expect(card('Continente inteiro').querySelector('.meta')!.textContent).toBe(`${mapPool('europe', MAP_ALL).length} países`);
     });
@@ -262,7 +262,7 @@ describe('renderHub', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
       expect(area('Mapas').getAttribute('aria-pressed')).toBe('true');
-      expect(root.querySelectorAll('.level-card')).toHaveLength(7);
+      expect(root.querySelectorAll('.level-card')).toHaveLength(8);
     });
 
     it('goes back to the flag hub unchanged and remembers Bandeiras', () => {
@@ -282,8 +282,8 @@ describe('renderHub', () => {
     it('counts the completed map levels per tab out of its own levels, and checks the tabs with every level completed', () => {
       localStorage.setItem('flags-quiz:area', 'maps');
       render('europe');
-      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('9/36 níveis');
-      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 0/1', 'África 0/8', 'Américas 0/8', 'Ásia 1/8', 'Europa ✓', 'Oceania 1/4']);
+      expect(root.querySelector('.hub-header .pill')!.textContent).toBe('10/36 níveis');
+      expect(tabs().map((t) => t.textContent)).toEqual(['Mundo 0/1', 'África 0/8', 'Américas 0/7', 'Ásia 1/8', 'Europa ✓', 'Oceania 1/4']);
     });
 
     it('tags the map medal and the map quiz of each level of the chosen continent', () => {

@@ -18,29 +18,29 @@
     {
       "key": "central-africa",
       "label": "Central",
-      "countries": ["td", "cm", "cf", "gq", "ga", "st", "cg", "cd", "ao", "sh"]
+      "countries": ["td", "cm", "cf", "gq", "ga", "st", "cg", "cd", "ao"]
     },
     {
       "key": "horn-and-great-lakes",
       "label": "Chifre e Grandes Lagos",
-      "countries": ["ss", "er", "et", "dj", "so", "ke", "ug", "rw", "bi", "tz"]
+      "countries": ["ss", "er", "et", "dj", "so", "ke", "ug", "rw", "bi"]
     },
     {
       "key": "southern-africa",
       "label": "Austral",
-      "countries": ["zm", "mw", "mz", "zw", "bw", "na", "za", "ls", "sz"]
+      "countries": ["zm", "mw", "zw", "bw", "na", "za", "ls", "sz"]
     },
     {
       "key": "indian-ocean",
-      "label": "Ilhas do Índico",
-      "countries": ["mg", "km", "yt", "sc", "mu", "re", "io", "tf"]
+      "label": "Costa e Ilhas do Índico",
+      "countries": ["tz", "mz", "mg", "km", "sc", "mu"]
     }
   ],
   "americas": [
     {
       "key": "north-america",
       "label": "América do Norte",
-      "countries": ["ca", "us", "mx", "gl", "pm"]
+      "countries": ["ca", "us", "mx", "gl", "bs"]
     },
     {
       "key": "central-america",
@@ -50,17 +50,12 @@
     {
       "key": "greater-antilles",
       "label": "Grandes Antilhas",
-      "countries": ["cu", "jm", "ht", "do", "pr", "bs", "tc", "ky", "vi", "vg"]
+      "countries": ["cu", "jm", "ht", "do", "pr"]
     },
     {
       "key": "lesser-antilles",
       "label": "Pequenas Antilhas",
-      "countries": ["ag", "kn", "gp", "dm", "mq", "lc"]
-    },
-    {
-      "key": "southern-caribbean",
-      "label": "Caribe Sul",
-      "countries": ["vc", "bb", "gd", "tt", "aw", "cw", "bq"]
+      "countries": ["ag", "kn", "dm", "lc", "vc", "bb", "gd", "tt"]
     },
     {
       "key": "north-and-andes",
@@ -70,7 +65,7 @@
     {
       "key": "southern-cone",
       "label": "Cone Sul",
-      "countries": ["br", "ar", "cl", "py", "uy", "fk", "gs"]
+      "countries": ["br", "ar", "cl", "py", "uy", "fk"]
     }
   ],
   "asia": [
@@ -92,7 +87,7 @@
     {
       "key": "indian-subcontinent",
       "label": "Subcontinente Indiano",
-      "countries": ["in", "pk", "np", "bt", "bd", "lk"]
+      "countries": ["in", "pk", "np", "bt", "bd", "lk", "mv"]
     },
     {
       "key": "far-east",
@@ -114,17 +109,22 @@
     {
       "key": "british-isles",
       "label": "Ilhas Britânicas e Atlântico Norte",
-      "countries": ["gb-eng", "gb-sct", "gb-wls", "gb-nir", "ie", "im", "je", "is", "fo"]
+      "countries": ["gb-eng", "gb-sct", "gb-wls", "gb-nir", "ie", "is", "fo"]
     },
     {
       "key": "nordic-and-baltic",
       "label": "Nórdicos e Bálticos",
-      "countries": ["no", "se", "fi", "dk", "ax", "ee", "lv", "lt"]
+      "countries": ["no", "se", "fi", "dk", "ee", "lv", "lt"]
     },
     {
       "key": "western-europe",
       "label": "Ocidental",
-      "countries": ["pt", "es", "ad", "fr", "be", "nl", "lu", "it", "mt"]
+      "countries": ["pt", "es", "ad", "fr", "be", "nl", "lu"]
+    },
+    {
+      "key": "italy-and-microstates",
+      "label": "Itália e Microestados",
+      "countries": ["it", "sm", "va", "mc", "mt"]
     },
     {
       "key": "central-europe",
@@ -146,17 +146,17 @@
     {
       "key": "australia-and-melanesia",
       "label": "Austrália e Melanésia",
-      "countries": ["au", "nz", "pg", "sb", "vu", "nc", "fj", "cx"]
+      "countries": ["au", "pg", "sb", "vu", "nc", "fj"]
     },
     {
       "key": "micronesia",
       "label": "Micronésia",
-      "countries": ["pw", "fm", "gu", "mp", "mh", "ki"]
+      "countries": ["pw", "fm", "mh", "ki", "nr"]
     },
     {
       "key": "polynesia",
       "label": "Polinésia",
-      "countries": ["ws", "as", "to", "nu", "wf", "pf"]
+      "countries": ["nz", "ws", "to", "tv", "pf"]
     }
   ]
 }

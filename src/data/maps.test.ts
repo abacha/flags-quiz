@@ -25,7 +25,7 @@ describe('maps data', () => {
       const arcs = geometry.type === 'Polygon' ? geometry.arcs.flat() : geometry.arcs.flat(2);
       return arcs.reduce((sum, arc) => sum + topology.arcs[arc < 0 ? ~arc : arc].length, 0);
     };
-    for (const iso2 of ['bb', 'lc', 'gd', 'dm', 'kn', 'mq', 'tt']) expect(pointsOf(iso2), iso2).toBeGreaterThanOrEqual(30);
+    for (const iso2 of ['bb', 'lc', 'gd', 'dm', 'kn', 'vc', 'tt']) expect(pointsOf(iso2), iso2).toBeGreaterThanOrEqual(30);
   });
 
   it('asks the four UK nations and not the United Kingdom', () => {
@@ -93,14 +93,16 @@ describe('maps data', () => {
     });
   });
 
-  it('includes the large territories', () => {
+  it('asks every sovereign state, whatever its size', () => {
     const world = mapPool('world', MAP_ALL).map((c) => c.iso2);
-    expect(world).toEqual(expect.arrayContaining(['gl', 'pr', 'nc', 'gf']));
+    for (const c of countries.filter((country) => country.status === 'un' || country.status === 'nonMember')) {
+      if (c.iso2 !== 'gb') expect(world, c.iso2).toContain(c.iso2);
+    }
   });
 
-  it('leaves out the micro territories', () => {
-    expect(mapExcluded).toEqual(expect.arrayContaining(['va', 'mc', 'tv', 'nr', 'gi', 'gb']));
-    expect(mapExcluded).not.toContain('mt');
+  it('asks only the chosen territories', () => {
+    const territories = mapPool('world', MAP_ALL).filter((c) => c.status === 'territory').map((c) => c.iso2);
+    expect(territories.sort()).toEqual(['fk', 'fo', 'gf', 'gl', 'hk', 'nc', 'pf', 'pr']);
   });
 
   it('lists only known entries as excluded', () => {

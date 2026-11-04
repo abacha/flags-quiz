@@ -214,7 +214,7 @@ describe('renderMap', () => {
   it('does not tap grey neighbours or excluded entries', () => {
     const view = renderMap({ continent: 'asia', level: MAP_ALL });
     expect(view.element.querySelector('[data-iso2="ru"]')).toBeNull();
-    expect(view.element.querySelector('[data-iso2="mv"]')).toBeNull();
+    expect(view.element.querySelector('[data-iso2="mo"]')).toBeNull();
     const greys = view.element.querySelectorAll('path.context');
     expect(greys.length).toBeGreaterThan(0);
     for (const grey of greys) expect(grey.hasAttribute('data-iso2')).toBe(false);
@@ -250,6 +250,20 @@ describe('renderMap', () => {
     const { x, y } = new DOMPoint(Number(hit.getAttribute('cx')), Number(hit.getAttribute('cy'))).matrixTransform(svg.getScreenCTM()!);
     for (let i = 0; i < 20; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: x, clientY: y, cancelable: true }));
     expect(outlined('lu')).toBe(false);
+  });
+
+  it('lifts the outline of a country drawn smaller than its hit circle above its neighbours, so an enclave stays tappable', () => {
+    const view = renderMap({ continent: 'europe', level: MAP_ALL });
+    const svg = layOut(view.element);
+    const hit = (iso2: string) => view.element.querySelector(`circle.hit[data-iso2="${iso2}"]`)!;
+    const italy = view.element.querySelector('path[data-iso2="it"]')!;
+    const above = (iso2: string) => Boolean(italy.compareDocumentPosition(hit(iso2)) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(above('va')).toBe(true);
+    expect(above('sm')).toBe(true);
+    expect(above('it')).toBe(false);
+    const { x, y } = new DOMPoint(Number(hit('va').getAttribute('cx')), Number(hit('va').getAttribute('cy'))).matrixTransform(svg.getScreenCTM()!);
+    for (let i = 0; i < 40; i++) svg.dispatchEvent(new WheelEvent('wheel', { deltaY: -100, clientX: x, clientY: y, cancelable: true }));
+    expect(above('sm')).toBe(false);
   });
 
   it('paints the outline of a small country with its state', () => {
@@ -401,8 +415,8 @@ describe('renderMap', () => {
   it('frames a small country on the edge of the continent with its surroundings', () => {
     const view = renderMap({ continent: 'oceania', level: MAP_ALL });
     const svg = layOut(view.element);
-    view.focus(['cx']);
-    expect(contains(svg, projectedBounds('oceania', 'cx').surroundings)).toBe(true);
+    view.focus(['tv']);
+    expect(contains(svg, projectedBounds('oceania', 'tv').surroundings)).toBe(true);
   });
 
   it('frames a large country whole', () => {
