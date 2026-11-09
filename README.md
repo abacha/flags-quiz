@@ -41,7 +41,7 @@ Quiz highlights one country at a time on the map: type its name, tap another cou
 The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.
 
 Capitais asks for the capital of each country on the map of Mapas, split per continent into three levels of equal size (Fácil, Médio, Difícil) plus Geral, with its own medals and records.
-Aprender asks six question formats, in both directions: the capital of a country and the country of a capital.
+Aprender walks each country of a continent level up a four-step ladder: find the country of a capital pinned on the map, pick the capital of the country among look-alikes, type the capital, type the country of the capital. Geral and every Mundo level offer only the Quiz.
 Wrong options come from look-alike country names, look-alike capitals and the countries nearest to the target.
 Quiz shows the flag grid of the level with every country name visible and asks for the capital of the highlighted country.
 Tapping another country switches the question, and Pular moves on.

@@ -182,8 +182,8 @@ function capitalLevelCard(continent: ContinentKey, difficulty: Difficulty, medal
     count: `${pool.length} países`,
     thumbs: [],
     medal: medalOf(medals, continent, difficulty),
-    goal: goalFor(difficulty, pool.length),
-    learn: difficulty !== 'general',
+    goal: pool.length,
+    learn: continent !== 'world' && difficulty !== 'general',
     record: quizRecord(records, continent, difficulty),
     play: (mode) => ({ name: mode === 'learn' ? 'capitalGame' : 'capitalQuiz', continent, difficulty }),
   };

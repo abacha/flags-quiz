@@ -335,7 +335,24 @@ describe('renderHub', () => {
 
     const area = (label: string) => [...root.querySelectorAll<HTMLButtonElement>('.area-selector button')].find((b) => b.textContent === label)!;
     const cardTitles = () => [...root.querySelectorAll('.level-card h2')].map((h) => h.textContent);
-    const capitalGoal = (continent: ContinentKey, difficulty: Difficulty) => goalFor(difficulty, capitalPool(continent, difficulty).length);
+    const capitalGoal = (continent: ContinentKey, difficulty: Difficulty) => capitalPool(continent, difficulty).length;
+
+    it('offers Aprender on every continent level but Geral, with the level size as the goal', () => {
+      render('oceania');
+      for (const [title, difficulty] of [['Fácil', 'easy'], ['Médio', 'medium'], ['Difícil', 'hard']] as const) {
+        expect(button(card(title), 'Aprender')).toBeDefined();
+        expect(tags(title)[0]).toEqual([`🏅 meta ${capitalGoal('oceania', difficulty)}`, false]);
+      }
+    });
+
+    it('offers only the Quiz on every Mundo level, with no medal tag', () => {
+      render('world');
+      for (const title of ['Fácil', 'Médio', 'Difícil', 'Geral']) {
+        expect(button(card(title), 'Aprender')).toBeUndefined();
+        expect(tags(title)).toHaveLength(1);
+        expect(button(card(title), 'Quiz')!.className).toBe('primary');
+      }
+    });
 
     it('shows the four difficulty cards with the capital counts and medal goals, and the empty progress', () => {
       render('africa');
