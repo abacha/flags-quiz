@@ -40,7 +40,7 @@ export type Screen =
       newRecords: NewRecords;
     }
   | { name: 'capitalGame'; continent: ContinentKey; difficulty: Difficulty }
-  | { name: 'capitalResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; answered: number; missed: Country[] }
+  | { name: 'capitalResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; done: number; correct: number; answered: number; missed: Country[] }
   | { name: 'capitalQuiz'; continent: ContinentKey; difficulty: Difficulty }
   | {
       name: 'capitalQuizResult';

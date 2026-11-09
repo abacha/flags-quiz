@@ -1,21 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { mainCapital, nearestByCapital, similarCapitals } from '../data/capitals';
-import { countries, similarNames } from '../data/countries';
+import { countries, similarNames, type Country } from '../data/countries';
 import { grade, type Answer } from './answer';
 import {
-  CAPITAL_FORMATS,
+  CAPITAL_LADDER,
   capitalContext,
-  capitalPairs,
-  capitalToCountries,
-  capitalTrueFalse,
+  capitalOnMap,
   countryToCapitals,
-  typeCapital,
-  typeCapitalCountry,
   trickyOthers,
 } from './capitalFormats';
+import { LadderRound } from './ladderRound';
 import type { Question } from './question';
 import { seededRng } from './rng';
-import { Round } from './round';
 
 const c = (code: string) => countries.find((country) => country.iso2 === code)!;
 
@@ -25,14 +21,10 @@ function lookAlikesOf(code: string): string[] {
 
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
-    case 'capitalTrueFalse':
-      return { kind: 'yesNo', yes: q.shown === q.target };
     case 'typeCapital':
       return { kind: 'text', text: mainCapital(q.target) };
     case 'typeCapitalCountry':
       return { kind: 'text', text: q.target.name };
-    case 'capitalPairs':
-      return { kind: 'links', links: Object.fromEntries(q.countries.map((country) => [country.iso2, country.iso2])) };
     default:
       return { kind: 'choice', iso2: q.target.iso2 };
   }
@@ -87,59 +79,58 @@ describe('capital formats', () => {
     expect([ctx.similarGroups, ctx.similarNames, ctx.similarDistractors]).toEqual([[], similarNames, true]);
   });
 
-  it('offers 4 options including the target', () => {
-    for (const format of [countryToCapitals, capitalToCountries]) {
-      const q = format.build(ctx.pool[0], ctx, seededRng(1));
-      if (q.format !== 'countryToCapitals' && q.format !== 'capitalToCountries') throw new Error('wrong format');
-      expect(q.options).toHaveLength(4);
-      expect(q.options).toContain(ctx.pool[0]);
+  it('builds the map bridge with the target and the 3 pool countries nearest by capital', () => {
+    const africa = capitalContext('africa', 'easy');
+    const target = africa.pool[0];
+    const q = capitalOnMap.build(target, africa, seededRng(1));
+    if (q.format !== 'capitalOnMap') throw new Error('wrong format');
+    expect(new Set(q.options)).toEqual(new Set([target, ...nearestByCapital(target, africa.pool, 3)]));
+  });
+
+  it('builds four distinct options on steps 1 and 2 for every country of every Learn level', () => {
+    for (const continent of ['africa', 'americas', 'asia', 'europe', 'oceania'] as const)
+      for (const difficulty of ['easy', 'medium', 'hard'] as const) {
+        const level = capitalContext(continent, difficulty);
+        for (const target of level.pool)
+          for (const format of [capitalOnMap, countryToCapitals]) {
+            const q = format.build(target, level, seededRng(2)) as { options: Country[] };
+            expect(new Set(q.options).size, `${continent} ${difficulty} ${target.iso2}`).toBe(4);
+          }
+      }
+  });
+
+  it('climbs the capital ladder: map bridge, pick the capital, type the capital, type the country', () => {
+    expect(CAPITAL_LADDER.map((f) => f.id)).toEqual(['capitalOnMap', 'countryToCapitals', 'typeCapital', 'typeCapitalCountry']);
+  });
+
+  it('wins a ladder round answered right with four answers per country', () => {
+    const round = new LadderRound(ctx, 0, seededRng(7), CAPITAL_LADDER);
+    while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+    expect([round.status, round.medal, round.answered]).toEqual(['won', 'gold', ctx.pool.length * 4]);
+  });
+
+  it('charges nothing for a typo of the capital and keeps the step', () => {
+    const round = new LadderRound(ctx, 2, seededRng(8), CAPITAL_LADDER);
+    const q = round.nextQuestion();
+    expect(q.format).toBe('typeCapital');
+    const typo = round.answer({ kind: 'text', text: `${mainCapital(q.target)}x` });
+    expect(typo.typos).toEqual([q.target]);
+    expect([round.stepOf(q.target), round.lives, round.answered]).toEqual([2, 3, 0]);
+  });
+
+  it('accepts either capital of a country with several on the typed step', () => {
+    const level = (['easy', 'medium', 'hard'] as const).map((d) => capitalContext('americas', d)).find((l) => l.pool.includes(c('bo')))!;
+    for (const text of ['Sucre', 'La Paz']) {
+      const round = new LadderRound({ ...level, pool: [c('bo'), ...level.pool.filter((x) => x !== c('bo'))] }, 2, seededRng(9), CAPITAL_LADDER);
+      let q = round.nextQuestion();
+      while (q.target !== c('bo')) {
+        round.answer(rightAnswer(q));
+        q = round.nextQuestion();
+      }
+      expect(round.answer({ kind: 'text', text }).correct).toBe(true);
     }
   });
 
-  it('pairs 4 countries including the target', () => {
-    const q = capitalPairs.build(ctx.pool[0], ctx, seededRng(1));
-    if (q.format !== 'capitalPairs') throw new Error('wrong format');
-    expect(q.countries).toHaveLength(4);
-    expect(q.countries).toContain(ctx.pool[0]);
-  });
-
-  it('shows the target sometimes and a tricky member otherwise', () => {
-    const europe = capitalContext('europe', 'easy');
-    const target = c('fr');
-    const tricky = new Set<string>();
-    let rights = 0;
-    for (let seed = 1; seed <= 50; seed++) {
-      const q = capitalTrueFalse.build(target, europe, seededRng(seed));
-      if (q.format !== 'capitalTrueFalse') throw new Error('wrong format');
-      if (q.shown === target) rights++;
-      else tricky.add(q.shown.iso2);
-    }
-    expect(rights).toBeGreaterThan(0);
-    expect(rights).toBeLessThan(50);
-    const allowed = new Set(
-      Array.from({ length: 50 }, (_, seed) => trickyOthers(target, europe, 3, seededRng(seed + 1)).map((o) => o.iso2)).flat(),
-    );
-    for (const code of tricky) expect(allowed.has(code) || nearestByCapital(target, europe.pool, 8).some((o) => o.iso2 === code)).toBe(true);
-  });
-
-  it('marks the first three formats as choice and the type formats as recall', () => {
-    expect(CAPITAL_FORMATS.filter((f) => f.choice).map((f) => f.id)).toEqual(['countryToCapitals', 'capitalToCountries', 'capitalPairs']);
-    expect(CAPITAL_FORMATS.filter((f) => f.recall).map((f) => f.id)).toEqual(['typeCapital', 'typeCapitalCountry']);
-    expect(capitalTrueFalse).toMatchObject({ choice: false, recall: false });
-    expect([typeCapital, typeCapitalCountry].every((f) => !f.choice && f.recall)).toBe(true);
-  });
-
-  it('wins a round with every first question a choice format', () => {
-    const round = new Round(ctx, { correctToWin: 200, recallWeight: 3 }, seededRng(7), CAPITAL_FORMATS);
-    const firstFormat = new Map<string, boolean>();
-    for (let i = 0; i < 400 && round.status === 'playing'; i++) {
-      const q = round.nextQuestion();
-      if (!firstFormat.has(q.target.iso2)) firstFormat.set(q.target.iso2, CAPITAL_FORMATS.find((f) => f.id === q.format)!.choice);
-      round.answer(rightAnswer(q));
-    }
-    expect(round.status).toBe('won');
-    expect([...firstFormat.values()].every(Boolean)).toBe(true);
-  });
 });
 
 describe('grade capital questions', () => {
@@ -147,23 +138,11 @@ describe('grade capital questions', () => {
   const france = c('fr');
 
   it('grades choices by the target', () => {
-    for (const format of ['countryToCapitals', 'capitalToCountries'] as const) {
+    for (const format of ['countryToCapitals', 'capitalOnMap'] as const) {
       const q: Question = { format, target: bolivia, options: [bolivia, france] };
       expect(grade(q, { kind: 'choice', iso2: 'bo' }).correct).toBe(true);
       expect(grade(q, { kind: 'choice', iso2: 'fr' })).toEqual({ correct: false, missed: [bolivia], typos: [] });
     }
-  });
-
-  it('grades pairs by links', () => {
-    const q: Question = { format: 'capitalPairs', target: bolivia, countries: [bolivia, france] };
-    expect(grade(q, { kind: 'links', links: { bo: 'bo', fr: 'fr' } }).correct).toBe(true);
-    expect(grade(q, { kind: 'links', links: { bo: 'fr', fr: 'bo' } }).missed).toEqual([bolivia, france]);
-  });
-
-  it('grades true or false against the shown country', () => {
-    const q: Question = { format: 'capitalTrueFalse', target: bolivia, shown: france };
-    expect(grade(q, { kind: 'yesNo', yes: false }).correct).toBe(true);
-    expect(grade(q, { kind: 'yesNo', yes: true }).correct).toBe(false);
   });
 
   it('grades a typed capital and flags a typo', () => {

@@ -42,10 +42,10 @@ export function renderQuestion(question: Question, submit: Submit, scope?: MapSc
     case 'mapFindCountry':
       if (!scope) throw new Error(`The ${question.format} question needs a map scope`);
       return renderMapQuestion(question, scope, submit);
+    case 'capitalOnMap':
+      if (!scope) throw new Error(`The ${question.format} question needs a map scope`);
+      return renderCapitalQuestion(question, submit, scope);
     case 'countryToCapitals':
-    case 'capitalToCountries':
-    case 'capitalPairs':
-    case 'capitalTrueFalse':
     case 'typeCapital':
     case 'typeCapitalCountry':
       return renderCapitalQuestion(question, submit);

@@ -2,45 +2,36 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { capitalPool, mainCapital } from '../../data/capitals';
 import type { Answer } from '../../engine/answer';
-import { CAPITAL_FORMATS } from '../../engine/capitalFormats';
-import { goalFor } from '../../engine/pool';
+import { MAP_ALL, type MapScope } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import type { Screen } from '../navigation';
 import { renderCapitalGame } from './capitalGame';
 
-const asked: { question: Question; submit: (answer: Answer) => unknown }[] = [];
+const asked: { question: Question; submit: (answer: Answer) => unknown; scope?: MapScope }[] = [];
 
 vi.mock('../questions/render', () => ({
-  renderQuestion: (question: Question, submit: (answer: Answer) => unknown) => {
-    asked.push({ question, submit });
+  renderQuestion: (question: Question, submit: (answer: Answer) => unknown, scope?: MapScope) => {
+    asked.push({ question, submit, scope });
     return document.createElement('div');
   },
 }));
 
 function rightAnswer(question: Question): Answer {
   switch (question.format) {
-    case 'capitalTrueFalse':
-      return { kind: 'yesNo', yes: question.shown === question.target };
     case 'typeCapital':
       return { kind: 'text', text: mainCapital(question.target) };
     case 'typeCapitalCountry':
       return { kind: 'text', text: question.target.name };
-    case 'capitalPairs':
-      return { kind: 'links', links: Object.fromEntries(question.countries.map((c) => [c.iso2, c.iso2])) };
     default:
-      return { kind: 'choice', iso2: 'target' in question ? question.target.iso2 : '' };
+      return { kind: 'choice', iso2: question.target.iso2 };
   }
 }
 
 function wrongAnswer(question: Question): Answer {
   switch (question.format) {
-    case 'capitalTrueFalse':
-      return { kind: 'yesNo', yes: question.shown !== question.target };
     case 'typeCapital':
     case 'typeCapitalCountry':
       return { kind: 'text', text: 'Xyzzyq' };
-    case 'capitalPairs':
-      return { kind: 'links', links: {} };
     default:
       return { kind: 'choice', iso2: '' };
   }
@@ -64,14 +55,28 @@ describe('renderCapitalGame', () => {
     vi.restoreAllMocks();
   });
 
-  it('titles the round with the Capitais prefix and counts toward the capital goal', () => {
-    const goal = goalFor('easy', capitalPool('oceania', 'easy').length);
+  const size = capitalPool('oceania', 'easy').length;
+
+  const play = (pick: (question: Question) => Answer) => {
+    const { question, submit } = asked[asked.length - 1];
+    submit(pick(question));
+    root.querySelector<HTMLButtonElement>('.feedback button')!.click();
+  };
+
+  it('titles the round with the Capitais prefix and counts countries done out of the level size', () => {
     expect(root.querySelector('.topbar-label')!.textContent).toBe('Capitais · Oceania · Fácil');
-    expect(root.querySelector('.topbar-counters')!.textContent).toBe(`♥♥♥0/${goal}`);
+    expect(root.querySelector('.topbar-counters')!.textContent).toBe(`♥♥♥0/${size}`);
   });
 
-  it('asks only capital formats', () => {
-    expect(CAPITAL_FORMATS.map((f) => f.id)).toContain(asked[0].question.format);
+  it('opens on the map bridge drawn on the continent map', () => {
+    expect(asked[0].question.format).toBe('capitalOnMap');
+    expect(asked[0].scope).toEqual({ continent: 'oceania', level: MAP_ALL });
+  });
+
+  it('ends on the lost result on Encerrar after three wrong answers', () => {
+    for (let i = 0; i < 3; i++) play(wrongAnswer);
+    [...root.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === 'Encerrar')!.click();
+    expect(screens).toMatchObject([{ name: 'capitalResult', won: false, medal: null, done: 0, correct: 0, answered: 3 }]);
   });
 
   it('shows the capital card on a right answer too', () => {
@@ -113,8 +118,9 @@ describe('renderCapitalGame', () => {
       submit(rightAnswer(question));
       root.querySelector<HTMLButtonElement>('.feedback button')!.click();
     }
-    const goal = goalFor('easy', capitalPool('oceania', 'easy').length);
-    expect(screens).toMatchObject([{ name: 'capitalResult', continent: 'oceania', difficulty: 'easy', correct: goal, answered: goal }]);
+    expect(screens).toMatchObject([
+      { name: 'capitalResult', continent: 'oceania', difficulty: 'easy', won: true, medal: 'gold', done: size, correct: size * 4, answered: size * 4 },
+    ]);
     expect(localStorage.getItem('flags-quiz:capital-medals')).not.toBeNull();
     expect(localStorage.getItem('flags-quiz:medals')).toBeNull();
   });

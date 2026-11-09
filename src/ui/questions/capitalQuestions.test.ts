@@ -1,13 +1,23 @@
 // @vitest-environment happy-dom
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { countries, type Country } from '../../data/countries';
+import { MAP_ALL, type MapScope } from '../../data/maps';
 import { capitalCard, capitalSolution, renderCapitalQuestion } from './capitalQuestions';
 import { renderFeedback } from './feedback';
 import { renderQuestion } from './render';
 
 const country = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 const click = (target: Element) => target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-const [br, ar, cl, pe, bo] = ['br', 'ar', 'cl', 'pe', 'bo'].map(country);
+const [br, ar, cl, pe, bo, py] = ['br', 'ar', 'cl', 'pe', 'bo', 'py'].map(country);
+const AMERICAS: MapScope = { continent: 'americas', level: MAP_ALL };
+
+beforeEach(() => {
+  vi.spyOn(SVGSVGElement.prototype, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 390, 260));
+  vi.spyOn(SVGSVGElement.prototype, 'getScreenCTM').mockImplementation(function (this: SVGSVGElement) {
+    const [, , width] = this.getAttribute('viewBox')!.split(' ').map(Number);
+    return new DOMMatrix([390 / width!, 0, 0, 390 / width!, 0, 0]);
+  });
+});
 
 describe('renderCapitalQuestion', () => {
   it('asks countryToCapitals with the capitals as option labels', () => {
@@ -22,31 +32,23 @@ describe('renderCapitalQuestion', () => {
     expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'br' });
   });
 
-  it('asks capitalToCountries with the capital in the figure and flag-and-name options', () => {
+  it('asks capitalOnMap with the main capital pinned on the map and flag-and-name options', () => {
     const submit = vi.fn();
-    const rendered = renderCapitalQuestion({ format: 'capitalToCountries', target: br, options: [ar, br, cl, pe] }, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('De que país é esta capital?');
-    expect(rendered.querySelector('.figure')!.textContent).toBe('Brasília');
+    const rendered = renderCapitalQuestion({ format: 'capitalOnMap', target: bo, options: [ar, bo, cl, py] }, submit, AMERICAS);
+    expect(rendered.querySelector('h2')!.textContent).toBe('Em que país fica esta capital?');
+    expect(rendered.querySelector('.map circle.map-pin')).not.toBeNull();
+    expect(rendered.querySelector('.map text.map-label')!.textContent).toBe('Sucre');
+    expect(rendered.querySelector('.map .highlight')).toBeNull();
     const buttons = [...rendered.querySelectorAll<HTMLButtonElement>('.name-option')];
-    expect(buttons.map((b) => b.textContent)).toEqual(['Argentina', 'Brasil', 'Chile', 'Peru']);
+    expect(buttons.map((b) => b.textContent)).toEqual(['Argentina', 'Bolívia', 'Chile', 'Paraguai']);
     expect(buttons[0].querySelector('img')).not.toBeNull();
     click(buttons[1]);
-    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'br' });
+    expect(submit).toHaveBeenCalledWith({ kind: 'choice', iso2: 'bo' });
   });
 
-  it('lists the main capitals sorted in capitalPairs', () => {
-    const rendered = renderCapitalQuestion({ format: 'capitalPairs', target: br, countries: [br, ar, cl, pe] }, () => []);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Ligue cada país à sua capital');
-    expect([...rendered.querySelectorAll('.name-option')].map((b) => b.textContent)).toEqual(['Brasília', 'Buenos Aires', 'Lima', 'Santiago']);
-    expect(rendered.querySelectorAll('.pair-flag img')).toHaveLength(4);
-  });
-
-  it('asks capitalTrueFalse about the shown capital', () => {
-    const submit = vi.fn();
-    const rendered = renderCapitalQuestion({ format: 'capitalTrueFalse', target: br, shown: ar }, submit);
-    expect(rendered.querySelector('h2')!.textContent).toBe('A capital de Brasil é Buenos Aires?');
-    click(rendered.querySelector('.yes-no button')!);
-    expect(submit).toHaveBeenCalledWith({ kind: 'yesNo', yes: true });
+  it('needs a map scope to draw capitalOnMap', () => {
+    expect(() => renderQuestion({ format: 'capitalOnMap', target: bo, options: [ar, bo, cl, py] }, () => [])).toThrow('map scope');
+    expect(renderQuestion({ format: 'capitalOnMap', target: bo, options: [ar, bo, cl, py] }, () => [], AMERICAS).querySelector('.map-pin')).not.toBeNull();
   });
 
   it('asks typeCapital and warns about typos', () => {
@@ -83,10 +85,8 @@ describe('capital solutions', () => {
     expect(caption.querySelector('.solution-name')!.textContent).toBe('Bolívia');
   });
 
-  it('shows one card for a single target and one per country for capitalPairs', () => {
+  it('shows one card for the target', () => {
     expect(capitalSolution({ format: 'typeCapital', target: bo }).querySelectorAll('.solution-card')).toHaveLength(1);
-    const pairs = capitalSolution({ format: 'capitalPairs', target: br, countries: [br, ar, cl, pe] });
-    expect(pairs.querySelectorAll('.solution-card')).toHaveLength(4);
   });
 
   it('shows the solution on a right answer when asked to', () => {

@@ -3,7 +3,7 @@ import { similarNames, type Country } from '../data/countries';
 import { groupsInPool } from './formats';
 import type { Format, FormatContext } from './question';
 import type { ContinentKey, Difficulty } from './pool';
-import { pickOne, shuffle, type Rng } from './rng';
+import { shuffle, type Rng } from './rng';
 
 const always = () => true;
 const NEAR_COUNT = 8;
@@ -26,40 +26,24 @@ export function trickyOthers(target: Country, ctx: FormatContext, count: number,
 const withTricky = (target: Country, ctx: FormatContext, rng: Rng) =>
   shuffle([target, ...trickyOthers(target, ctx, OPTION_COUNT - 1, rng)], rng);
 
+export const capitalOnMap: Format = {
+  id: 'capitalOnMap',
+  recall: false,
+  choice: true,
+  canTarget: always,
+  build: (target, ctx, rng) => ({
+    format: 'capitalOnMap',
+    target,
+    options: shuffle([target, ...nearestByCapital(target, ctx.pool, OPTION_COUNT - 1)], rng),
+  }),
+};
+
 export const countryToCapitals: Format = {
   id: 'countryToCapitals',
   recall: false,
   choice: true,
   canTarget: always,
   build: (target, ctx, rng) => ({ format: 'countryToCapitals', target, options: withTricky(target, ctx, rng) }),
-};
-
-export const capitalToCountries: Format = {
-  id: 'capitalToCountries',
-  recall: false,
-  choice: true,
-  canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'capitalToCountries', target, options: withTricky(target, ctx, rng) }),
-};
-
-export const capitalPairs: Format = {
-  id: 'capitalPairs',
-  recall: false,
-  choice: true,
-  canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'capitalPairs', target, countries: withTricky(target, ctx, rng) }),
-};
-
-export const capitalTrueFalse: Format = {
-  id: 'capitalTrueFalse',
-  recall: false,
-  choice: false,
-  canTarget: always,
-  build: (target, ctx, rng) => ({
-    format: 'capitalTrueFalse',
-    target,
-    shown: rng() < 0.5 ? target : pickOne(trickyOthers(target, ctx, OPTION_COUNT - 1, rng), rng),
-  }),
 };
 
 export const typeCapital: Format = {
@@ -78,7 +62,7 @@ export const typeCapitalCountry: Format = {
   build: (target) => ({ format: 'typeCapitalCountry', target }),
 };
 
-export const CAPITAL_FORMATS: readonly Format[] = [countryToCapitals, capitalToCountries, capitalPairs, capitalTrueFalse, typeCapital, typeCapitalCountry];
+export const CAPITAL_LADDER: readonly Format[] = [capitalOnMap, countryToCapitals, typeCapital, typeCapitalCountry];
 
 export function capitalContext(continent: ContinentKey, difficulty: Difficulty): FormatContext {
   const pool = capitalPool(continent, difficulty);

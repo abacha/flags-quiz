@@ -48,10 +48,8 @@ function wrongAnswer(q: Question): Answer {
     }
     case 'mapTypeName':
     case 'mapFindCountry':
+    case 'capitalOnMap':
     case 'countryToCapitals':
-    case 'capitalToCountries':
-    case 'capitalPairs':
-    case 'capitalTrueFalse':
     case 'typeCapital':
     case 'typeCapitalCountry':
       throw new Error(`Flag rounds never ask ${q.format}`);

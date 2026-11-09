@@ -4,7 +4,7 @@ import { flagFigure } from './choices';
 import { bindKeys } from './keys';
 import type { Submit } from './render';
 
-export function renderYesNo(prompt: string, figure: HTMLElement, submit: Submit): HTMLElement {
+function renderYesNo(prompt: string, figure: HTMLElement, submit: Submit): HTMLElement {
   return el('div', { className: 'question' }, [
     el('h2', {}, [prompt]),
     figure,

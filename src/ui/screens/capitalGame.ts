@@ -1,6 +1,7 @@
-import { capitalContext, CAPITAL_FORMATS } from '../../engine/capitalFormats';
-import { LEVEL_RULES, goalFor, type ContinentKey, type Difficulty } from '../../engine/pool';
-import { Round } from '../../engine/round';
+import { MAP_ALL } from '../../data/maps';
+import { capitalContext, CAPITAL_LADDER } from '../../engine/capitalFormats';
+import { LadderRound } from '../../engine/ladderRound';
+import type { ContinentKey, Difficulty } from '../../engine/pool';
 import { awardCapitalMedal } from '../../capitalRecords';
 import { onBack } from '../backButton';
 import { celebrateAnswer } from '../celebrate';
@@ -15,14 +16,8 @@ import { renderQuestion } from '../questions/render';
 import { hearts, streakCounter, topBar } from '../topbar';
 
 export function renderCapitalGame(root: HTMLElement, navigate: Navigate, continent: ContinentKey, difficulty: Difficulty): void {
-  const rules = LEVEL_RULES[difficulty];
-  const context = capitalContext(continent, difficulty);
-  const round = new Round(
-    context,
-    { correctToWin: goalFor(difficulty, context.pool.length), recallWeight: rules.recallWeight },
-    Math.random,
-    CAPITAL_FORMATS,
-  );
+  const round = new LadderRound(capitalContext(continent, difficulty), 0, Math.random, CAPITAL_LADDER);
+  const scope = { continent, level: MAP_ALL };
   const stage = el('section', { className: 'stage' });
 
   let currentQuestion: HTMLElement | null = null;
@@ -44,15 +39,15 @@ export function renderCapitalGame(root: HTMLElement, navigate: Navigate, contine
   let streak = 0;
   const updateHud = (lifeLost = false) =>
     bar.update(
-      [hearts(round.lives, lifeLost), ...streakCounter(streak), el('span', {}, [`${round.correct}/${round.correctToWin}`])],
-      round.correct / round.correctToWin,
+      [hearts(round.lives, lifeLost), ...streakCounter(streak), el('span', {}, [`${round.done}/${round.size}`])],
+      round.done / round.size,
     );
 
   const finish = () => {
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
     if (medal) awardCapitalMedal(localStorage, continent, difficulty, medal);
-    leave({ name: 'capitalResult', continent, difficulty, won, medal, correct: round.correct, answered: round.answered, missed: round.missed });
+    leave({ name: 'capitalResult', continent, difficulty, won, medal, done: round.done, correct: round.correct, answered: round.answered, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {
@@ -80,7 +75,7 @@ export function renderCapitalGame(root: HTMLElement, navigate: Navigate, contine
       celebrateAnswer(questionEl, feedback, result, streak);
       feedback.querySelector('button')?.focus();
       return [];
-    });
+    }, scope);
     currentQuestion = questionEl;
     stage.replaceChildren(questionEl);
     window.scrollTo({ top: 0 });

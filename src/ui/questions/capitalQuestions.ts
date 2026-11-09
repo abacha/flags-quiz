@@ -1,18 +1,18 @@
-import { capitalLabel, mainCapital } from '../../data/capitals';
+import { capitalCoords, capitalLabel, mainCapital } from '../../data/capitals';
 import type { Country } from '../../data/countries';
+import type { MapScope } from '../../data/maps';
 import type { Question } from '../../engine/question';
 import { el } from '../dom';
+import { renderMap } from '../map/map';
 import { flagImg } from '../flag';
 import { renderNameChoices } from './choices';
 import { solutionCard } from './feedback';
-import { renderPairs } from './pairs';
 import type { Submit } from './render';
-import { renderYesNo } from './trueFalse';
 import { renderTypeName } from './typeName';
 
 export type CapitalQuestion = Extract<
   Question,
-  { format: 'countryToCapitals' | 'capitalToCountries' | 'capitalPairs' | 'capitalTrueFalse' | 'typeCapital' | 'typeCapitalCountry' }
+  { format: 'capitalOnMap' | 'countryToCapitals' | 'typeCapital' | 'typeCapitalCountry' }
 >;
 
 export function countryFigure(country: Country): HTMLElement {
@@ -31,21 +31,24 @@ export function capitalCard(country: Country): HTMLElement {
   return solutionCard(country, country.name, capitalLabel(country));
 }
 
+function pinnedCapital(scope: MapScope, country: Country): HTMLElement {
+  const view = renderMap(scope);
+  view.pin(capitalCoords(country), mainCapital(country));
+  view.focus([country.iso2]);
+  return view.element;
+}
+
 export function capitalSolution(question: Question): HTMLElement {
-  if (question.format === 'capitalPairs') return el('div', { className: 'solution-grid' }, question.countries.map(capitalCard));
   return el('div', { className: 'solution-grid' }, [capitalCard(question.target)]);
 }
 
-export function renderCapitalQuestion(question: CapitalQuestion, submit: Submit): HTMLElement {
+export function renderCapitalQuestion(question: CapitalQuestion, submit: Submit, scope?: MapScope): HTMLElement {
   switch (question.format) {
+    case 'capitalOnMap':
+      if (!scope) throw new Error('The capitalOnMap question needs a map scope');
+      return renderNameChoices('Em que país fica esta capital?', pinnedCapital(scope, question.target), question.options, submit, flagAndName);
     case 'countryToCapitals':
       return renderNameChoices('Qual é a capital deste país?', countryFigure(question.target), question.options, submit, mainCapital);
-    case 'capitalToCountries':
-      return renderNameChoices('De que país é esta capital?', capitalFigure(question.target), question.options, submit, flagAndName);
-    case 'capitalPairs':
-      return renderPairs('Ligue cada país à sua capital', question.countries, submit, { face: countryFigure, label: mainCapital });
-    case 'capitalTrueFalse':
-      return renderYesNo(`A capital de ${question.target.name} é ${mainCapital(question.shown)}?`, countryFigure(question.target), submit);
     case 'typeCapital':
       return renderTypeName('Escreva a capital deste país', countryFigure(question.target), submit, 'Capital');
     case 'typeCapitalCountry':
