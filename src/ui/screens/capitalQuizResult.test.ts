@@ -67,12 +67,12 @@ describe('renderCapitalQuizResult', () => {
     expect(cardsUnder(root, 'Capitais que você errou')![0]).toContain(`França · ${capitalLabel(c('fr'))}`);
   });
 
-  it('shows the continent report on the world quiz and studies the weakest continent in capital Learn', () => {
+  it('shows the continent report on the world quiz and studies the weakest continent in capital Learn from Fácil on Geral', () => {
     const screens: Screen[] = [];
     const root = render({ continent: 'world', difficulty: 'general', finished: true, missed: [c('br')], unanswered: [] }, screens);
     expect(root.querySelector('.continent-report')).not.toBeNull();
     [...root.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent === 'Estudar Américas →')!.click();
-    expect(screens).toEqual([{ name: 'capitalGame', continent: 'americas', difficulty: 'general' }]);
+    expect(screens).toEqual([{ name: 'capitalGame', continent: 'americas', difficulty: 'easy' }]);
     expect(cardsUnder(root, 'Capitais que você errou')).toHaveLength(1);
   });
 

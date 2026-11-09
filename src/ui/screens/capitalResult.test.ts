@@ -20,6 +20,12 @@ describe('renderCapitalResult', () => {
     expect(render({}).querySelector('h1')!.textContent).toBe(`Você fez 2 de ${capitalPool('oceania', 'easy').length}`);
   });
 
+  it('offers no Learn on Geral as the next level after Difícil', () => {
+    const root = render({ difficulty: 'hard', won: true, medal: 'gold' });
+    expect(root.querySelector('.result-actions')!.textContent).not.toContain('Próximo nível');
+    expect(render({ difficulty: 'medium' }).querySelector('.result-actions')!.textContent).toContain('Próximo nível: Difícil');
+  });
+
   it('shows the correct answers out of every answer given', () => {
     expect([...render({}).querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['2/4acertos']);
   });

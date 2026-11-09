@@ -29,7 +29,7 @@ export function renderCapitalQuizResult(root: HTMLElement, navigate: Navigate, s
       rankingSection({ area: 'capitals', continent, level: difficulty, score, timeMs }),
       resultActions(navigate, continent, flagLadder('capitalQuiz', continent, difficulty)),
       ...(continent === 'world'
-        ? [continentReport(navigate, continentBreakdown(capitalPool('world', difficulty), unanswered, missed), (c) => ({ name: 'capitalGame', continent: c, difficulty }))]
+        ? [continentReport(navigate, continentBreakdown(capitalPool('world', difficulty), unanswered, missed), (c) => ({ name: 'capitalGame', continent: c, difficulty: difficulty === 'general' ? 'easy' : difficulty }))]
         : []),
       ...solutionSection(`Capitais sem resposta (${unanswered.length})`, finished ? [] : unanswered),
       ...solutionSection('Capitais que você errou', missed),
