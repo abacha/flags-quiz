@@ -33,7 +33,7 @@ The link under the level cards lists every flag of the continent with its name a
 A "Bandeiras | Mapas | Capitais" selector at the top of the hub switches between the flag levels, the Maps area and the Capitals area, and the hub remembers the last area chosen.
 Mapas asks where each country lies on a map of its continent (Mundo uses the whole world), with one level per continent and no tiers.
 The header counts the map quizzes completed out of 6, a tab shows ✓ once its map quiz is completed, and the single card shows the country count, the medal tag, the Quiz tag and the Aprender and Quiz buttons.
-Aprender walks each country of the level up a five-step ladder: pick the name of the highlighted country with its flag shown, find the named country on the map with its flag as a hint and confirm with Responder, pick the name of the highlighted country, put the letters of its name in order, type its name. The flag is only a hint, so no step needs it known.
+Aprender walks each country of the level up a four-step ladder: pick the name of the highlighted country with its flag shown, find the named country on the map with its flag as a hint and confirm with Responder, pick the name of the highlighted country, type its name. The flag is only a hint, so no step needs it known.
 The ladder moves in waves: a country is only asked a step once every country still open has passed the one below, so no country runs ahead to the last step on its own.
 A right answer climbs one step, a wrong one drops one step and costs one of 3 lives, every country starts at the first step, and the medal comes once every country has passed the last step.
 The whole continent and Mundo inteiro offer only the Quiz, for the same reason as Geral.

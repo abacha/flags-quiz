@@ -42,27 +42,7 @@ export const mapFindCountry: Format = {
 
 export const withoutAccents = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '');
 
-const SEPARATOR = /[\s\-'’,]/u;
-const DECOY_LETTERS = 4;
-
-export function spelledLetters(name: string): string[] {
-  return [...withoutAccents(name.toLocaleLowerCase('pt-BR'))].filter((char) => !SEPARATOR.test(char));
-}
-
-// Letters from the neighbours' names, so the tiles only spell the target for someone who knows which country it is.
-function decoyLetters(target: Country, ctx: FormatContext, rng: Rng): string[] {
-  return sample(nearby(target, ctx).flatMap((country) => spelledLetters(country.name)), DECOY_LETTERS, rng);
-}
-
-export const mapSpellName: Format = {
-  id: 'mapSpellName',
-  recall: false,
-  choice: false,
-  canTarget: always,
-  build: (target, ctx, rng) => ({ format: 'mapSpellName', target, letters: shuffle([...spelledLetters(target.name), ...decoyLetters(target, ctx, rng)], rng) }),
-};
-
-export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapFindCountry, mapToNames, mapSpellName, mapTypeName];
+export const MAP_LADDER: readonly Format[] = [mapFlagToNames, mapFindCountry, mapToNames, mapTypeName];
 
 export function mapContext(continent: ContinentKey, level: MapLevel): FormatContext {
   const pool = mapPool(continent, level);

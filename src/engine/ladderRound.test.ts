@@ -9,11 +9,11 @@ import { REVIEW_GAP } from './round';
 const ctx = mapContext('africa', 'west-coast');
 
 function rightAnswer(q: Question): Answer {
-  return q.format === 'mapSpellName' || q.format === 'mapTypeName' ? { kind: 'text', text: q.target.name } : { kind: 'choice', iso2: q.target.iso2 };
+  return q.format === 'mapTypeName' ? { kind: 'text', text: q.target.name } : { kind: 'choice', iso2: q.target.iso2 };
 }
 
 function wrongAnswer(q: Question): Answer {
-  return q.format === 'mapSpellName' || q.format === 'mapTypeName' ? { kind: 'text', text: 'nenhum país' } : { kind: 'choice', iso2: '' };
+  return q.format === 'mapTypeName' ? { kind: 'text', text: 'nenhum país' } : { kind: 'choice', iso2: '' };
 }
 
 const answerRight = (round: LadderRound) => round.answer(rightAnswer(round.nextQuestion()));
@@ -87,7 +87,7 @@ describe('LadderRound', () => {
   });
 
   it('marks a country done after the last step and stops asking it', () => {
-    const round = new LadderRound(ctx, 4, seededRng(4));
+    const round = new LadderRound(ctx, 3, seededRng(4));
     const q = round.nextQuestion();
     expect(q.format).toBe('mapTypeName');
     round.answer(rightAnswer(q));
@@ -110,18 +110,18 @@ describe('LadderRound', () => {
   });
 
   it('keeps step and lives on a typo', () => {
-    const round = new LadderRound(mapContext('africa', 'west-coast'), 4, seededRng(6));
+    const round = new LadderRound(mapContext('africa', 'west-coast'), 3, seededRng(6));
     const q = round.nextQuestion();
     const name = q.target.name;
     const typo = name.slice(0, 2) + name[3] + name[2] + name.slice(4);
     const result = round.answer({ kind: 'text', text: typo });
     expect(result.typos).toEqual([q.target]);
-    expect([round.stepOf(q.target), round.lives, round.correct, round.answered]).toEqual([4, 3, 0, 0]);
+    expect([round.stepOf(q.target), round.lives, round.correct, round.answered]).toEqual([3, 3, 0, 0]);
     expect(() => round.nextQuestion()).toThrow();
   });
 
   it('asks the last remaining country again despite the gap', () => {
-    const round = new LadderRound(ctx, 4, seededRng(7));
+    const round = new LadderRound(ctx, 3, seededRng(7));
     while (round.done < round.size - 1) answerRight(round);
     const last = round.nextQuestion();
     round.answer(wrongAnswer(last));

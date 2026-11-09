@@ -4,11 +4,10 @@ import { el } from '../dom';
 import { renderMap } from '../map/map';
 import { mapPool, type MapScope } from '../../data/maps';
 import { flagFigure, renderNameChoices } from './choices';
-import { renderSpellName } from './spellName';
 import type { Submit } from './render';
 import { renderTypeName } from './typeName';
 
-export type MapQuestion = Extract<Question, { format: 'mapToNames' | 'mapTypeName' | 'mapFlagToNames' | 'mapFindCountry' | 'mapSpellName' }>;
+export type MapQuestion = Extract<Question, { format: 'mapToNames' | 'mapTypeName' | 'mapFlagToNames' | 'mapFindCountry' }>;
 
 function highlightedMap(scope: MapScope, country: Country): HTMLElement {
   const view = renderMap(scope);
@@ -58,7 +57,5 @@ export function renderMapQuestion(question: MapQuestion, scope: MapScope, submit
       );
     case 'mapFindCountry':
       return renderFindCountry(question.target, scope, submit);
-    case 'mapSpellName':
-      return renderSpellName('Monte o nome deste país', highlightedMap(scope, question.target), question.letters, submit);
   }
 }

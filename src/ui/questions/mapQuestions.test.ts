@@ -40,7 +40,6 @@ describe('the initial view of a map question', () => {
     const questions: MapQuestion[] = [
       { format: 'mapFlagToNames', target: sv, options: [ar, br, cl, sv] },
       { format: 'mapToNames', target: sv, options: [ar, br, cl, sv] },
-      { format: 'mapSpellName', target: sv, letters: [...sv.name] },
       { format: 'mapTypeName', target: sv },
     ];
     for (const question of questions) {
@@ -164,11 +163,4 @@ describe('the ladder steps', () => {
     });
   });
 
-  it('opens step 4 on the highlighted country', () => {
-    const rendered = renderMapQuestion({ format: 'mapSpellName', target: pe, letters: ['u', 'r', 'e', 'P'] }, AMERICAS, () => []);
-    expect(rendered.querySelector('h2')!.textContent).toBe('Monte o nome deste país');
-    expect(shows(rendered, 'pe')).toBe(true);
-    expect(rendered.querySelector('.map .highlight')).not.toBeNull();
-    expect(rendered.querySelectorAll('.spell-tile')).toHaveLength(4);
-  });
 });

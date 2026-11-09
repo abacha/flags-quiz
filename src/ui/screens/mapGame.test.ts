@@ -24,8 +24,6 @@ function correctAnswer(question: Question): Answer {
     case 'mapFlagToNames':
     case 'mapFindCountry':
       return { kind: 'choice', iso2: question.target.iso2 };
-    case 'mapSpellName':
-      return { kind: 'text', text: question.target.name };
     case 'mapTypeName':
       return { kind: 'text', text: question.target.name };
     default:
@@ -39,8 +37,6 @@ function wrongAnswer(question: Question): Answer {
     case 'mapFlagToNames':
     case 'mapFindCountry':
       return { kind: 'choice', iso2: '' };
-    case 'mapSpellName':
-      return { kind: 'text', text: '' };
     case 'mapTypeName':
       return { kind: 'text', text: '' };
     default:

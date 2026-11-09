@@ -773,38 +773,6 @@ input::placeholder { text-overflow: ellipsis; }
   .map-game .type-form input { flex: 1; min-width: 0; }
 }
 
-.spell-answer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px;
-  min-height: 44px;
-  padding-bottom: 4px;
-  border-bottom: 3px solid var(--accent-line);
-}
-.spell-placed {
-  min-width: 26px;
-  height: 40px;
-  border: 0;
-  background: none;
-  color: inherit;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
-.spell-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.spell-tile {
-  min-width: 44px;
-  height: 44px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-button);
-  background: var(--surface);
-  font-size: 1.15rem;
-  font-weight: 600;
-  box-shadow: 0 4px 0 var(--border);
-}
-.spell-tile:disabled { opacity: 0.3; }
-
 .confetti {
   position: fixed;
   z-index: 20;

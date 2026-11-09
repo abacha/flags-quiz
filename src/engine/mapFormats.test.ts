@@ -4,7 +4,7 @@ import { MAP_ALL, mapLevels, mapPool, nearestCountries } from '../data/maps';
 import { CONTINENT_KEYS } from '../ui/labels';
 import { grade, type Answer } from './answer';
 import { LadderRound } from './ladderRound';
-import { MAP_LADDER, mapContext, mapFindCountry, mapFlagToNames, mapSpellName, mapToNames, spelledLetters } from './mapFormats';
+import { MAP_LADDER, mapContext, mapFindCountry, mapFlagToNames, mapToNames } from './mapFormats';
 import type { Question } from './question';
 import { seededRng } from './rng';
 
@@ -14,7 +14,6 @@ const ctx = mapContext('oceania', MAP_ALL);
 function rightAnswer(q: Question): Answer {
   switch (q.format) {
     case 'mapTypeName':
-    case 'mapSpellName':
       return { kind: 'text', text: q.target.name };
     default:
       return { kind: 'choice', iso2: q.target.iso2 };
@@ -101,10 +100,6 @@ describe('map distractors', () => {
 });
 
 describe('map ladder', () => {
-  it('orders the ladder from flag hint to bare typing, with no step that asks for the flag', () => {
-    expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapFindCountry', 'mapToNames', 'mapSpellName', 'mapTypeName']);
-  });
-
   it('draws step 1 and step 3 options from the 8 nearest countries', () => {
     const gt = c('gt');
     const americas = mapContext('americas', MAP_ALL);
@@ -120,39 +115,13 @@ describe('map ladder', () => {
     }
   });
 
+  it('climbs four steps: flag beside the map, find it, pick its name, type it', () => {
+    expect(MAP_LADDER.map((f) => f.id)).toEqual(['mapFlagToNames', 'mapFindCountry', 'mapToNames', 'mapTypeName']);
+  });
+
   it('asks step 2 to find the country on the map, with no options', () => {
     const gt = c('gt');
     expect(mapFindCountry.build(gt, mapContext('americas', MAP_ALL), seededRng(1))).toEqual({ format: 'mapFindCountry', target: gt });
-  });
-
-  it('spells the name in lowercase letters without separators or accents', () => {
-    expect(spelledLetters('Guiné-Bissau')).toEqual([...'guinebissau']);
-    expect(spelledLetters('Costa do Marfim')).toEqual([...'costadomarfim']);
-    expect(spelledLetters("Cote d'Ivoire")).toEqual([...'cotedivoire']);
-    expect(spelledLetters('Santa Helena, Ascensão')).toEqual([...'santahelenaascensao']);
-    expect(spelledLetters('Curaçao')).toEqual([...'curacao']);
-  });
-
-  it('mixes 4 letters from neighbour names into the shuffled name', () => {
-    const ci = c('ci');
-    const africa = mapContext('africa', MAP_ALL);
-    const neighbourLetters = new Set(nearestCountries(ci, africa.pool, 8).flatMap((country) => spelledLetters(country.name)));
-    for (let seed = 1; seed <= 20; seed++) {
-      const q = mapSpellName.build(ci, africa, seededRng(seed));
-      if (q.format !== 'mapSpellName') throw new Error('wrong format');
-      const extras = [...q.letters];
-      for (const letter of spelledLetters(ci.name)) extras.splice(extras.indexOf(letter), 1);
-      expect(extras).toHaveLength(4);
-      for (const letter of extras) expect(neighbourLetters.has(letter), letter).toBe(true);
-    }
-  });
-
-  it('grades step 4 on the letters alone, ignoring case, separators and accents', () => {
-    const gw = c('gw');
-    const q: Question = { format: 'mapSpellName', target: gw, letters: spelledLetters(gw.name) };
-    expect(grade(q, { kind: 'text', text: 'guinebissau' })).toEqual({ correct: true, missed: [], typos: [] });
-    expect(grade(q, { kind: 'text', text: 'Guiné-Bissau' }).correct).toBe(true);
-    expect(grade(q, { kind: 'text', text: 'guinebissaux' })).toEqual({ correct: false, missed: [gw], typos: [] });
   });
 
   it('grades steps 1 and 2 against the target', () => {

@@ -47,7 +47,6 @@ function wrongAnswer(q: Question): Answer {
       return { kind: 'links', links: { [first.iso2]: second.iso2, [second.iso2]: first.iso2 } };
     }
     case 'mapTypeName':
-    case 'mapSpellName':
     case 'mapFindCountry':
     case 'countryToCapitals':
     case 'capitalToCountries':
