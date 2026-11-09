@@ -719,6 +719,7 @@ input::placeholder { text-overflow: ellipsis; }
 .map .hit.tiny.highlight { stroke: var(--accent); }
 .map .hit.tiny.answered { stroke: var(--success); }
 .map .hit.tiny.missed { stroke: var(--wrong); }
+.map-pin { fill: var(--wrong); stroke: var(--surface); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
 .question > .map, .feedback > .map, .map-flag > .map { min-width: 0; width: 100%; }
 .question > .map, .feedback > .map, .quiz-screen > .map, .map-flag > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }

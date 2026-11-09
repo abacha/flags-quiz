@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { frame, narrowTo, panBy, shapeTo, zoomAt } from './viewBox';
+import { frame, narrowTo, panBy, shapeTo, zoomAt, reveal } from './viewBox';
 
 const base = { x: 0, y: 0, width: 1000, height: 600 };
 const wide = { x: 0, y: 0, width: 3000, height: 600 };
@@ -103,5 +103,19 @@ describe('narrowTo', () => {
 
   it('stays inside the bounds', () => {
     expect(narrowTo({ x: -200, y: 0, width: 400, height: 240 }, 100, base).x).toBe(0);
+  });
+});
+
+describe('reveal', () => {
+  const bounds = { x: 0, y: 0, width: 1000, height: 600 };
+
+  it('slides a frame just enough to show a point inside its padding', () => {
+    expect(reveal({ x: 500, y: 100, width: 200, height: 120 }, [300, 150], bounds)).toEqual({ x: 280, y: 100, width: 200, height: 120 });
+    expect(reveal({ x: 100, y: 100, width: 200, height: 120 }, [350, 300], bounds)).toEqual({ x: 170, y: 192, width: 200, height: 120 });
+  });
+
+  it('leaves a frame that already shows the point', () => {
+    const box = { x: 100, y: 100, width: 200, height: 120 };
+    expect(reveal(box, [200, 160], bounds)).toEqual(box);
   });
 });

@@ -32,6 +32,10 @@ export function capitalsOf(country: Country): Capital[] {
   return entryOf(country).capitals;
 }
 
+export function capitalCoords(country: Country): [longitude: number, latitude: number] {
+  return entryOf(country).coords;
+}
+
 export function mainCapital(country: Country): string {
   return capitalsOf(country)[0].name;
 }

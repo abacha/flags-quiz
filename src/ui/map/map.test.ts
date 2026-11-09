@@ -3,6 +3,7 @@ import { geoCentroid, geoCircle, geoPath } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import { merge } from 'topojson-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { capitalCoords, capitalPool, mainCapital } from '../../data/capitals';
 import { countries, type Country } from '../../data/countries';
 import { MAP_ALL, MAP_OBJECT, mapPool, topology } from '../../data/maps';
 import type { ContinentKey } from '../../engine/pool';
@@ -401,6 +402,34 @@ describe('renderMap', () => {
     expect(width).toBeLessThan(fitWidth!);
     expect(width / height).toBeCloseTo(500 / 300);
     expect(contains(svg, projectedBounds('americas', 'cl').country)).toBe(true);
+  });
+
+  it('pins a labelled point at a coordinate', () => {
+    const view = renderMap({ continent: 'africa', level: MAP_ALL });
+    layOut(view.element);
+    const cairo = capitalCoords(country('eg'));
+    view.pin(cairo, 'Cairo');
+    const pin = view.element.querySelector('circle.map-pin')!;
+    expect(view.element.querySelector('text.map-label')!.textContent).toBe('Cairo');
+    const [x, y] = poolProjection('africa')(cairo)!;
+    expect(Number(pin.getAttribute('cx'))).toBeCloseTo(x);
+    expect(Number(pin.getAttribute('cy'))).toBeCloseTo(y);
+  });
+
+  it('keeps every pinned Capitais capital inside the frame focused on its country', () => {
+    const outside: string[] = [];
+    for (const continent of ['africa', 'americas', 'asia', 'europe', 'oceania'] as const) {
+      const project = poolProjection(continent);
+      for (const target of capitalPool(continent, 'general')) {
+        const view = renderMap({ continent, level: MAP_ALL });
+        const svg = layOut(view.element);
+        view.pin(capitalCoords(target), mainCapital(target));
+        view.focus([target.iso2]);
+        const [x, y] = project(capitalCoords(target))!;
+        if (!contains(svg, [[x, y], [x, y]])) outside.push(`${target.iso2} ${mainCapital(target)}`);
+      }
+    }
+    expect(outside).toEqual([]);
   });
 
   it('frames a small country with at least its surroundings', () => {

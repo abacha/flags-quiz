@@ -35,6 +35,11 @@ export function frame(target: ViewBox, aspect: number, fit: ViewBox, maxZoom: nu
   return keepInside(around(target, width, width / aspect), bounds);
 }
 
+export function reveal(box: ViewBox, [px, py]: [number, number], bounds: ViewBox): ViewBox {
+  const near = (start: number, size: number, point: number) => clamp(start, point - size * (1 - FRAME_PADDING), point - size * FRAME_PADDING);
+  return keepInside({ ...box, x: near(box.x, box.width, px), y: near(box.y, box.height, py) }, bounds);
+}
+
 export function narrowTo(box: ViewBox, width: number, bounds: ViewBox): ViewBox {
   if (width >= box.width) return box;
   return keepInside(around(box, width, (width * box.height) / box.width), bounds);

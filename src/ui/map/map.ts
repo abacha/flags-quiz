@@ -1,4 +1,4 @@
-import { geoBounds, geoCircle, geoPath, type GeoPath } from 'd3-geo';
+import { geoBounds, geoCircle, geoPath, type GeoPath, type GeoProjection } from 'd3-geo';
 import type { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson';
 import { feature, merge } from 'topojson-client';
 import type { Country } from '../../data/countries';
@@ -6,13 +6,14 @@ import { MAP_ALL, MAP_OBJECT, centroidOf, mapPool, topology, type MapScope } fro
 import type { ContinentKey } from '../../engine/pool';
 import { el } from '../dom';
 import { fittedFeatures, projectionFor } from './projection';
-import { frame, keepInside, narrowTo, panBy, shapeTo, zoomAt, type ViewBox } from './viewBox';
+import { frame, keepInside, narrowTo, panBy, reveal, shapeTo, zoomAt, type ViewBox } from './viewBox';
 
 export const MAX_ZOOM = 64;
 export const MIN_HIT_PX = 22;
 export const TAP_SLOP_PX = 8;
 export const OUTLINE_BELOW_PX = 6;
 const RING_PX = 14;
+const PIN_PX = 5;
 const LABEL_PX = 13;
 const WHEEL_STEP = 1.2;
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -27,6 +28,7 @@ export interface MapView {
   paint(iso2: string, state: CountryPaint, label?: string): void;
   clear(): void;
   focus(iso2s: readonly string[], options?: { animate: boolean }): void;
+  pin(coords: [longitude: number, latitude: number], label: string): void;
 }
 
 interface CountryHit {
@@ -98,6 +100,7 @@ const between = (from: ViewBox, to: ViewBox, k: number): ViewBox => ({
 
 interface ContinentMap {
   pool: Map<string, Country>;
+  projection: GeoProjection;
   continentFit: ViewBox;
   bounds: ViewBox;
   countryLayer: SVGGElement;
@@ -159,6 +162,7 @@ function buildContinentMap(continent: ContinentKey): ContinentMap {
   );
   return {
     pool,
+    projection,
     continentFit: viewBoxOf(path.bounds(fittedFeatures(continent, poolFeatures))),
     bounds: unionOf([viewBoxOf(path.bounds(poolFeatures)), ...surroundings.values()]),
     countryLayer,
@@ -180,7 +184,7 @@ function continentMap(continent: ContinentKey): ContinentMap {
 export function renderMap({ continent, level }: MapScope, onTap?: (country: Country) => void): MapView {
   const shared = continentMap(continent);
   const playable = new Set(mapPool(continent, level).map((c) => c.iso2));
-  const { pool, continentFit, bounds, outline, surroundings } = shared;
+  const { pool, projection, continentFit, bounds, outline, surroundings } = shared;
   let fit = continentFit;
   let box = fit;
   let unitsPerPx = 0;
@@ -209,6 +213,7 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
   }
 
   const marks = new Map<string, Marks>();
+  const pins: (Required<Marks> & { point: [number, number] })[] = [];
 
   function sizeMarks() {
     for (const hit of hits.values()) {
@@ -223,12 +228,17 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
       ring?.setAttribute('r', String(Math.max(RING_PX * unitsPerPx, hits.get(iso2)!.size)));
       label?.setAttribute('font-size', String(LABEL_PX * unitsPerPx));
     }
+    for (const { ring, label } of pins) {
+      ring.setAttribute('r', String(PIN_PX * unitsPerPx));
+      label.setAttribute('font-size', String(LABEL_PX * unitsPerPx));
+    }
   }
 
   const screenUnitsPerPx = () => 1 / svg.getScreenCTM()!.a;
 
   function framing(iso2s: readonly string[]): ViewBox {
-    return frame(unionOf(iso2s.map(surroundings)), aspect, fit, MAX_ZOOM, bounds);
+    const framed = frame(unionOf(iso2s.map(surroundings)), aspect, fit, MAX_ZOOM, bounds);
+    return pins.reduce((box, { point }) => reveal(box, point, bounds), framed);
   }
 
   function reshape(next: number) {
@@ -388,6 +398,18 @@ export function renderMap({ continent, level }: MapScope, onTap?: (country: Coun
     clear() {
       for (const node of [...shapes.values(), ...[...hits.values()].map((hit) => hit.circle)]) node.classList.remove('highlight', 'answered', 'missed');
       for (const iso2 of [...marks.keys()]) unmark(iso2);
+    },
+    pin(coords, label) {
+      const [cx, cy] = projection(coords)!;
+      const pin = {
+        point: [cx, cy] as [number, number],
+        ring: svgEl('circle', { class: 'map-pin', cx, cy }),
+        label: svgEl('text', { class: 'map-label', x: cx, y: cy, dy: '-1em' }),
+      };
+      pin.label.textContent = label;
+      markLayer.append(pin.ring, pin.label);
+      pins.push(pin);
+      sizeMarks();
     },
     focus(iso2s, options) {
       cancelAnimationFrame(slide);
