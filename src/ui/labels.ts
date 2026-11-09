@@ -2,7 +2,7 @@ import type { Status } from '../data/countries';
 import type { ContinentKey, Difficulty } from '../engine/pool';
 import type { Medal } from '../engine/round';
 
-export const CONTINENT_KEYS: readonly ContinentKey[] = ['world', 'africa', 'americas', 'asia', 'europe', 'oceania'];
+export const CONTINENT_KEYS: readonly ContinentKey[] = ['africa', 'americas', 'asia', 'europe', 'oceania', 'world'];
 
 export const CONTINENT_LABEL: Record<ContinentKey, string> = {
   world: 'Mundo',
