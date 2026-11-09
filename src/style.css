@@ -495,7 +495,7 @@ input::placeholder { text-overflow: ellipsis; }
 
 .quiz-capital:empty { display: none; }
 
-.quiz-screen > .map { flex: 0 1 auto; min-height: 0; }
+.quiz-screen > .map { flex: 1 1 auto; min-height: 0; }
 
 .quiz-name:empty { display: none; }
 
@@ -722,7 +722,7 @@ input::placeholder { text-overflow: ellipsis; }
 .map-pin { fill: var(--wrong); stroke: var(--surface); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
 .map-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; vector-effect: non-scaling-stroke; pointer-events: none; }
 .question > .map, .feedback > .map, .map-flag > .map { min-width: 0; width: 100%; }
-.question > .map, .feedback > .map, .quiz-screen > .map, .map-flag > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }
+.question > .map, .feedback > .map, .map-flag > .map { aspect-ratio: 4 / 3; max-height: 45vh; max-height: 45dvh; }
 .question > .map svg, .feedback > .map svg, .quiz-screen > .map svg, .map-flag > .map svg { height: 100%; }
 .map-names { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
 .pair-letter {
@@ -767,7 +767,7 @@ input::placeholder { text-overflow: ellipsis; }
 @media (min-width: 900px) and (min-height: 600px) {
   .map-game { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding-bottom: 16px; }
   .map-game .stage, .map-game .question, .map-game .map-flag { flex: 1 1 auto; min-height: 0; }
-  .map-game .question > .map, .map-game .map-flag > .map, .quiz-screen > .map { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; max-height: none; }
+  .map-game .question > .map, .map-game .map-flag > .map { flex: 1 1 auto; min-height: 0; aspect-ratio: auto; max-height: none; }
   .map-game .map-flag > .figure { flex: none; height: 110px; }
   .map-game .name-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .map-game .type-form { flex-direction: row; }

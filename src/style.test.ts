@@ -119,9 +119,15 @@ describe('style.css', () => {
     expect(declaredInMedia('(min-width: 900px)', '.flag-grid.count-6', 'grid-auto-flow')).toContain('column');
   });
 
-  it('lets the Learn and Quiz maps fill the height on a desktop, with the four names in one row', () => {
+  it('lets the Quiz map fill the height left by the bar and the dock at every width', () => {
+    expect(declared('.quiz-screen > .map', 'flex-grow')).toEqual(['1']);
+    expect(declared('.quiz-screen > .map', 'max-height')).toEqual([]);
+    expect(declared('.quiz-screen > .map', 'aspect-ratio')).toEqual([]);
+  });
+
+  it('lets the Learn maps fill the height on a desktop, with the four names in one row', () => {
     const desktop = '(min-width: 900px) and (min-height: 600px)';
-    for (const map of ['.map-game .question > .map', '.map-game .map-flag > .map', '.quiz-screen > .map']) {
+    for (const map of ['.map-game .question > .map', '.map-game .map-flag > .map']) {
       expect(declaredInMedia(desktop, map, 'max-height')).toContain('none');
       expect(declaredInMedia(desktop, map, 'flex-grow')).toContain('1');
     }
