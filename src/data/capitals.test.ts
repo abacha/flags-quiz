@@ -5,7 +5,11 @@ import capitalsExcludedJson from './capitals-excluded.json';
 import similarCapitalsJson from './similar-capitals.json';
 import { capitalLabel, capitalPool, capitalsExcluded, capitalsOf, mainCapital, nearestByCapital, similarCapitals } from './capitals';
 import { countries, type Country } from './countries';
+import { MAP_ALL, mapPool } from './maps';
 
+const CONTINENTS = ['africa', 'americas', 'asia', 'europe', 'oceania'] as const;
+const LEVELS = ['easy', 'medium', 'hard'] as const;
+const codes = (pool: readonly Country[]) => pool.map((c) => c.iso2).sort();
 const byIso = (iso2: string): Country => countries.find((c) => c.iso2 === iso2)!;
 const capitalCodes = Object.keys(capitalsJson);
 const entries = Object.entries(capitalsJson as Record<string, { capitals: { name: string; aliases: string[] }[]; coords: number[] }>);
@@ -80,11 +84,23 @@ describe('capitals of a country', () => {
 });
 
 describe('capital pools', () => {
-  it('leaves excluded entries out of the smallest pool', () => {
-    const pool = capitalPool('oceania', 'hard').map((c) => c.iso2);
-    expect(pool).toHaveLength(7);
-    expect(pool).not.toContain('tk');
-    expect(pool).not.toContain('nf');
+  it('asks the Mapas countries of each continent, minus the entries Capitais excludes', () => {
+    for (const c of CONTINENTS)
+      expect(codes(capitalPool(c, 'general'))).toEqual(codes(mapPool(c, MAP_ALL).filter((x) => !capitalsExcluded.includes(x.iso2))));
+  });
+
+  it('splits each continent into three levels that differ in size by at most one, each country in exactly one', () => {
+    for (const c of CONTINENTS) {
+      const levels = LEVELS.map((d) => capitalPool(c, d));
+      expect(codes(levels.flat())).toEqual(codes(capitalPool(c, 'general')));
+      const sizes = levels.map((l) => l.length);
+      expect(Math.max(...sizes) - Math.min(...sizes), c).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('builds each Mundo level from the continents levels of the same name', () => {
+    for (const d of LEVELS) expect(codes(capitalPool('world', d))).toEqual(codes(CONTINENTS.flatMap((c) => capitalPool(c, d))));
+    expect(codes(capitalPool('world', 'general'))).toEqual(codes(CONTINENTS.flatMap((c) => capitalPool(c, 'general'))));
   });
 
   it('finds the nearest country by the distance between capitals', () => {

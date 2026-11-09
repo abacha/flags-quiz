@@ -40,7 +40,7 @@ The whole continent and Mundo inteiro offer only the Quiz, for the same reason a
 Quiz highlights one country at a time on the map: type its name, tap another country to switch to it or "Pular" to move on; answered countries turn green with their name.
 The map zooms with pinch, drag and the mouse wheel, so the smallest countries can be reached on a phone.
 
-Capitais asks for the capital of each country, with the same four difficulty levels, goals, lives and medals as the flag levels, and its own records.
+Capitais asks for the capital of each country on the map of Mapas, split per continent into three levels of equal size (Fácil, Médio, Difícil) plus Geral, with its own medals and records.
 Aprender asks six question formats, in both directions: the capital of a country and the country of a capital.
 Wrong options come from look-alike country names, look-alike capitals and the countries nearest to the target.
 Quiz shows the flag grid of the level with every country name visible and asks for the capital of the highlighted country.
@@ -74,6 +74,6 @@ Every push to `main` runs the tests, builds and publishes to GitHub Pages at htt
 
 `src/data/map.topo.json` is the simplified world map (Natural Earth 1:50m map units, public domain) drawn by the Maps area; each shape carries the `iso2` of the `countries.json` entry it depicts, with the four UK nations drawn separately and context-only shapes (Antarctica, Svalbard and others) left without one. `src/data/map-excluded.json` lists the entries Maps never asks: those with no shape of their own (`gb`, `gi`) and those under 100 km² on the map. Run `npm run build:map` to download the source again and rebuild the topology; the script prints the excluded list with each area and writes `map-excluded.json` only when it does not exist, so edit that file by hand to adjust it.
 
-`src/data/capitals.json` holds the capital or capitals of each country by `iso2`, with accepted alternative spellings and the coordinates that rank the nearest countries. `src/data/capitals-excluded.json` lists the entries Capitais never asks, and `src/data/similar-capitals.json` the groups of look-alike capitals that feed the wrong options of the choice questions.
+`src/data/capitals.json` holds the capital or capitals of each country by `iso2`, with accepted alternative spellings and the coordinates that rank the nearest countries. `src/data/capitals-excluded.json` lists the entries Capitais never asks, `src/data/capital-levels.json` splits each continent's Capitais countries into the Fácil, Médio and Difícil levels, and `src/data/similar-capitals.json` the groups of look-alike capitals that feed the wrong options of the choice questions.
 
 Medals and Quiz records live in the browser's `localStorage`, so they belong to one browser on one device.

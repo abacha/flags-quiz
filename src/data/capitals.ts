@@ -1,8 +1,10 @@
 import { geoDistance } from 'd3-geo';
-import { poolFor, type ContinentKey, type Difficulty } from '../engine/pool';
+import type { ContinentKey, Difficulty } from '../engine/pool';
 import capitalsJson from './capitals.json';
 import capitalsExcludedJson from './capitals-excluded.json';
-import { countries, type Country } from './countries';
+import capitalLevelsJson from './capital-levels.json';
+import { countries, type Continent, type Country } from './countries';
+import { MAP_ALL, mapPool } from './maps';
 import similarCapitalsJson from './similar-capitals.json';
 
 export interface Capital {
@@ -40,8 +42,25 @@ export function capitalLabel(country: Country): string {
     .join(' / ');
 }
 
+type LeveledDifficulty = Exclude<Difficulty, 'general'>;
+
+const capitalLevels = capitalLevelsJson as Record<Continent, Record<LeveledDifficulty, string[]>>;
+const CONTINENTS = Object.keys(capitalLevels) as Continent[];
+
+function byIso2(iso2: string): Country {
+  const country = countries.find((c) => c.iso2 === iso2);
+  if (!country) throw new Error(`No country ${iso2} in capital-levels.json`);
+  return country;
+}
+
+function continentPool(continent: Continent, difficulty: Difficulty): Country[] {
+  if (difficulty === 'general') return mapPool(continent, MAP_ALL).filter((c) => !capitalsExcluded.includes(c.iso2));
+  return capitalLevels[continent][difficulty].map(byIso2);
+}
+
 export function capitalPool(continent: ContinentKey, difficulty: Difficulty): Country[] {
-  return poolFor(countries, continent, difficulty).filter((c) => !capitalsExcluded.includes(c.iso2));
+  if (continent === 'world') return CONTINENTS.flatMap((c) => continentPool(c, difficulty));
+  return continentPool(continent, difficulty);
 }
 
 export function nearestByCapital(target: Country, pool: readonly Country[], count: number): Country[] {
