@@ -7,7 +7,7 @@ import type { Navigate, Screen } from '../navigation';
 import { learnResultTitle, mapLadder, mapReview, resultActions, statBlocks } from '../results';
 
 export function renderMapResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'mapResult' }>): void {
-  const { continent, level, won, medal, done, missed } = screen;
+  const { continent, level, won, medal, done, correct, answered, missed } = screen;
   const size = mapPool(continent, level).length;
   const review = missed.length ? [el('h2', {}, ['Países para revisar']), ...mapReview({ continent, level }, missed)] : [];
   onBack(() => navigate({ name: 'hub', continent }));
@@ -16,7 +16,7 @@ export function renderMapResult(root: HTMLElement, navigate: Navigate, screen: E
     el('main', { className: 'screen result' }, [
       title,
       el('p', { className: 'detail' }, [`Mapa · ${CONTINENT_LABEL[continent]} · ${mapLevelLabel(continent, level)}`]),
-      statBlocks([[`${done}/${size}`, 'países']]),
+      statBlocks([[`${correct}/${answered}`, 'acertos']]),
       resultActions(navigate, continent, mapLadder('mapGame', continent, level)),
       ...review,
     ]),

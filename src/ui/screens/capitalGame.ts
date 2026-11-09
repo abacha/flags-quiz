@@ -52,7 +52,7 @@ export function renderCapitalGame(root: HTMLElement, navigate: Navigate, contine
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
     if (medal) awardCapitalMedal(localStorage, continent, difficulty, medal);
-    leave({ name: 'capitalResult', continent, difficulty, won, medal, correct: round.correct, missed: round.missed });
+    leave({ name: 'capitalResult', continent, difficulty, won, medal, correct: round.correct, answered: round.answered, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {

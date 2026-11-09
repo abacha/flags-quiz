@@ -7,6 +7,8 @@ import { MEDAL_BY_LIVES, REVIEW_GAP, STARTING_LIVES, type Medal, type RoundStatu
 
 export class LadderRound {
   lives = STARTING_LIVES;
+  correct = 0;
+  answered = 0;
   readonly missed: Country[] = [];
   private readonly steps = new Map<string, number>();
   private readonly finished = new Set<string>();
@@ -75,7 +77,9 @@ export class LadderRound {
     const { target } = this.current;
     this.current = null;
     const step = this.stepOf(target);
+    this.answered++;
     if (result.correct) {
+      this.correct++;
       if (step === this.ladder.length - 1) this.finished.add(target.iso2);
       else this.steps.set(target.iso2, step + 1);
     } else {

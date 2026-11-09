@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Answer } from '../../engine/answer';
 import { seededRng } from '../../engine/rng';
 import { mapPool } from '../../data/maps';
+import { MAP_LADDER } from '../../engine/mapFormats';
 import type { Question } from '../../engine/question';
 import { listenForBack, settleBack } from '../backButton';
 import type { Navigate, Screen } from '../navigation';
@@ -131,7 +132,7 @@ describe('renderMapGame', () => {
   it('wins when every country is done and saves the medal', () => {
     playToTheEnd();
     expect(JSON.parse(localStorage.getItem('flags-quiz:map-medals-v2')!)).toEqual({ americas: { 'central-america': 'gold' } });
-    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', level: 'central-america', won: true, medal: 'gold', done: size, missed: [] }]);
+    expect(screens).toEqual([{ name: 'mapResult', continent: 'americas', level: 'central-america', won: true, medal: 'gold', done: size, correct: size * MAP_LADDER.length, answered: size * MAP_LADDER.length, missed: [] }]);
   });
 
   it('awards silver when every country is done with two lives left', () => {
@@ -148,7 +149,7 @@ describe('renderMapGame', () => {
     button('Encerrar').click();
     expect(localStorage.getItem('flags-quiz:map-medals-v2')).toBeNull();
     const [screen] = screens;
-    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', level: 'central-america', won: false, medal: null, done: 0 });
+    expect(screen).toMatchObject({ name: 'mapResult', continent: 'americas', level: 'central-america', won: false, medal: null, done: 0, correct: 0, answered: 3 });
     expect((screen as Extract<Screen, { name: 'mapResult' }>).missed.length).toBeGreaterThan(0);
   });
 

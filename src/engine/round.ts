@@ -29,6 +29,7 @@ function spentBy(question: Question): Country[] {
 export class Round {
   lives = STARTING_LIVES;
   correct = 0;
+  answered = 0;
   readonly missed: Country[] = [];
   private readonly spent = new Set<string>();
   private readonly askedAt = new Map<string, number>();
@@ -89,6 +90,7 @@ export class Round {
     const result = grade(this.current, answer);
     if (result.typos.length > 0) return result;
     this.current = null;
+    this.answered++;
     if (result.correct) {
       this.correct++;
     } else {

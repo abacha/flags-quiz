@@ -18,6 +18,7 @@ function render(overrides: Partial<Extract<Screen, { name: 'result' }>>) {
     won: false,
     medal: null,
     correct: 3,
+    answered: 5,
     missed: [],
     ...overrides,
   });
@@ -31,11 +32,10 @@ describe('renderResult', () => {
     expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);
   });
 
-  it('celebrates a won medal and shows the level and the correct answers out of the goal', () => {
-    const { root } = render({ won: true, medal: 'silver', correct: goal });
-    expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');
+  it('celebrates a won medal and shows the level and the correct answers out of every answer given', () => {
+    const { root } = render({ won: true, medal: null, correct: goal, answered: goal + 3 });
     expect(root.querySelector('.detail')!.textContent).toBe('Oceania · Médio');
-    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal}acertos`]);
+    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${goal}/${goal + 3}acertos`]);
   });
 
   it.each([

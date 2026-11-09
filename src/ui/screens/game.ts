@@ -50,7 +50,7 @@ export function renderGame(root: HTMLElement, navigate: Navigate, continent: Con
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
     if (medal) awardMedal(localStorage, continent, difficulty, medal);
-    leave({ name: 'result', continent, difficulty, won, medal, correct: round.correct, missed: round.missed });
+    leave({ name: 'result', continent, difficulty, won, medal, correct: round.correct, answered: round.answered, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {

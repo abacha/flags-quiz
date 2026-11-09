@@ -10,9 +10,9 @@ export type Screen =
   | { name: 'mapTable'; continent: ContinentKey }
   | { name: 'capitalTable'; continent: ContinentKey }
   | { name: 'game'; continent: ContinentKey; difficulty: Difficulty }
-  | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
+  | { name: 'result'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; answered: number; missed: Country[] }
   | { name: 'mapGame'; continent: ContinentKey; level: MapLevel }
-  | { name: 'mapResult'; continent: ContinentKey; level: MapLevel; won: boolean; medal: Medal | null; done: number; missed: Country[] }
+  | { name: 'mapResult'; continent: ContinentKey; level: MapLevel; won: boolean; medal: Medal | null; done: number; correct: number; answered: number; missed: Country[] }
   | { name: 'mapQuiz'; continent: ContinentKey; level: MapLevel }
   | {
       name: 'mapQuizResult';
@@ -40,7 +40,7 @@ export type Screen =
       newRecords: NewRecords;
     }
   | { name: 'capitalGame'; continent: ContinentKey; difficulty: Difficulty }
-  | { name: 'capitalResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; missed: Country[] }
+  | { name: 'capitalResult'; continent: ContinentKey; difficulty: Difficulty; won: boolean; medal: Medal | null; correct: number; answered: number; missed: Country[] }
   | { name: 'capitalQuiz'; continent: ContinentKey; difficulty: Difficulty }
   | {
       name: 'capitalQuizResult';

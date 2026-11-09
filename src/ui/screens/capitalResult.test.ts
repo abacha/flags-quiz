@@ -5,7 +5,7 @@ import { renderCapitalResult } from './capitalResult';
 
 function render(overrides: Partial<Extract<Screen, { name: 'capitalResult' }>>): HTMLElement {
   const root = document.createElement('div');
-  renderCapitalResult(root, () => {}, { name: 'capitalResult', continent: 'oceania', difficulty: 'easy', won: false, medal: null, correct: 2, missed: [], ...overrides });
+  renderCapitalResult(root, () => {}, { name: 'capitalResult', continent: 'oceania', difficulty: 'easy', won: false, medal: null, correct: 2, answered: 4, missed: [], ...overrides });
   return root;
 }
 
@@ -13,5 +13,9 @@ describe('renderCapitalResult', () => {
   it('bounces the title on a win and keeps it still on a loss', () => {
     expect(render({ won: true, medal: 'silver' }).querySelector('h1')!.classList.contains('cheer')).toBe(true);
     expect(render({}).querySelector('h1')!.classList.contains('cheer')).toBe(false);
+  });
+
+  it('shows the correct answers out of every answer given', () => {
+    expect([...render({}).querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['2/4acertos']);
   });
 });

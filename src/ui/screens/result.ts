@@ -9,7 +9,7 @@ import { solutionCard } from '../questions/feedback';
 import { flagLadder, learnResultTitle, resultActions, statBlocks } from '../results';
 
 export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'result' }>): void {
-  const { continent, difficulty, won, medal, correct, missed } = screen;
+  const { continent, difficulty, won, medal, correct, answered, missed } = screen;
   const goal = goalFor(difficulty, poolFor(countries, continent, difficulty).length);
   const review = missed.length
     ? [el('h2', {}, ['Bandeiras para revisar']), el('div', { className: 'solution-grid' }, missed.map((c) => solutionCard(c)))]
@@ -20,7 +20,7 @@ export function renderResult(root: HTMLElement, navigate: Navigate, screen: Extr
     el('main', { className: 'screen result' }, [
       title,
       el('p', { className: 'detail' }, [`${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
-      statBlocks([[`${correct}/${goal}`, 'acertos']]),
+      statBlocks([[`${correct}/${answered}`, 'acertos']]),
       resultActions(navigate, continent, flagLadder('game', continent, difficulty)),
       ...review,
     ]),

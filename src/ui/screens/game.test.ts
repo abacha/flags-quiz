@@ -109,7 +109,7 @@ describe('renderGame', () => {
     loseEveryLife();
     expect(screens).toEqual([]);
     button('Encerrar').click();
-    expect(screens).toMatchObject([{ name: 'result', continent: 'oceania', difficulty: 'easy', won: false, medal: null, correct: 0 }]);
+    expect(screens).toMatchObject([{ name: 'result', continent: 'oceania', difficulty: 'easy', won: false, medal: null, correct: 0, answered: 3 }]);
     expect(localStorage.getItem('flags-quiz:medals')).toBeNull();
   });
 

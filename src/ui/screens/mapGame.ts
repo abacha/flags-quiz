@@ -46,7 +46,7 @@ export function renderMapGame(root: HTMLElement, navigate: Navigate, continent: 
     const won = round.status === 'won';
     const medal = won ? round.medal : null;
     if (medal) awardMapMedal(localStorage, continent, level, medal);
-    leave({ name: 'mapResult', continent, level, won, medal, done: round.done, missed: round.missed });
+    leave({ name: 'mapResult', continent, level, won, medal, done: round.done, correct: round.correct, answered: round.answered, missed: round.missed });
   };
 
   const next = (feedback: HTMLElement) => {

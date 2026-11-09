@@ -105,6 +105,8 @@ describe('LadderRound', () => {
     expect(once.status).toBe('playing');
     playToTheEnd(once);
     expect([once.status, once.medal]).toEqual(['won', 'silver']);
+    expect(once.answered).toBe(once.correct + 1);
+    expect(perfect.answered).toBe(perfect.correct);
   });
 
   it('keeps step and lives on a typo', () => {
@@ -114,7 +116,7 @@ describe('LadderRound', () => {
     const typo = name.slice(0, 2) + name[3] + name[2] + name.slice(4);
     const result = round.answer({ kind: 'text', text: typo });
     expect(result.typos).toEqual([q.target]);
-    expect([round.stepOf(q.target), round.lives]).toEqual([4, 3]);
+    expect([round.stepOf(q.target), round.lives, round.correct, round.answered]).toEqual([4, 3, 0, 0]);
     expect(() => round.nextQuestion()).toThrow();
   });
 

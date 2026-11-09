@@ -94,6 +94,16 @@ describe('Round', () => {
     expect(round.medal).toBe(medal);
   });
 
+  it('counts every settled answer, right or wrong, past the lost lives', () => {
+    const round = new Round(easy, settings(5), seededRng(6));
+    for (let i = 0; i < STARTING_LIVES + 2; i++) {
+      if (round.status === 'lost') round.continueWithoutMedal();
+      round.answer(wrongAnswer(round.nextQuestion()));
+    }
+    while (round.status === 'playing') round.answer(rightAnswer(round.nextQuestion()));
+    expect([round.correct, round.answered]).toEqual([5, 10]);
+  });
+
   it('keeps going without lives or a medal after the player chooses to continue a lost round', () => {
     const round = new Round(easy, settings(5), seededRng(6));
     expect(() => round.continueWithoutMedal()).toThrow('Round is playing');
@@ -298,9 +308,10 @@ describe('Round', () => {
     const before = round.correct;
     const typo = round.answer({ kind: 'text', text: `${question.target.name}x` });
     expect(typo.typos).toEqual([question.target]);
-    expect([round.lives, round.correct, round.missed]).toEqual([STARTING_LIVES, before, []]);
+    const answered = round.answered;
+    expect([round.lives, round.correct, round.answered, round.missed]).toEqual([STARTING_LIVES, before, answered, []]);
     expect(round.answer(rightAnswer(question)).correct).toBe(true);
-    expect([round.lives, round.correct]).toEqual([STARTING_LIVES, before + 1]);
+    expect([round.lives, round.correct, round.answered]).toEqual([STARTING_LIVES, before + 1, answered + 1]);
   });
 
   it('refuses a second answer to the same question', () => {

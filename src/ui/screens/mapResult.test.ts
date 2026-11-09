@@ -19,6 +19,8 @@ function render(overrides: Partial<Extract<Screen, { name: 'mapResult' }>>) {
     won: false,
     medal: null,
     done: 3,
+    correct: 9,
+    answered: 11,
     missed: [],
     ...overrides,
   });
@@ -32,11 +34,11 @@ describe('renderMapResult', () => {
     expect(render({}).root.querySelector('h1')!.classList.contains('cheer')).toBe(false);
   });
 
-  it('celebrates a won medal and shows the continent and the countries done out of the level size', () => {
-    const { root } = render({ won: true, medal: 'silver', done: size });
+  it('celebrates a won medal and shows the continent and the correct answers out of every answer given', () => {
+    const { root } = render({ won: true, medal: 'silver', done: size, correct: 30, answered: 34 });
     expect(root.querySelector('h1')!.textContent).toBe('🥈 Medalha de prata!');
     expect(root.querySelector('.detail')!.textContent).toBe('Mapa · Oceania · Polinésia');
-    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual([`${size}/${size}países`]);
+    expect([...root.querySelectorAll('.stat')].map((s) => s.textContent)).toEqual(['30/34acertos']);
   });
 
   it.each([

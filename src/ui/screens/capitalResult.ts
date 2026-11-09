@@ -9,7 +9,7 @@ import { capitalCard } from '../questions/capitalQuestions';
 import { flagLadder, learnResultTitle, resultActions, statBlocks } from '../results';
 
 export function renderCapitalResult(root: HTMLElement, navigate: Navigate, screen: Extract<Screen, { name: 'capitalResult' }>): void {
-  const { continent, difficulty, won, medal, correct, missed } = screen;
+  const { continent, difficulty, won, medal, correct, answered, missed } = screen;
   const goal = goalFor(difficulty, capitalPool(continent, difficulty).length);
   const review = missed.length
     ? [el('h2', {}, ['Capitais para revisar']), el('div', { className: 'solution-grid' }, missed.map(capitalCard))]
@@ -20,7 +20,7 @@ export function renderCapitalResult(root: HTMLElement, navigate: Navigate, scree
     el('main', { className: 'screen result' }, [
       title,
       el('p', { className: 'detail' }, [`Capitais · ${CONTINENT_LABEL[continent]} · ${DIFFICULTY_LABEL[difficulty]}`]),
-      statBlocks([[`${correct}/${goal}`, 'acertos']]),
+      statBlocks([[`${correct}/${answered}`, 'acertos']]),
       resultActions(navigate, continent, flagLadder('capitalGame', continent, difficulty)),
       ...review,
     ]),

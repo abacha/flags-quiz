@@ -113,7 +113,8 @@ describe('renderCapitalGame', () => {
       submit(rightAnswer(question));
       root.querySelector<HTMLButtonElement>('.feedback button')!.click();
     }
-    expect(screens).toMatchObject([{ name: 'capitalResult', continent: 'oceania', difficulty: 'easy' }]);
+    const goal = goalFor('easy', capitalPool('oceania', 'easy').length);
+    expect(screens).toMatchObject([{ name: 'capitalResult', continent: 'oceania', difficulty: 'easy', correct: goal, answered: goal }]);
     expect(localStorage.getItem('flags-quiz:capital-medals')).not.toBeNull();
     expect(localStorage.getItem('flags-quiz:medals')).toBeNull();
   });
